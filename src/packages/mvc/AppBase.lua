@@ -3,7 +3,7 @@ local AppBase = class("AppBase")
 
 function AppBase:ctor(configs)
     self.configs_ = {
-        viewsRoot  = "app.views",
+        viewsRoot  = "app.game-scene",
         modelsRoot = "app.models",
         defaultSceneName = "MainScene",
     }

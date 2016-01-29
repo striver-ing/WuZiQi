@@ -87,6 +87,14 @@ local function setConstants()
     display.sizeInPixels = {width = sizeInPixels.width, height = sizeInPixels.height}
 
     local viewsize = director:getWinSize()
+    local visiblesize = director:getVisibleSize()
+    local visibleorigin = director:getVisibleOrigin()
+    display.visiblesize        = visiblesize
+    display.visibleorigin      = visibleorigin
+    display.visiblesizeWidth   = visiblesize.width
+    display.visiblesizeHeight  = visiblesize.height
+    display.visibleoriginX     = visibleorigin.x
+    display.visibleoriginY     = visibleorigin.y
     display.contentScaleFactor = director:getContentScaleFactor()
     display.size               = {width = viewsize.width, height = viewsize.height}
     display.width              = display.size.width

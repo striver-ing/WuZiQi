@@ -19,6 +19,13 @@ build/*
 profile
 xcuserdata
 .idea/*
+.pbxproj
+xcuserdata
+*.perspectivev3
+.svn
+*.xcuserstate
+*.xcsettings
+
 
 #Cocoa pods
 *.old
