@@ -50,4 +50,9 @@ function ChessNode:addChess(row, col)
     chess:addTo(self._chessboard)
 end
 
+function ChessNode:removeAllChess()
+    self._chessboard:removeAllChildren()
+end
+
+
 return ChessNode

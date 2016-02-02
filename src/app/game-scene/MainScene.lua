@@ -1,4 +1,3 @@
-
 ----------------------------
 --版权：
 --作用: 游戏主场景
@@ -18,6 +17,16 @@ function MainScene:onCreate()
     local chessNode = require("app.game-scene.ChessNode"):new()
     chessNode:setPosition(cc.p(display.cx,  display.visibleoriginY + 150))
     chessNode:addTo(self)
+
+    local reStartBtn = ccui.Button:create():addTo(self)
+    reStartBtn:setTitleText("重玩")
+    reStartBtn:setTitleFontSize(50)
+    reStartBtn:setPosition(cc.p(display.cx, display.top))
+    reStartBtn:addTouchEventListener(function (sender, eventType)
+        if eventType ~= ccui.TouchEventType.ended then return end
+        chessNode:removeAllChess()
+
+    end)
 
 
 
