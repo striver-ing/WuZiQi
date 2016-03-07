@@ -6,7 +6,7 @@
 --备注:
 ----------------------------
 
-cc.FileUtils:getInstance():setPopupNotify(false)
+cc.FileUtils:getInstance():setPopupNotify(true)
 cc.FileUtils:getInstance():addSearchPath("src/")
 
 require "utils.Constants"
@@ -22,7 +22,24 @@ function __G__TRACKBACK__(errorMessage)
 end
 
 local function main()
-    require("app.MyApp"):create():run()
+    Log.d("enter main")
+    --垃圾回收
+    collectgarbage("collect")
+    -- avoid memory leak
+    collectgarbage("setpause", 100)
+    collectgarbage("setstepmul", 5000)
+
+    cc.Director:getInstance():setAnimationInterval(1.0 / FPS)
+
+    --按钮声音
+    SoundManager.init()
+
+    local configs = {
+        viewsRoot  = "app.start-ui",
+        modelsRoot = "app.models",
+        defaultSceneName = "StartScene",
+    }
+    require("packages.mvc.AppBase"):create(configs):run()
 end
 
 local status, msg = xpcall(main, __G__TRACKBACK__)

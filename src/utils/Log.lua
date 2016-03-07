@@ -1,8 +1,8 @@
 --[[
-版权：The ONE@copyright 2015
+版权：
 作用: lua的log相关封装
-作者: tanxinwen
-时间: 2015.3.12
+作者: liubo
+时间: 20160129
 备注:
 ]]
 

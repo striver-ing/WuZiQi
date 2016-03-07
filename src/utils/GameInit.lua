@@ -6,7 +6,10 @@
 --备注:
 ----------------------------
 
-cc.FileUtils:getInstance():addSearchPath("res/")
-cc.FileUtils:getInstance():addSearchPath("res/playui/")
+cc.FileUtils:getInstance():addSearchPath("res/sound/effect")
+cc.FileUtils:getInstance():addSearchPath("res/sound/music")
+cc.FileUtils:getInstance():addSearchPath("res/images/playui/")
+cc.FileUtils:getInstance():addSearchPath("res/images/startui/")
 
 require "utils.Log"
+require "utils.SoundManager"

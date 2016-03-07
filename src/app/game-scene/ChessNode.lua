@@ -42,6 +42,7 @@ function ChessNode:onTouchEnded(touch, event)
 end
 
 function ChessNode:addChess(row, col)
+    SoundManager.playEffect("chess.wav")
     local posX = (row - 1) * CHESS_SETP + CHESS_OFFSETX
     local posY = (col - 1) * CHESS_SETP + CHESS_OFFSETY
 
