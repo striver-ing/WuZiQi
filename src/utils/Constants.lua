@@ -1,10 +1,10 @@
---[[
-版权：liubo
-作用: 全局变量
-作者: liubo
-时间: 2016.1.29
-备注:
-]]
+----------------------------
+--版权: 564773807@qq.com
+--作用: 全局变量
+--作者: liubo
+--时间: 20160129
+--备注:
+----------------------------
 
 --帧数
 FPS = 30
@@ -16,5 +16,8 @@ CHESS_OFFSETY = 51
 --棋盘格子的宽度
 CHESS_SETP    = 48
 CHESS_GRID_NUM = 15
+--棋子类型
+WHITE = 0
+BLACK = 1
 
 SAVA_STRING_SOUND_EFFECT_ENABLE = "usersoundeffectenable"

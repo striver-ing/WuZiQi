@@ -1,5 +1,5 @@
 ----------------------------
---版权：
+--版权: 564773807@qq.com
 --作用: app 入口
 --作者: liubo
 --时间: 20160109
@@ -30,6 +30,7 @@ local function main()
     collectgarbage("setstepmul", 5000)
 
     cc.Director:getInstance():setAnimationInterval(1.0 / FPS)
+    cc.Director:getInstance():setDisplayStats(CC_SHOW_FPS or false)
 
     --按钮声音
     SoundManager.init()
@@ -39,7 +40,9 @@ local function main()
         modelsRoot = "app.models",
         defaultSceneName = "StartScene",
     }
-    require("packages.mvc.AppBase"):create(configs):run()
+
+    local startScene = require("app.start-ui.StartScene"):create()
+    display.runScene(startScene)
 end
 
 local status, msg = xpcall(main, __G__TRACKBACK__)

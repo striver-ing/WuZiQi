@@ -1,5 +1,5 @@
 ----------------------------
---版权：
+--版权: 564773807@qq.com
 --作用: 声音管理
 --作者: liubo
 --时间: 20160307
@@ -23,7 +23,7 @@ function SoundManager.init()
     button.addTouchEventListener = function (self, func, soundFile)
         oldTouchFunc(self, function (sender, eventType)
             if eventType == ccui.TouchEventType.began then
-                 SoundManager.playEffect(soundFile or "go.wav")
+                 SoundManager.playEffect(soundFile or "btn.wav")
             end
 
             if eventType == ccui.TouchEventType.ended then
