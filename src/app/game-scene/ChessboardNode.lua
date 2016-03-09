@@ -23,7 +23,7 @@ function ChessboardNode:ctor()
 end
 
 function ChessboardNode:initChessboardArray()
-        --棋盘数组
+    --棋盘数组
     self._chessboardArray = {}
     for i = 1, 15 do
         self._chessboardArray[i] = {}
@@ -33,6 +33,9 @@ function ChessboardNode:initChessboardArray()
             self._chessboardArray[i][j].chess = nil
         end
     end
+
+    self._currentChessTip = nil
+    self._chess = {}
 
     dump(self._chessboardArray, "chessboardArray")
 end
@@ -78,8 +81,11 @@ function ChessboardNode:addChess(row, col, chessType)
         self._chessboardArray[row][col].type = BLACK
         self._chessboardArray[row][col].chess = chess
     end
+    chess.row = row
+    chess.col = col
     chess:setPosition(posX, posY)
     chess:addTo(self._chessboard)
+    table.insert(self._chess, chess)
 
     --当前棋子提示
     if self._currentChessTip == nil then
@@ -95,6 +101,26 @@ end
 function ChessboardNode:removeAllChess()
     self._chessboard:removeAllChildren()
     self:initChessboardArray()
+end
+
+--悔棋
+function ChessboardNode:retractChess()
+    if #self._chess == 0 then return end
+
+    local chess = table.remove(self._chess)
+    self._chessboardArray[chess.row][chess.col].type = NO_CHESS
+    self._chessboardArray[chess.row][chess.col].chess = nil
+    chess:removeSelf()
+
+    if #self._chess == 0 then
+         self._currentChessTip:removeSelf()
+         self._currentChessTip = nil
+         return
+    end
+    local currentChess = self._chess[#self._chess]
+    self._currentChessTip:setPosition(currentChess:getPosition())
+
+
 end
 
 --检测是否连成五子

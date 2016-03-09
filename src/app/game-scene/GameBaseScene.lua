@@ -21,17 +21,27 @@ function GameBaseScene:ctor()
     self._chessboard:addTo(self)
 
     --重玩
-    local reStartBtn = ccui.Button:create():addTo(self)
-    reStartBtn:setTitleText("重玩")
-    reStartBtn:setTitleFontSize(50)
-    reStartBtn:setPosition(cc.p(display.cx, display.top - 50))
-    reStartBtn:addTouchEventListener(function (sender, eventType)
-        if eventType ~= ccui.TouchEventType.ended then return end
-            self._chessboard:removeAllChess()
+    self:addButton(nil, "重玩", 50, display.cx - 100, display.top - 50, function(sender, eventType)
+        self._chessboard:removeAllChess()
+    end)
+
+    --悔棋
+    self:addButton(nil, "悔棋", 50, display.cx + 100, display.top - 50, function(sender, eventType)
+        self._chessboard:retractChess()
     end)
 
     --子类程序入口
     if self.onCreate then self:onCreate() end
+end
+
+function GameBaseScene:addButton(img, text, fontSize, posX, posY, callFunc)
+    local btn = ccui.Button:create()
+    btn:setPosition(cc.p(posX, posY))
+    btn:setTitleText(text)
+    btn:setTitleFontSize(fontSize)
+    btn:addTo(self)
+    btn:addTouchEventListener(callFunc)
+    if img then btn:loadTextureNormal(img) end
 end
 
 return GameBaseScene
