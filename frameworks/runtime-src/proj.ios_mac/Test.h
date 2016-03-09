@@ -16,6 +16,7 @@ USING_NS_CC;
 
 class Test : public Sprite{
     void test(){
+        MessageBox("dsfds", "dasdsa");
         auto listener = EventListenerTouchOneByOne::create();
         Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
     }

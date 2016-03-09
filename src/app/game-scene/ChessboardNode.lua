@@ -10,10 +10,6 @@ local ChessboardNode = class("ChessboardNode", function ()
     return display.newNode()
 end)
 
-local NO_CHESS     = -1
-local WHITE_CHESS  = 0
-local BLACK_CHESS = 1
-
 function ChessboardNode:ctor()
     --棋盘
     self._chessboard = display.newSprite("chess.png"):addTo(self)
@@ -32,7 +28,9 @@ function ChessboardNode:initChessboardArray()
     for i = 1, 15 do
         self._chessboardArray[i] = {}
         for j = 1, 15 do
-            self._chessboardArray[i][j] = NO_CHESS
+            self._chessboardArray[i][j] = {}
+            self._chessboardArray[i][j].type = NO_CHESS
+            self._chessboardArray[i][j].chess = nil
         end
     end
 
@@ -48,8 +46,6 @@ function ChessboardNode:onTouchBegan(touch, event)
     --执行回调
     if self._touchCallFunc then
         self._touchCallFunc(row, col)
-        --检查是否连成五子
-        self:checkChessboard()
     end
     return true
 end
@@ -66,7 +62,7 @@ end
 
 function ChessboardNode:addChess(row, col, chessType)
     --触摸到边界外
-    if row < 1 or row > CHESS_GRID_NUM or col < 1 or col > CHESS_GRID_NUM  then  return end
+    if row < 1 or row > CHESS_GRID_NUM or col < 1 or col > CHESS_GRID_NUM  or self._chessboardArray[row][col].type ~= NO_CHESS then  return end
 
     SoundManager.playEffect("chess.wav")
     local posX = (row - 1) * CHESS_SETP + CHESS_OFFSETX
@@ -75,13 +71,25 @@ function ChessboardNode:addChess(row, col, chessType)
     local chess = nil
     if chessType == WHITE then
         chess = display.newSprite("white.png")
-        self._chessboardArray[row][col] = WHITE_CHESS
+        self._chessboardArray[row][col].type = WHITE
+        self._chessboardArray[row][col].chess = chess
     else
         chess = display.newSprite("black.png")
-        self._chessboardArray[row][col] = BLACK_CHESS
+        self._chessboardArray[row][col].type = BLACK
+        self._chessboardArray[row][col].chess = chess
     end
     chess:setPosition(posX, posY)
     chess:addTo(self._chessboard)
+
+    --当前棋子提示
+    if self._currentChessTip == nil then
+        self._currentChessTip = display.newSprite("current_chess_tip.png")
+        self._currentChessTip:addTo(self._chessboard, 1)
+    end
+    self._currentChessTip:setPosition(posX, posY)
+
+    --检查是否连成五子
+    self:checkChessboard(row, col, chessType)
 end
 
 function ChessboardNode:removeAllChess()
@@ -90,8 +98,51 @@ function ChessboardNode:removeAllChess()
 end
 
 --检测是否连成五子
-function ChessboardNode:checkChessboard()
+function ChessboardNode:checkChessboard(row, col, chessType)
+    local oneLineChessNum = 0
+    local offset = {
+                    {{x = -1, y = 1}, {x = 1,  y = -1}},
+                    {{x = 0,  y = 1}, {x = 0,  y = -1}},
+                    {{x = 1,  y = 1}, {x = -1, y = -1}},
+                    {{x = 1,  y = 0}, {x = -1, y = 0}}}
+
+    --计算一个方向上的棋子数目
+    local function getOneLineChessNum(self, row, col, chessType, oneLineOtherChessNum, oneLineChessSpriteTb, offsetX, offsetY)
+        if row < 1 or row > CHESS_GRID_NUM or col < 1 or col > CHESS_GRID_NUM or self._chessboardArray[row][col].type ~= chessType then
+            return oneLineOtherChessNum, oneLineChessSpriteTb
+        end
+
+        oneLineOtherChessNum = oneLineOtherChessNum + 1
+        table.insert(oneLineChessSpriteTb, self._chessboardArray[row][col].chess)
+        return getOneLineChessNum(self, row + offsetX, col + offsetY, chessType, oneLineOtherChessNum, oneLineChessSpriteTb, offsetX, offsetY)
+    end
+
+    --遍历8个方向
+    for i=1, #offset do
+        local chessNum = 1
+        local chessSpriteTb = {self._chessboardArray[row][col].chess}
+        for j=1, 2 do
+            local oneLineOtherChessNum, oneLineChessSpriteTb = getOneLineChessNum(self, row + offset[i][j].x, col + offset[i][j].y, chessType, 0, {}, offset[i][j].x, offset[i][j].y)
+            chessNum = chessNum + oneLineOtherChessNum
+            for _, chess in ipairs(oneLineChessSpriteTb) do
+                table.insert(chessSpriteTb, chess)
+            end
+        end
+        if chessNum >= 5 then
+            self:winChess(chessType, chessSpriteTb)
+            break
+        end
+    end
+
 end
 
+function ChessboardNode:winChess(chessType, chessSpriteTb)
+    Log.d("******赢了*******" .. chessType .. "*****赢了******")
+    Log.d("chessSpriteTb = " .. #chessSpriteTb)
+    local blink = cc.Blink:create(1.5, 3)
+    for _, chess in ipairs(chessSpriteTb) do
+        chess:runAction(blink:clone())
+    end
+end
 
 return ChessboardNode
