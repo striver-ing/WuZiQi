@@ -13,14 +13,7 @@ function DoubleVsScene:onCreate()
 
     local isWhiteTurn = true
     self._chessboard:addTouchCallFunc(function(row, col)
-        if isWhiteTurn then
-            self._chessboard:addChess(row, col, WHITE)
-            isWhiteTurn = false
-        else
-            self._chessboard:addChess(row, col, BLACK)
-            isWhiteTurn = true
-        end
-
+            self._chessboard:addChess(row, col)
     end)
 end
 

@@ -10,6 +10,8 @@ local ChessboardNode = class("ChessboardNode", function ()
     return display.newNode()
 end)
 
+local isWhiteTurn = false;
+
 function ChessboardNode:ctor()
     --棋盘
     self._chessboard = display.newSprite("chess.png"):addTo(self)
@@ -63,7 +65,16 @@ function ChessboardNode:convertToChessSpace(touch)
     return row, col
 end
 
-function ChessboardNode:addChess(row, col, chessType)
+--设置先执棋子(默认执黑)
+function ChessboardNode:setFirstChessType(type)
+    if type == WHITE then
+        isWhiteTurn = true
+    else
+        isWhiteTurn = false;
+    end
+end
+
+function ChessboardNode:addChess(row, col)
     --触摸到边界外
     if row < 1 or row > CHESS_GRID_NUM or col < 1 or col > CHESS_GRID_NUM  or self._chessboardArray[row][col].type ~= NO_CHESS then  return end
 
@@ -72,7 +83,7 @@ function ChessboardNode:addChess(row, col, chessType)
     local posY = (col - 1) * CHESS_SETP + CHESS_OFFSETY
 
     local chess = nil
-    if chessType == WHITE then
+    if isWhiteTurn then
         chess = display.newSprite("white.png")
         self._chessboardArray[row][col].type = WHITE
         self._chessboardArray[row][col].chess = chess
@@ -85,7 +96,10 @@ function ChessboardNode:addChess(row, col, chessType)
     chess.col = col
     chess:setPosition(posX, posY)
     chess:addTo(self._chessboard)
+    --储存所下棋子 悔棋时用
     table.insert(self._chess, chess)
+    --更新下棋方
+    self:updataChessTurn()
 
     --当前棋子提示
     if self._currentChessTip == nil then
@@ -95,7 +109,24 @@ function ChessboardNode:addChess(row, col, chessType)
     self._currentChessTip:setPosition(posX, posY)
 
     --检查是否连成五子
+    local chessType = self:getCurrentChessType()
     self:checkChessboard(row, col, chessType)
+end
+
+function ChessboardNode:updataChessTurn()
+     if isWhiteTurn then
+        isWhiteTurn = false
+     else
+        isWhiteTurn = true
+     end
+end
+
+function  ChessboardNode:getCurrentChessType()
+    if isWhiteTurn then
+        return BLACK
+    else
+        return WHITE
+    end
 end
 
 function ChessboardNode:removeAllChess()
@@ -112,6 +143,7 @@ function ChessboardNode:retractChess()
     self._chessboardArray[chess.row][chess.col].chess = nil
     chess:removeSelf()
 
+    self:updataChessTurn()
     if #self._chess == 0 then
          self._currentChessTip:removeSelf()
          self._currentChessTip = nil
@@ -119,8 +151,6 @@ function ChessboardNode:retractChess()
     end
     local currentChess = self._chess[#self._chess]
     self._currentChessTip:setPosition(currentChess:getPosition())
-
-
 end
 
 --检测是否连成五子
