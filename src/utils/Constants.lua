@@ -21,4 +21,6 @@ NO_CHESS     = -1
 WHITE = 0
 BLACK = 1
 
+--音效
 SAVA_STRING_SOUND_EFFECT_ENABLE = "usersoundeffectenable"
+SAVA_STRING_SOUND_MUSIC_ENABLE = "usersoundmusicenable"

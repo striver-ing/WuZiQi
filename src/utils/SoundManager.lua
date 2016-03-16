@@ -8,6 +8,7 @@
 cc.exports.SoundManager = {}
 
 local _useEffect = true
+local _useBgMusic = true
 local bgMusic = "chq.mp3"
 
 function SoundManager.init()
@@ -36,7 +37,9 @@ function SoundManager.init()
 end
 
 function SoundManager.startMusic()
-    cc.SimpleAudioEngine:getInstance():playMusic(bgMusic, true)
+    if _useBgMusic then
+       cc.SimpleAudioEngine:getInstance():playMusic(bgMusic, true)
+    end
 end
 
 function SoundManager.stopMusic()
@@ -45,6 +48,11 @@ end
 
 function SoundManager.setMusicVolume(volume)
     cc.SimpleAudioEngine:getInstance():setMusicVolume(volume)
+end
+
+function SoundManager.setMusicEnable(bOpen)
+    _useBgMusic = bOpen
+    ccUserDefault:setBoolForKey(SAVA_STRING_SOUND_MUSIC_ENABLE, _useBgMusic)
 end
 
 function SoundManager.setEffectsEnable(bOpen)
