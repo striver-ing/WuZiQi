@@ -21,6 +21,23 @@ NO_CHESS     = -1
 WHITE = 0
 BLACK = 1
 
+--棋型分数  从高位到低位分别表示
+--连五，活四，眠四，活三，活二/眠三，活一/眠二, 眠一
+SCORE = {
+  --活
+  ONE = 10,
+  TWO = 100,
+  THREE = 1000,
+  FOUR =100000,
+  FIVE = 1000000,
+
+  --眠
+  SONE = 1,
+  STWO = 10,
+  STHREE = 100,
+  SFOUR = 10000
+}
+
 --音效
 SAVA_STRING_SOUND_EFFECT_ENABLE = "usersoundeffectenable"
 SAVA_STRING_SOUND_MUSIC_ENABLE = "usersoundmusicenable"

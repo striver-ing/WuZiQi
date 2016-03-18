@@ -39,7 +39,11 @@ function ChessboardNode:initChessboardArray()
     self._currentChessTip = nil
     self._chess = {}
 
-    dump(self._chessboardArray, "chessboardArray")
+    -- dump(self._chessboardArray, "chessboardArray")
+end
+
+function ChessboardNode:getChessBoardArray()
+    return self._chessboardArray
 end
 
 function ChessboardNode:addTouchCallFunc(callfunc)
@@ -174,10 +178,10 @@ function ChessboardNode:checkChessboard(row, col, chessType)
     end
 
     --遍历8个方向
-    for i=1, #offset do
+    for i = 1, #offset do
         local chessNum = 1
         local chessSpriteTb = {self._chessboardArray[row][col].chess}
-        for j=1, 2 do
+        for j = 1, 2 do
             local oneLineOtherChessNum, oneLineChessSpriteTb = getOneLineChessNum(self, row + offset[i][j].x, col + offset[i][j].y, chessType, 0, {}, offset[i][j].x, offset[i][j].y)
             chessNum = chessNum + oneLineOtherChessNum
             for _, chess in ipairs(oneLineChessSpriteTb) do

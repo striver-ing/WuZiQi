@@ -18,6 +18,8 @@ function StartScene:ctor()
 
     --人机对战
     self:addButton("model.png", display.visiblesizeWidth / 2, display.visiblesizeHeight * 0.6 , function(sender, eventType)
+        local scene = require("app.game-scene.HumanVsAIScene"):create()
+        display.runScene(scene)
     end)
 
     --双人对弈
