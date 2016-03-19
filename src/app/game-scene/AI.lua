@@ -38,6 +38,7 @@ function AI.reverseChessType(chessType)
     return chessType == BLACK and WHITE or BLACK
 end
 
+--初始化记录棋子类型的数组
 function AI.initChessLineRecord()
     chessLineRecord = {
        left     = {}, --左斜
@@ -49,6 +50,30 @@ function AI.initChessLineRecord()
 end
 
 --------------------评估相关-------------------------
+--评分表
+function AI.initChessLineScoreTb(chessType)
+    local selfChess  = chessType
+    local enemyChess = AI.reverseChessType(chessType)
+    local chessLinesSoreTb = {
+        {lineType = {selfChess, selfChess, selfChess, selfChess, selfChess}                        , score = 50000}, -- ooooo
+        {lineType = {NO_CHESS, selfChess, selfChess, selfChess, selfChess, NO_CHESS}               , score = 4320},  -- +oooo+
+        {lineType = {NO_CHESS, selfChess, selfChess, selfChess, NO_CHESS, NO_CHESS}                , score = 720},   -- +ooo++
+        {lineType = {NO_CHESS, NO_CHESS, selfChess, selfChess, selfChess, NO_CHESS}                , score = 720},   -- ++ooo+
+        {lineType = {NO_CHESS, selfChess, selfChess, NO_CHESS, selfChess, NO_CHESS}                , score = 720},   -- +oo+o+
+        {lineType = {NO_CHESS, selfChess, NO_CHESS, selfChess, selfChess, NO_CHESS}                , score = 720},   -- +o+oo+
+        {lineType = {enemyChess, selfChess, selfChess, selfChess, selfChess, NO_CHESS}             , score = 720},   -- oooo+
+        {lineType = {NO_CHESS, selfChess, selfChess, selfChess, selfChess, enemyChess}             , score = 720},   -- +oooo
+        {lineType = {enemyChess, selfChess, selfChess, NO_CHESS, selfChess, selfChess, enemyChess} , score = 720},   -- oo+oo
+        {lineType = {enemyChess, selfChess, NO_CHESS, selfChess, selfChess, selfChess, enemyChess} , score = 720},   -- o+ooo
+        {lineType = {enemyChess, selfChess, selfChess, selfChess, NO_CHESS, selfChess, enemyChess} , score = 720},   -- ooo+o
+        {lineType = {NO_CHESS, NO_CHESS, selfChess, selfChess, NO_CHESS, NO_CHESS}                 , score = 120},   -- ++oo++
+        {lineType = {NO_CHESS, NO_CHESS, selfChess, NO_CHESS, selfChess, NO_CHESS}                 , score = 120},   -- ++o+o+
+        {lineType = {NO_CHESS, selfChess, NO_CHESS, selfChess, NO_CHESS, NO_CHESS}                 , score = 120},   -- +o+o++
+        {lineType = {NO_CHESS, NO_CHESS, NO_CHESS, selfChess, NO_CHESS, NO_CHESS}                  , score = 20},    -- +++o++
+        {lineType = {NO_CHESS, NO_CHESS, selfChess, NO_CHESS, NO_CHESS, NO_CHESS}                  , score = 220},   -- ++o+++
+    }
+end
+
 --分析某一条线上的棋子  order 为前半截 和 后半截
 function AI.analysisLine(chessBoardArray, chessType, row, col, offsetX, offsetY, direction, order)
     Log.d("row " .. row .. " col " .. col)
@@ -97,7 +122,11 @@ function AI.evalatePoint(chessBoardArray, row, col, chessType)
     end
 
 
-    dump(chessLineRecord, "chessLineRecord")
+    -- dump(chessLineRecord, "chessLineRecord")
+    for k,v in pairs(chessLineRecord) do
+        print(table.concat(v))
+        print(type(table.concat( v )))
+    end
 
 end
 
