@@ -17,10 +17,9 @@ function HumanVsAIScene:onCreate()
             self._chessboard:addChess(row, col)
     end)
 
-    local chessBoardArray = self._chessboard:getChessBoardArray()
     --重玩
     self:addButton(nil, "分析8 8 black点", 50, display.visiblesizeWidth / 2, display.visibleoriginX + 50, function(sender, eventType)
-        AI.evalatePoint(chessBoardArray, 8, 8, BLACK)
+        AI.evalatePoint(self._chessboard:getChessBoardArray(), 8, 8, BLACK)
     end)
 
 end

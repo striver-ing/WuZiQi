@@ -34,6 +34,7 @@ local function main()
 
     --按钮声音
     SoundManager.init()
+    SoundManager.stopMusic()
 
     local configs = {
         viewsRoot  = "app.start-ui",
