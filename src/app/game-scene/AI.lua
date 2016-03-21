@@ -48,8 +48,8 @@ function AI.initChessLineRecord()
     }   --用于存放水平、垂直、左斜、右斜 4 个方向上所有棋型分析结果
 
 end
-
 --------------------评估相关-------------------------
+----------评估点分数-----------
 --评分表
 function AI.initChessLineScoreTb(chessType)
     local selfChess  = chessType
@@ -173,6 +173,8 @@ function AI.findTable(mainTable, sonTable)
         return nil
     end
 end
------------------------------评估某点分数 finish------------------
+----------评估点分数 finish-----------
+
+
 
 return AI;
