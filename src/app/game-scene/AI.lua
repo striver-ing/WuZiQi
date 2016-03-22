@@ -127,7 +127,7 @@ function AI.evalatePoint(chessBoardArray, row, col, chessType)
     local chessLinesSoreTb = AI.initChessLineScoreTb(chessType)
     -- 分析该棋子与周围棋子连成的类型 计算得分
     for direction, chessLineTb in pairs(chessLineRecord) do
-        Log.d("----------------- " .. direction .. " --------------------")
+        -- Log.d("----------------- " .. direction .. " --------------------")
         --遍历评分表
         for _, chessesTb in pairs(chessLinesSoreTb) do
            local begin, ended = AI.findTable(chessLineTb, chessesTb.lineType)
@@ -136,6 +136,7 @@ function AI.evalatePoint(chessBoardArray, row, col, chessType)
                 -- Log.d("chessLine " .. table.concat(chessLineTb, " "))
                 -- Log.d("chessLineType " .. table.concat(chessesTb.lineType, " "))
                 -- Log.d("begin = " .. begin .. " ended = " .. ended)
+                -- Log.d("score = " .. chessesTb.score)
             end
         end
 
@@ -174,7 +175,58 @@ function AI.findTable(mainTable, sonTable)
     end
 end
 ----------评估点分数 finish-----------
+----------------------------------------------------------------------
+--判断该棋子周围是否有棋子（在一定的矩形框内下子）
+function AI.isHasNeighbor(chessBoardArray, row, col, distance, chessCount)
+    local startX = row - distance > 1 and row - distance or 1
+    local startY = col - distance > 1 and col - distance or 1
+    local endedX = row + distance < CHESS_GRID_NUM and row + distance or CHESS_GRID_NUM
+    local endedY = col + distance < CHESS_GRID_NUM and col + distance or CHESS_GRID_NUM
 
+    for i = startX, endedX do
+        for j = startY, endedY do
+            if i == row and j == col then
+                --do nothing
+            else if chessBoardArray[i][j].type ~= NO_CHESS then
+                chessCount = chessCount - 1
+                if chessCount <= 0 then return true end
+            end
+            end
+        end
+    end
+
+    return false
+end
+
+--找出棋盘中分数最大的点
+function AI.findMaxSorcePoint(chessBoardArray, chessType)
+    local maxScore = -0xfffff
+    local maxScorePoint = {}
+
+    for row = 1, CHESS_GRID_NUM do
+        for col = 1, CHESS_GRID_NUM do
+            if chessBoardArray[row][col].type == NO_CHESS and AI.isHasNeighbor(chessBoardArray, row, col, 2, 1) then
+                local computerScore = AI.evalatePoint(chessBoardArray, row, col, chessType)
+                local humanScore = AI.evalatePoint(chessBoardArray, row, col, AI.reverseChessType(chessType))
+                -- Log.d("row = " .. row .. " col = " .. col)
+                -- Log.d("computerScore = " .. computerScore)
+                -- Log.d("humanScore = " .. humanScore)
+                local score = computerScore > humanScore and computerScore or humanScore
+
+                if maxScore < score then
+                    maxScore = score
+                    maxScorePoint.row = row
+                    maxScorePoint.col = col
+                end
+            end
+        end
+    end
+
+    -- Log.d("maxScore = " .. maxScore)
+    return maxScorePoint.row, maxScorePoint.col
+end
+
+-----------------------------------------------------------------------
 
 
 return AI;

@@ -11,6 +11,7 @@ local ChessboardNode = class("ChessboardNode", function ()
 end)
 
 local isWhiteTurn = false;
+local firstChessType = BLACK
 
 function ChessboardNode:ctor()
     --棋盘
@@ -71,6 +72,8 @@ end
 
 --设置先执棋子(默认执黑)
 function ChessboardNode:setFirstChessType(type)
+    firstChessType = type
+
     if type == WHITE then
         isWhiteTurn = true
     else
@@ -78,7 +81,17 @@ function ChessboardNode:setFirstChessType(type)
     end
 end
 
+--取先执子方
+function ChessboardNode:getFirstChessType()
+   return firstChessType
+end
+
+function ChessboardNode:getBehindChessType()
+    return firstChessType == BLACK and WHITE or BLACK
+end
+
 function ChessboardNode:addChess(row, col)
+    if row == nil or col == nil then return end
     --触摸到边界外
     if row < 1 or row > CHESS_GRID_NUM or col < 1 or col > CHESS_GRID_NUM  or self._chessboardArray[row][col].type ~= NO_CHESS then  return end
 
@@ -125,11 +138,19 @@ function ChessboardNode:updataChessTurn()
      end
 end
 
-function  ChessboardNode:getCurrentChessType()
+function ChessboardNode:getCurrentChessType()
     if isWhiteTurn then
         return BLACK
     else
         return WHITE
+    end
+end
+
+function ChessboardNode:getNextTurnChessType()
+    if isWhiteTurn then
+        return WHITE
+    else
+        return BLACK
     end
 end
 
