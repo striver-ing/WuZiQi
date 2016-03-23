@@ -211,7 +211,7 @@ function AI.findMaxSorcePoint(chessBoardArray, chessType)
                 -- Log.d("row = " .. row .. " col = " .. col)
                 -- Log.d("computerScore = " .. computerScore)
                 -- Log.d("humanScore = " .. humanScore)
-                local score = computerScore > humanScore and computerScore or humanScore
+                local score = computerScore >= humanScore and computerScore or humanScore
 
                 if maxScore < score then
                     maxScore = score
