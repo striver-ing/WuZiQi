@@ -21,6 +21,9 @@ NO_CHESS     = -1
 WHITE = 0
 BLACK = 1
 
+--无穷大
+INFINITY = 0Xffffff
+
 --棋型分数  从高位到低位分别表示
 --连五，活四，眠四，活三，活二/眠三，活一/眠二, 眠一
 SCORE = {

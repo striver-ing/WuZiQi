@@ -23,6 +23,7 @@ function HumanVsAIScene:onCreate()
     self._chessboard:addTouchCallFunc(function(row, col)
         if self._chessboard:getNextTurnChessType() == human then
             self._chessboard:addChess(row, col)
+            -- self:aiAddChess()
         end
         if self._chessboard:getNextTurnChessType() == computer then
             self:aiAddChess()

@@ -39,7 +39,7 @@ end
 function GameBaseScene:addSomeButton()
     --重玩
     self:addButton(nil, "重玩", 50, display.cx - 100, display.top - 50, function(sender, eventType)
-        self._chessboard:removeAllChess()
+        self._chessboard:restartGame()
     end)
 
     --悔棋

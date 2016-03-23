@@ -200,7 +200,7 @@ end
 
 --找出棋盘中分数最大的点
 function AI.findMaxSorcePoint(chessBoardArray, chessType)
-    local maxScore = -0xfffff
+    local maxScore = -INFINITY
     local maxScorePoint = {}
 
     for row = 1, CHESS_GRID_NUM do
@@ -211,7 +211,7 @@ function AI.findMaxSorcePoint(chessBoardArray, chessType)
                 -- Log.d("row = " .. row .. " col = " .. col)
                 -- Log.d("computerScore = " .. computerScore)
                 -- Log.d("humanScore = " .. humanScore)
-                local score = computerScore > humanScore and computerScore or humanScore
+                local score = computerScore >= humanScore and computerScore or humanScore
 
                 if maxScore < score then
                     maxScore = score

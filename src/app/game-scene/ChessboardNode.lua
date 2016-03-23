@@ -12,6 +12,7 @@ end)
 
 local isWhiteTurn = false;
 local firstChessType = BLACK
+local isGameOver = false
 
 function ChessboardNode:ctor()
     --棋盘
@@ -39,6 +40,8 @@ function ChessboardNode:initChessboardArray()
 
     self._currentChessTip = nil
     self._chess = {}
+
+    isGameOver = false
 
     -- dump(self._chessboardArray, "chessboardArray")
 end
@@ -93,7 +96,7 @@ end
 function ChessboardNode:addChess(row, col)
     if row == nil or col == nil then return end
     --触摸到边界外
-    if row < 1 or row > CHESS_GRID_NUM or col < 1 or col > CHESS_GRID_NUM  or self._chessboardArray[row][col].type ~= NO_CHESS then  return end
+    if row < 1 or row > CHESS_GRID_NUM or col < 1 or col > CHESS_GRID_NUM  or self._chessboardArray[row][col].type ~= NO_CHESS or isGameOver then  return end
 
     SoundManager.playEffect("chess.wav")
     local posX = (row - 1) * CHESS_SETP + CHESS_OFFSETX
@@ -154,11 +157,6 @@ function ChessboardNode:getNextTurnChessType()
     end
 end
 
-function ChessboardNode:removeAllChess()
-    self._chessboard:removeAllChildren()
-    self:initChessboardArray()
-end
-
 --悔棋
 function ChessboardNode:retractChess()
     if #self._chess == 0 then return end
@@ -178,8 +176,25 @@ function ChessboardNode:retractChess()
     self._currentChessTip:setPosition(currentChess:getPosition())
 end
 
---检测是否连成五子
+--检测是否连成五子 和 是否没有空位
 function ChessboardNode:checkChessboard(row, col, chessType)
+    --和棋判断（判断棋盘是否还有空位）
+    local isNoEmptyPlace = true
+    for i, chessTb in pairs(self._chessboardArray) do
+        for j, chess in pairs(chessTb) do
+            if chess.type == NO_CHESS then
+                isNoEmptyPlace = false
+                break
+            end
+        end
+        if not isNoEmptyPlace then break end
+    end
+    if isNoEmptyPlace then
+        self:gameOver()
+        return
+    end
+
+    --五子判断
     local oneLineChessNum = 0
     local offset = {
                     {{x = -1, y = 1}, {x = 1,  y = -1}},
@@ -210,14 +225,26 @@ function ChessboardNode:checkChessboard(row, col, chessType)
             end
         end
         if chessNum >= 5 then
-            self:winChess(chessType, chessSpriteTb)
+            self:gameOver(chessType, chessSpriteTb)
             break
         end
     end
 
 end
 
-function ChessboardNode:winChess(chessType, chessSpriteTb)
+function ChessboardNode:restartGame()
+    self._chessboard:removeAllChildren()
+    self:initChessboardArray()
+end
+
+function ChessboardNode:gameOver(chessType, chessSpriteTb)
+    isGameOver = true
+    --和棋
+    if chessType == nil or chessSpriteTb == nil then
+        Log.d("*************和棋***********")
+        return
+    end
+    --赢了
     Log.d("******赢了*******" .. chessType .. "*****赢了******")
     Log.d("chessSpriteTb = " .. #chessSpriteTb)
     local blink = cc.Blink:create(1.5, 3)
