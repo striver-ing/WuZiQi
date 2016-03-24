@@ -24,7 +24,10 @@ local chessLineRecord = {
 ---------------------function-------------------------
 --设置电脑执棋类型
 function AI.setComputerChessType(chessType)
-    if chessType == nil or chessType == BLACK then
+    assert(chessType, "chessType can not nil")
+    if computer == chessType then return end
+
+    if chessType == BLACK then
         computer = BLACK
         human = WHITE
     else
@@ -76,14 +79,14 @@ function AI.initChessLineScoreTb(chessType)
 end
 
 --分析某一条线上的棋子  order 为前半截 和 后半截
-function AI.analysisLine(chessBoardArray, chessType, row, col, offsetX, offsetY, direction, order)
+function AI.analysisLine(chessboardArray, chessType, row, col, offsetX, offsetY, direction, order)
     --到达边界 或者 对方棋子 保存对方棋子  返回
-    if row < 1 or row > CHESS_GRID_NUM or col < 1 or col > CHESS_GRID_NUM or chessBoardArray[row][col].type == AI.reverseChessType(chessType) then
+    if row < 1 or row > CHESS_GRID_NUM or col < 1 or col > CHESS_GRID_NUM or chessboardArray[row][col].type == AI.reverseChessType(chessType) then
         table.insert(chessLineRecord[direction], AI.reverseChessType(chessType))
         return
     end
     --如果连续两个空 保存空 返回
-    if chessBoardArray[row][col].type == NO_CHESS and chessBoardArray[row - offsetX][col - offsetY].type == NO_CHESS and chessBoardArray[row - offsetX * 2][col - offsetY * 2].type == NO_CHESS then
+    if chessboardArray[row][col].type == NO_CHESS and chessboardArray[row - offsetX][col - offsetY].type == NO_CHESS and chessboardArray[row - offsetX * 2][col - offsetY * 2].type == NO_CHESS then
        table.insert(chessLineRecord[direction], NO_CHESS)
        return
     end
@@ -92,17 +95,17 @@ function AI.analysisLine(chessBoardArray, chessType, row, col, offsetX, offsetY,
     --second 为下半截 按搜索顺序存储
     --first  为上半截 倒序存储
     if order == ORDER_SECOND then
-       table.insert(chessLineRecord[direction], chessBoardArray[row][col].type)
+       table.insert(chessLineRecord[direction], chessboardArray[row][col].type)
     end
-    AI.analysisLine(chessBoardArray, chessType, row + offsetX, col + offsetY, offsetX, offsetY, direction, order)
+    AI.analysisLine(chessboardArray, chessType, row + offsetX, col + offsetY, offsetX, offsetY, direction, order)
     if order == ORDER_FIRST then
-       table.insert(chessLineRecord[direction], chessBoardArray[row][col].type)
+       table.insert(chessLineRecord[direction], chessboardArray[row][col].type)
     end
 end
 
 
 --评估某一点的分数
-function AI.evalatePoint(chessBoardArray, row, col, chessType)
+function AI.evalatePoint(chessboardArray, row, col, chessType)
     AI.initChessLineRecord()
     local totalSorce = 0
     local offset = {
@@ -112,17 +115,16 @@ function AI.evalatePoint(chessBoardArray, row, col, chessType)
                     horizon  = {{x = -1, y = 0}, {x = 1, y = 0}}}--水平
     local chessIndex = {}  -- 用于记录改点在 chessLineRecord 表中的位置 eg +++o+++   则位置为4
     --分析该点的4个方向上的棋子 并保存在chessLineRecord 数组中 遇到连续两个空格或者他方棋子返回
-    -- dump(chessBoardArray, "chessBoardArray")
-    chessBoardArray[row][col].type = chessType --在该空位上下子
-    for direction, v in pairs(offset) do
-        AI.analysisLine(chessBoardArray, chessType, row, col, v[1].x, v[1].y, direction, ORDER_FIRST)
-        chessIndex[direction] = #chessLineRecord[direction]
-        AI.analysisLine(chessBoardArray, chessType, row + v[2].x, col + v[2].y, v[2].x, v[2].y, direction, ORDER_SECOND)
+    local currentChessType =  chessboardArray[row][col].type
+    if currentChessType == NO_CHESS then
+        chessboardArray[row][col].type = chessType --在该空位上下子
     end
-    chessBoardArray[row][col].type = NO_CHESS --恢复该空位
-
-    -- dump(chessLineRecord, "chessLineRecord")
-    -- dump(chessIndex, "chessIndex")
+    for direction, v in pairs(offset) do
+        AI.analysisLine(chessboardArray, chessType, row, col, v[1].x, v[1].y, direction, ORDER_FIRST)
+        chessIndex[direction] = #chessLineRecord[direction]
+        AI.analysisLine(chessboardArray, chessType, row + v[2].x, col + v[2].y, v[2].x, v[2].y, direction, ORDER_SECOND)
+    end
+    chessboardArray[row][col].type = currentChessType --恢复该位置的棋子类型
 
     local chessLinesSoreTb = AI.initChessLineScoreTb(chessType)
     -- 分析该棋子与周围棋子连成的类型 计算得分
@@ -133,10 +135,6 @@ function AI.evalatePoint(chessBoardArray, row, col, chessType)
            local begin, ended = AI.findTable(chessLineTb, chessesTb.lineType)
            if  begin ~= nil and chessIndex[direction] >= begin and chessIndex[direction] <= ended then
                 totalSorce = totalSorce + chessesTb.score
-                -- Log.d("chessLine " .. table.concat(chessLineTb, " "))
-                -- Log.d("chessLineType " .. table.concat(chessesTb.lineType, " "))
-                -- Log.d("begin = " .. begin .. " ended = " .. ended)
-                -- Log.d("score = " .. chessesTb.score)
             end
         end
 
@@ -175,9 +173,9 @@ function AI.findTable(mainTable, sonTable)
     end
 end
 ----------评估点分数 finish-----------
-----------------------------------------------------------------------
+-----------------------------------下子相关-----------------------------------
 --判断该棋子周围是否有棋子（在一定的矩形框内下子）
-function AI.isHasNeighbor(chessBoardArray, row, col, distance, chessCount)
+function AI.isHasNeighbor(chessboardArray, row, col, distance, chessCount)
     local startX = row - distance > 1 and row - distance or 1
     local startY = col - distance > 1 and col - distance or 1
     local endedX = row + distance < CHESS_GRID_NUM and row + distance or CHESS_GRID_NUM
@@ -187,7 +185,7 @@ function AI.isHasNeighbor(chessBoardArray, row, col, distance, chessCount)
         for j = startY, endedY do
             if i == row and j == col then
                 --do nothing
-            else if chessBoardArray[i][j].type ~= NO_CHESS then
+            else if chessboardArray[i][j].type ~= NO_CHESS then
                 chessCount = chessCount - 1
                 if chessCount <= 0 then return true end
             end
@@ -198,35 +196,189 @@ function AI.isHasNeighbor(chessBoardArray, row, col, distance, chessCount)
     return false
 end
 
---找出棋盘中分数最大的点
-function AI.findMaxSorcePoint(chessBoardArray, chessType)
+--找出棋盘中分数最大的点(只看眼前一步) easy
+function AI.getMaxSorcePoint(chessboardArray)
     local maxScore = -INFINITY
     local maxScorePoint = {}
+    local i = 1
 
     for row = 1, CHESS_GRID_NUM do
         for col = 1, CHESS_GRID_NUM do
-            if chessBoardArray[row][col].type == NO_CHESS and AI.isHasNeighbor(chessBoardArray, row, col, 2, 1) then
-                local computerScore = AI.evalatePoint(chessBoardArray, row, col, chessType)
-                local humanScore = AI.evalatePoint(chessBoardArray, row, col, AI.reverseChessType(chessType))
-                -- Log.d("row = " .. row .. " col = " .. col)
-                -- Log.d("computerScore = " .. computerScore)
-                -- Log.d("humanScore = " .. humanScore)
+            if chessboardArray[row][col].type == NO_CHESS and AI.isHasNeighbor(chessboardArray, row, col, 2, 1) then
+                local computerScore = AI.evalatePoint(chessboardArray, row, col, computer)
+                local humanScore = AI.evalatePoint(chessboardArray, row, col, human)
                 local score = computerScore >= humanScore and computerScore or humanScore
-
-                if maxScore < score then
+                if score >= maxScore then
+                    if score > maxScore then
+                        maxScorePoint = {}
+                        i = 1
+                    end
                     maxScore = score
-                    maxScorePoint.row = row
-                    maxScorePoint.col = col
+                    maxScorePoint[i] = {}
+                    maxScorePoint[i].row = row
+                    maxScorePoint[i].col = col
+                    i = i + 1
                 end
             end
         end
     end
 
-    -- Log.d("maxScore = " .. maxScore)
-    return maxScorePoint.row, maxScorePoint.col
+    return  #maxScorePoint == 0 and {row = 8, col = 8} or maxScorePoint[1]
+    -- return  #maxScorePoint == 0 and {row = 8, col = 8} or maxScorePoint[math.random(1, #maxScorePoint)]
 end
 
------------------------------------------------------------------------
+------------------极大极小算法相关------------------------
+
+--找出可能的落子点（todo）
+function AI.getPlayChessPosition(chessboardArray)
+    local positionTb = {}
+    local i = 1
+    for row = 1, CHESS_GRID_NUM do
+        for col = 1, CHESS_GRID_NUM do
+            if chessboardArray[row][col].type == NO_CHESS and AI.isHasNeighbor(chessboardArray, row, col, 2, 1) then
+                positionTb[i]     = {}
+                positionTb[i].row = row
+                positionTb[i].col = col
+                i = i + 1
+            end
+        end
+    end
+    return positionTb
+end
+
+--检测棋局是否结束
+function AI.isGameOver(chessboardArray)
+   local isNoEmptyPlace = true
+   for row = 1, CHESS_GRID_NUM do
+        for col = 1, CHESS_GRID_NUM do
+            if chessboardArray[row][col].type ~= NO_CHESS then
+                --遍历该棋子的四个方向 看同类棋子个数是否大于5
+                --取一个方向上同类棋子的数目
+                local function getOneOffsetChessNum(row, col, offsetX, offsetY, chessType)
+                    local chessNum = 0
+                    while true do
+                        if chessNum >= 5 or row < 1 or row > CHESS_GRID_NUM or col < 1 or col > CHESS_GRID_NUM  then return chessNum end
+                        if chessboardArray[row][col].type ~= chessType then
+                            return chessNum
+                        else
+                            chessNum = chessNum + 1
+                            row = row + offsetX
+                            col = col + offsetY
+                        end
+                    end
+                end
+
+                --遍历四个方向（轮上半截和下半截的话是8个方向） 求同类棋子数目
+               local offset = {
+                    {{x = -1, y = 1}, {x = 1,  y = -1}},
+                    {{x = 0,  y = 1}, {x = 0,  y = -1}},
+                    {{x = 1,  y = 1}, {x = -1, y = -1}},
+                    {{x = 1,  y = 0}, {x = -1, y = 0}}
+               }
+               local chessType = chessboardArray[row][col].type
+               for i = 1, #offset do
+                   local oneLineChessNum = 1
+                   for j = 1, 2 do
+                        oneLineChessNum = oneLineChessNum + getOneOffsetChessNum(row + offset[i][j].x, col + offset[i][j].y, offset[i][j].x, offset[i][j].y, chessType)
+                        if oneLineChessNum >= 5 then return true end
+                   end
+               end
+
+
+            else
+                isNoEmptyPlace = false
+            end
+        end
+   end
+
+   return isNoEmptyPlace --和局
+end
+
+--评估棋盘得分（下一步棋盘   得分 ＝ computer － human）
+function  AI.getChessboardScore(chessboardArray)
+    local maxHumanScore = -INFINITY
+    local maxComputerScore = -INFINITY
+
+    for row = 1, CHESS_GRID_NUM do
+        for col = 1, CHESS_GRID_NUM do
+            if chessboardArray[row][col].type ~= NO_CHESS then
+                if chessboardArray[row][col].type == computer then
+                    maxComputerScore =math.max(AI.evalatePoint(chessboardArray, row, col, computer), maxComputerScore)
+                else
+                    maxHumanScore =math.max(AI.evalatePoint(chessboardArray, row, col, human), maxHumanScore)
+                end
+            end
+        end
+    end
+    Log.d("maxComputerScore = " .. maxComputerScore)
+    Log.d("maxHumanScore = " .. maxHumanScore)
+    Log.d(" maxComputerScore - maxHumanScore = " .. maxComputerScore - maxHumanScore)
+    return maxComputerScore - maxHumanScore
+end
+
+
+--极大极小算法 找出depth步之内的最佳落子点 depth为搜索深度
+function AI.maxMin(chessboardArray, chessType, depth)
+    local bestValue, value
+    if AI.isGameOver(chessboardArray) then
+        return AI.getChessboardScore(chessboardArray)
+    end
+    if depth <= 0 then
+        return AI.getChessboardScore(chessboardArray)
+    end
+
+    if chessType == computer then
+        bestValue = -INFINITY
+    elseif chessType == human then
+        bestValue = INFINITY
+    end
+
+    local playChessPositionTb = AI.getPlayChessPosition(chessboardArray)
+    for _, p in ipairs(playChessPositionTb) do
+        chessboardArray[p.row][p.col].type = chessType
+        value = AI.maxMin(chessboardArray, AI.reverseChessType(chessType), depth - 1)
+        chessboardArray[p.row][p.col].type = NO_CHESS
+
+        if chessType == computer then
+            bestValue = math.max(value, bestValue)
+        elseif chessType == human then
+            bestValue = math.min(value, bestValue)
+        end
+    end
+
+    return bestValue
+end
+
+--利用极大极小算法 找出下一个落子点 返回point｛row = "", col = ""｝
+function AI.getNextPlayChessPosition(chessboardArray, depth)
+    local playChessPositionTb = AI.getPlayChessPosition(chessboardArray)
+    local maxScore = -INFINITY
+    local nextPosition = {}
+    local value = 0
+
+    for _, p in ipairs(playChessPositionTb) do
+        chessboardArray[p.row][p.col].type = computer
+        value = AI.maxMin(chessboardArray, AI.reverseChessType(chessType), depth)
+        chessboardArray[p.row][p.col].type = NO_CHESS
+
+        if value >= maxScore then
+            if value > maxScore then nextPosition = {} end
+            maxScore = value
+            table.insert(nextPosition, p)
+        end
+    end
+
+    Log.d("-----------------------------")
+    Log.d("maxScore = " .. maxScore)
+    dump(nextPosition, "nextPosition")
+
+    return #nextPosition == 0 and {row = 8, col = 8} or nextPosition[1]  --多个同等价值的候选点 随机返回一个
+    -- return #nextPosition == 0 and {row = 8, col = 8} or nextPosition[math.random(1, #nextPosition)]  --多个同等价值的候选点 随机返回一个
+end
+
+-------------极大极小 end--------------
+
+--------------------------下子相关end---------------------------------------------
 
 
 return AI;

@@ -113,3 +113,79 @@ ChessBoard[15][15] chessBoard;
 
 * 遍历棋子列表（chessLineRecord），查找列表中是否有对应的棋型，如果有则加上所对应棋型的分数。
 * 遍历结束，返回总分，即为该点的分数
+
+**极大极小算法**
+
+```
+1.极大极小值算法：
+int MinMax(局面 p, int depth)//depth是搜索深度
+{
+  int bestvalue, value;
+  if(depth<=0)//叶子节点
+  {
+    返回估值(p);//直接返回对局面的估值
+  }
+  if(当前是计算机走棋)
+  {
+    bestvalue=-INF;//初始最佳值设为负无穷
+  }
+  else
+  {
+    bestvalue=INF;// 初始最佳值设为正无穷
+  }
+  for(每一个合法的走法)//走法的生成与具体问题紧密相关，具体方法省略
+  {
+    走一步棋;//局面p随之改变
+    value=MinMax(p, depth-1);//搜索子节点
+    撤销刚才的一步;//恢复局面p
+    if(当前是计算机走棋)
+    {
+      if(value>bestvalue)//取最大值
+      {
+        bestvalue=value;
+        if(是初始局面)
+        {
+          保存最佳走法;
+        }
+      }
+    }
+   else
+   {
+      if(value<bestvalue)//取最小值
+      {
+        bestvalue=value;
+      }
+    }
+  }
+return bestvalue;
+}
+```
+**负极大值算法：**
+
+```
+负极大中的估值却是对走棋方敏感的，因此函数参数中需要有一个走棋方的参数
+long NegaMax(局面 p, ing Side, int depth)//depth是搜索深度
+{
+  int bestvalue, value;
+  if(depth<=0)//叶子节点
+  {
+    返回估值(p, Side);//直接返回对局面的估值
+  }
+  bestvalue=-INF;//初始最佳值设为负无穷
+  for(每一个合法的走法)//走法的生成与具体问题紧密相关，具体方法省略
+  {
+    走一步棋;//局面p随之改变
+    value= - NegaMax(p, opSide, depth-1);//搜索子节点，注意前面的负号，opSide是对手
+    撤销刚才的一步;//恢复局面p
+    if(value>bestvalue)//取最大值
+    {
+      bestvalue=value;
+      if(是初始局面)
+      {
+        保存最佳走法;
+      }
+    }
+   }
+  return bestvalue;
+}
+```

@@ -9,8 +9,8 @@
 local HumanVsAIScene = class("HumanVsAIScene", require("app.game-scene.GameBaseScene"))
 local AI = require("app.game-scene.AI")
 
-local computer = nil
-local human = nil
+local computer = WHITE
+local human = BLACK
 
 function HumanVsAIScene:onCreate()
     Log.d("人机对弈")
@@ -22,11 +22,17 @@ function HumanVsAIScene:onCreate()
 
     self._chessboard:addTouchCallFunc(function(row, col)
         if self._chessboard:getNextTurnChessType() == human then
-            self._chessboard:addChess(row, col)
-            -- self:aiAddChess()
+            -- self._chessboard:addChess(row, col)
+
+            AI.setComputerChessType(human)
+            Log.d("aiAddChess() color = " .. human)
+            self:aiAddChess()
         end
         if self._chessboard:getNextTurnChessType() == computer then
-            self:aiAddChess()
+            AI.setComputerChessType(computer)
+            -- self:aiAddChess()
+            self:aiAddChessByFeatureStep(0)
+
         end
     end)
 
@@ -36,6 +42,7 @@ function HumanVsAIScene:onCreate()
 
 end
 
+--必须设置（在下子前设置）
 function HumanVsAIScene:isComputerFirst(flag)
     if flag then
         self._chessboard:addChess(8, 8)
@@ -45,12 +52,18 @@ function HumanVsAIScene:isComputerFirst(flag)
         human = self._chessboard:getFirstChessType()
         computer = self._chessboard:getBehindChessType()
     end
+
+    AI.setComputerChessType(computer)
 end
 
 function HumanVsAIScene:aiAddChess()
-    local chessType = self._chessboard:getNextTurnChessType()
-    local row, col = AI.findMaxSorcePoint(self._chessboard:getChessBoardArray(), chessType)
-    self._chessboard:addChess(row, col)
+    local position = AI.getMaxSorcePoint(self._chessboard:getChessBoardArray())
+    self._chessboard:addChess(position.row, position.col)
+end
+
+function HumanVsAIScene:aiAddChessByFeatureStep(depth)
+    local position = AI.getNextPlayChessPosition(self._chessboard:getChessBoardArray(), depth)
+    self._chessboard:addChess(position.row, position.col)
 end
 
 return HumanVsAIScene

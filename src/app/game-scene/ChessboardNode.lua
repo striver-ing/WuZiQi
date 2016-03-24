@@ -195,7 +195,6 @@ function ChessboardNode:checkChessboard(row, col, chessType)
     end
 
     --五子判断
-    local oneLineChessNum = 0
     local offset = {
                     {{x = -1, y = 1}, {x = 1,  y = -1}},
                     {{x = 0,  y = 1}, {x = 0,  y = -1}},

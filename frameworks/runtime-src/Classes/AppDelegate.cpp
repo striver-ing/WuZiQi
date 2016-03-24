@@ -48,7 +48,7 @@ void AppDelegate::initGLContextAttrs()
 // don't modify or remove this function
 static int register_all_packages()
 {
-    return 0; //flag for packages manager
+   return 0; //flag for packages manager
 }
 
 bool AppDelegate::applicationDidFinishLaunching()
