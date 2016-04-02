@@ -11,6 +11,7 @@ local AI = require("app.game-scene.AI")
 
 local computer = WHITE
 local human = BLACK
+local isAdding = false
 
 function HumanVsAIScene:onCreate()
     Log.d("人机对弈")
@@ -21,6 +22,8 @@ function HumanVsAIScene:onCreate()
     self:isComputerFirst(true)
 
     self._chessboard:addTouchCallFunc(function(row, col)
+        if isAdding then return end
+
         if self._chessboard:getNextTurnChessType() == human then
             -- self._chessboard:addChess(row, col)
 
@@ -29,15 +32,15 @@ function HumanVsAIScene:onCreate()
             self:aiAddChess()
         end
         if self._chessboard:getNextTurnChessType() == computer then
-            AI.setComputerChessType(computer)
-            -- self:aiAddChess()
-            self:aiAddChessByFeatureStep(0)
-
+            isAdding = true
+            local scheduler = cc.Director:getInstance():getScheduler()
+            performWithDelay(self, function()
+                Log.d("电脑下子")
+                AI.setComputerChessType(computer)
+                -- self:aiAddChess()
+                self:aiAddChessByFeatureStep(2)
+            end, 0.01)
         end
-    end)
-
-    --重玩
-    self:addButton(nil, "计算机下子", 50, display.visiblesizeWidth / 2, display.visibleoriginX + 50, function(sender, eventType)
     end)
 
 end
@@ -56,14 +59,21 @@ function HumanVsAIScene:isComputerFirst(flag)
     AI.setComputerChessType(computer)
 end
 
+--就当前局势找最大分数处下子
 function HumanVsAIScene:aiAddChess()
     local position = AI.getMaxSorcePoint(self._chessboard:getChessBoardArray())
-    self._chessboard:addChess(position.row, position.col)
+    self._chessboard:addChess(position.row, position.col, function ()
+        isAdding = false;
+    end)
 end
 
+--利用极大极小算法下子
 function HumanVsAIScene:aiAddChessByFeatureStep(depth)
     local position = AI.getNextPlayChessPosition(self._chessboard:getChessBoardArray(), depth)
-    self._chessboard:addChess(position.row, position.col)
+    self._chessboard:addChess(position.row, position.col, function ()
+        isAdding = false;
+        Log.d("电脑下子完毕")
+    end)
 end
 
 return HumanVsAIScene

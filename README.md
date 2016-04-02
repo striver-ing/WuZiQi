@@ -116,58 +116,51 @@ ChessBoard[15][15] chessBoard;
 
 **极大极小算法**
 
+>极大极小算法，估值函数返回的是当前棋盘 maxComputerSource － maxHumanScore 的分数， 电脑选择极大值， 人选择极小值
+
 ```
 1.极大极小值算法：
 int MinMax(局面 p, int depth)//depth是搜索深度
 {
   int bestvalue, value;
-  if(depth<=0)//叶子节点
+  if(isGameOver || depth<=0)//叶子节点
   {
     返回估值(p);//直接返回对局面的估值
   }
-  if(当前是计算机走棋)
-  {
+  if(当前是计算机走棋){
     bestvalue=-INF;//初始最佳值设为负无穷
   }
-  else
-  {
+  else {
     bestvalue=INF;// 初始最佳值设为正无穷
   }
+  
   for(每一个合法的走法)//走法的生成与具体问题紧密相关，具体方法省略
   {
     走一步棋;//局面p随之改变
     value=MinMax(p, depth-1);//搜索子节点
     撤销刚才的一步;//恢复局面p
-    if(当前是计算机走棋)
-    {
-      if(value>bestvalue)//取最大值
-      {
-        bestvalue=value;
-        if(是初始局面)
-        {
-          保存最佳走法;
-        }
-      }
+    if(当前是计算机走棋){
+      bestvalue = max(value, bestvalue);//取最大值
     }
-   else
-   {
-      if(value<bestvalue)//取最小值
-      {
-        bestvalue=value;
-      }
+    else {
+      bestvalue = min(value, bestvalue);//取最大值
     }
   }
-return bestvalue;
+  return bestvalue;
 }
 ```
 **负极大值算法：**
+
+>评估函数： 如果是电脑方返回maxComputerSource － maxHumanScore 的分数，那么它的父节点必然是对手，对手希望取maxHumanScore － maxComputerScore 的最大值，也就是 －max（maxComputerSource － maxHumanScore）
+相反如果是人方，估值函数返回 maxHumanScore - maxComputerScore的分数，那么它的父节点是电脑，电脑希望取的maxComputerScore － maxHumanScore 的最大值，也就是 －max（maxHumanScore － maxComputerScore）。所以负号就是这个意思
 
 ```
 负极大中的估值却是对走棋方敏感的，因此函数参数中需要有一个走棋方的参数
 long NegaMax(局面 p, ing Side, int depth)//depth是搜索深度
 {
   int bestvalue, value;
-  if(depth<=0)//叶子节点
+ 
+  if(isGameOver || depth<=0)//叶子节点
   {
     返回估值(p, Side);//直接返回对局面的估值
   }
@@ -180,10 +173,6 @@ long NegaMax(局面 p, ing Side, int depth)//depth是搜索深度
     if(value>bestvalue)//取最大值
     {
       bestvalue=value;
-      if(是初始局面)
-      {
-        保存最佳走法;
-      }
     }
    }
   return bestvalue;

@@ -49,5 +49,5 @@ end
 
 function Log.d( ... )
     if ... == nil then return end
-    print("[D]: " .. string.format( ... ))
+    print("[D]".. os.date() ..": " .. string.format( ... ))
 end

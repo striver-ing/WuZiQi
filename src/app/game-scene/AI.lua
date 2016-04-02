@@ -14,6 +14,9 @@ local human = nil
 local ORDER_FIRST = "first"
 local ORDER_SECOND = "second"
 
+local chessNum = 0
+local ABcut  = 0
+
 local chessLineRecord = {
     left     = {}, --左斜
     right    = {},--右斜
@@ -38,6 +41,7 @@ end
 
 --反转棋子类型
 function AI.reverseChessType(chessType)
+    assert(chessType, "chessType can not nil")
     return chessType == BLACK and WHITE or BLACK
 end
 
@@ -227,7 +231,7 @@ function AI.getMaxSorcePoint(chessboardArray)
     -- return  #maxScorePoint == 0 and {row = 8, col = 8} or maxScorePoint[math.random(1, #maxScorePoint)]
 end
 
-------------------极大极小算法相关------------------------
+------------------下子算法相关------------------------
 
 --找出可能的落子点（todo）
 function AI.getPlayChessPosition(chessboardArray)
@@ -247,61 +251,63 @@ function AI.getPlayChessPosition(chessboardArray)
 end
 
 --检测棋局是否结束
-function AI.isGameOver(chessboardArray)
+function AI.isGameOver(chessboardArray, point)
+   assert(point, "point is nil")
+   --和局判断
    local isNoEmptyPlace = true
    for row = 1, CHESS_GRID_NUM do
         for col = 1, CHESS_GRID_NUM do
-            if chessboardArray[row][col].type ~= NO_CHESS then
-                --遍历该棋子的四个方向 看同类棋子个数是否大于5
-                --取一个方向上同类棋子的数目
-                local function getOneOffsetChessNum(row, col, offsetX, offsetY, chessType)
-                    local chessNum = 0
-                    while true do
-                        if chessNum >= 5 or row < 1 or row > CHESS_GRID_NUM or col < 1 or col > CHESS_GRID_NUM  then return chessNum end
-                        if chessboardArray[row][col].type ~= chessType then
-                            return chessNum
-                        else
-                            chessNum = chessNum + 1
-                            row = row + offsetX
-                            col = col + offsetY
-                        end
-                    end
-                end
-
-                --遍历四个方向（轮上半截和下半截的话是8个方向） 求同类棋子数目
-               local offset = {
-                    {{x = -1, y = 1}, {x = 1,  y = -1}},
-                    {{x = 0,  y = 1}, {x = 0,  y = -1}},
-                    {{x = 1,  y = 1}, {x = -1, y = -1}},
-                    {{x = 1,  y = 0}, {x = -1, y = 0}}
-               }
-               local chessType = chessboardArray[row][col].type
-               for i = 1, #offset do
-                   local oneLineChessNum = 1
-                   for j = 1, 2 do
-                        oneLineChessNum = oneLineChessNum + getOneOffsetChessNum(row + offset[i][j].x, col + offset[i][j].y, offset[i][j].x, offset[i][j].y, chessType)
-                        if oneLineChessNum >= 5 then return true end
-                   end
-               end
-
-
-            else
-                isNoEmptyPlace = false
-            end
+            if chessboardArray[row][col].type == NO_CHESS then isNoEmptyPlace = false end
         end
    end
+   if isNoEmptyPlace then return true end
 
-   return isNoEmptyPlace --和局
+   -- 五子判断
+   --遍历该棋子的四个方向 看同类棋子个数是否大于5
+   --取一个方向上同类棋子的数目
+   local function getOneOffsetChessNum(row, col, offsetX, offsetY, chessType)
+         local chessNum = 0
+         while true do
+             if chessNum >= 5 or row < 1 or row > CHESS_GRID_NUM or col < 1 or col > CHESS_GRID_NUM  then return chessNum end
+             if chessboardArray[row][col].type ~= chessType then
+                  return chessNum
+             else
+                  chessNum = chessNum + 1
+                  row = row + offsetX
+                  col = col + offsetY
+             end
+         end
+    end
+
+    --遍历四个方向（轮上半截和下半截的话是8个方向） 求同类棋子数目
+    local offset = {
+                {{x = -1, y = 1}, {x = 1,  y = -1}},
+                {{x = 0,  y = 1}, {x = 0,  y = -1}},
+                {{x = 1,  y = 1}, {x = -1, y = -1}},
+                {{x = 1,  y = 0}, {x = -1, y = 0}}
+            }
+    local row , col = point.row, point.col
+    local chessType = chessboardArray[row][col].type
+    for i = 1, #offset do
+        local oneLineChessNum = 1
+        for j = 1, 2 do
+            oneLineChessNum = oneLineChessNum + getOneOffsetChessNum(row + offset[i][j].x, col + offset[i][j].y, offset[i][j].x, offset[i][j].y, chessType)
+            if oneLineChessNum >= 5 then return true end
+        end
+    end
+
+    return false
 end
 
---评估棋盘得分（下一步棋盘   得分 ＝ computer － human）
-function  AI.getChessboardScore(chessboardArray)
+--评估当前棋盘得分
+function  AI.getChessboardScore(chessboardArray, chessType)
     local maxHumanScore = -INFINITY
     local maxComputerScore = -INFINITY
 
     for row = 1, CHESS_GRID_NUM do
         for col = 1, CHESS_GRID_NUM do
             if chessboardArray[row][col].type ~= NO_CHESS then
+                chessNum = chessNum + 1
                 if chessboardArray[row][col].type == computer then
                     maxComputerScore =math.max(AI.evalatePoint(chessboardArray, row, col, computer), maxComputerScore)
                 else
@@ -310,20 +316,20 @@ function  AI.getChessboardScore(chessboardArray)
             end
         end
     end
-    Log.d("maxComputerScore = " .. maxComputerScore)
-    Log.d("maxHumanScore = " .. maxHumanScore)
-    Log.d(" maxComputerScore - maxHumanScore = " .. maxComputerScore - maxHumanScore)
-    return maxComputerScore - maxHumanScore
+
+    if chessType ~= nil then  --负极大值用
+        return  chessType == computer and maxComputerScore - maxHumanScore or maxHumanScore - maxComputerScore
+    else --极大极小用
+        return maxComputerScore - maxHumanScore
+    end
 end
 
 
 --极大极小算法 找出depth步之内的最佳落子点 depth为搜索深度
-function AI.maxMin(chessboardArray, chessType, depth)
+function AI.maxMin(chessboardArray, point, chessType, depth)
     local bestValue, value
-    if AI.isGameOver(chessboardArray) then
-        return AI.getChessboardScore(chessboardArray)
-    end
-    if depth <= 0 then
+
+    if depth <= 0 or AI.isGameOver(chessboardArray, point) then
         return AI.getChessboardScore(chessboardArray)
     end
 
@@ -336,7 +342,7 @@ function AI.maxMin(chessboardArray, chessType, depth)
     local playChessPositionTb = AI.getPlayChessPosition(chessboardArray)
     for _, p in ipairs(playChessPositionTb) do
         chessboardArray[p.row][p.col].type = chessType
-        value = AI.maxMin(chessboardArray, AI.reverseChessType(chessType), depth - 1)
+        value = AI.maxMin(chessboardArray, p, AI.reverseChessType(chessType), depth - 1)
         chessboardArray[p.row][p.col].type = NO_CHESS
 
         if chessType == computer then
@@ -349,8 +355,102 @@ function AI.maxMin(chessboardArray, chessType, depth)
     return bestValue
 end
 
---利用极大极小算法 找出下一个落子点 返回point｛row = "", col = ""｝
+
+--alpha-beta（对极大极小的优化 剪枝）
+function AI.maxMinAplhaBeta(chessboardArray, point, chessType, depth, alpha, beta)
+    local value
+     if depth <= 0 or AI.isGameOver(chessboardArray, point) then
+        return AI.getChessboardScore(chessboardArray)
+    end
+
+    local playChessPositionTb = AI.getPlayChessPosition(chessboardArray)
+    --取极大值节点
+    if chessType == computer then
+        for _, p in ipairs(playChessPositionTb) do
+           chessboardArray[p.row][p.col].type = chessType
+           value = AI.maxMinAplhaBeta(chessboardArray, p, AI.reverseChessType(chessType), depth - 1, alpha, beta)
+           chessboardArray[p.row][p.col].type = NO_CHESS
+
+           if value > alpha then
+              alpha = value
+              if alpha >= beta then
+                  ABcut = ABcut + 1
+                  return beta
+              end
+           end
+        end
+        return alpha
+    --取极小值节点
+    elseif chessType == human then
+        for _, p in ipairs(playChessPositionTb) do
+           chessboardArray[p.row][p.col].type = chessType
+           value = AI.maxMinAplhaBeta(chessboardArray, p, AI.reverseChessType(chessType), depth - 1, alpha, beta)
+           chessboardArray[p.row][p.col].type = NO_CHESS
+
+           if value < beta then
+              beta = value
+              if alpha >= beta then
+                  ABcut = ABcut + 1
+                  return alpha
+              end
+           end
+        end
+        return beta
+    end
+end
+
+--负极大值算法
+function AI.negaMax(chessboardArray, point, chessType, depth)
+    local value
+    local bestValue = -INFINITY
+    if depth <= 0 or AI.isGameOver(chessboardArray, point) then
+        return AI.getChessboardScore(chessboardArray, chessType)
+    end
+
+    local nextPositionTb = AI.getPlayChessPosition(chessboardArray)
+    for _, p in ipairs(nextPositionTb) do
+        chessboardArray[p.row][p.col].type = chessType
+        value = -AI.negaMax(chessboardArray, p, AI.reverseChessType(chessType), depth - 1)
+        chessboardArray[p.row][p.col].type = NO_CHESS
+
+        bestValue = math.max(value, bestValue)
+    end
+
+    return bestValue
+end
+
+--负极大值算法剪枝
+function AI.negaMaxAlphaBeta(chessboardArray, point, chessType, depth, alpha, beta)
+    local value
+    if depth <= 0 or AI.isGameOver(chessboardArray, point) then
+        return AI.getChessboardScore(chessboardArray, chessType)
+    end
+
+    local nextPositionTb = AI.getPlayChessPosition(chessboardArray)
+    for _, p in ipairs(nextPositionTb) do
+        chessboardArray[p.row][p.col].type = chessType
+        value = -AI.negaMaxAlphaBeta(chessboardArray, p, AI.reverseChessType(chessType), depth - 1, -beta, -alpha)
+        chessboardArray[p.row][p.col].type = NO_CHESS
+
+        if value >= alpha then
+            alpha = value
+        end
+
+        if alpha >= beta then
+            ABcut = ABcut + 1
+            break  --beta 剪枝
+        end
+    end
+
+    return alpha
+end
+
+-------------下子相关算法 end--------------
+
+
+--找出下一个落子点 返回point｛row = "", col = ""｝
 function AI.getNextPlayChessPosition(chessboardArray, depth)
+    chessNum = 1
     local playChessPositionTb = AI.getPlayChessPosition(chessboardArray)
     local maxScore = -INFINITY
     local nextPosition = {}
@@ -358,7 +458,10 @@ function AI.getNextPlayChessPosition(chessboardArray, depth)
 
     for _, p in ipairs(playChessPositionTb) do
         chessboardArray[p.row][p.col].type = computer
-        value = AI.maxMin(chessboardArray, AI.reverseChessType(chessType), depth)
+        -- value = AI.maxMin(chessboardArray, p, human, depth - 1)
+        value = AI.maxMinAplhaBeta(chessboardArray, p, human, depth - 1, -INFINITY, INFINITY)
+        -- value = -AI.negaMax(chessboardArray, p, human, depth - 1)
+        -- value = -AI.negaMaxAlphaBeta(chessboardArray, p, human, depth - 1, -INFINITY, INFINITY)
         chessboardArray[p.row][p.col].type = NO_CHESS
 
         if value >= maxScore then
@@ -369,15 +472,14 @@ function AI.getNextPlayChessPosition(chessboardArray, depth)
     end
 
     Log.d("-----------------------------")
+    Log.d("剪枝数 ＝ " .. ABcut)
+    Log.d("遍历的节点数 = " .. chessNum)
     Log.d("maxScore = " .. maxScore)
     dump(nextPosition, "nextPosition")
 
     return #nextPosition == 0 and {row = 8, col = 8} or nextPosition[1]  --多个同等价值的候选点 随机返回一个
     -- return #nextPosition == 0 and {row = 8, col = 8} or nextPosition[math.random(1, #nextPosition)]  --多个同等价值的候选点 随机返回一个
 end
-
--------------极大极小 end--------------
-
 --------------------------下子相关end---------------------------------------------
 
 

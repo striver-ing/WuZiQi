@@ -13,17 +13,28 @@ end)
 local isWhiteTurn = false;
 local firstChessType = BLACK
 local isGameOver = false
+local chessNumber = 0  -- 棋子上显示序列号用
+local IS_SHOW_CHESSNUMBER = true
 
 function ChessboardNode:ctor()
     --棋盘
     self._chessboard = display.newSprite("chess.png"):addTo(self)
     self._chessboard:setAnchorPoint(cc.p(0.5, 0))
 
-    local listener = cc.EventListenerTouchOneByOne:create()
-    listener:registerScriptHandler(handler(self, self.onTouchBegan), cc.Handler.EVENT_TOUCH_BEGAN)
-    cc.Director:getInstance():getEventDispatcher():addEventListenerWithSceneGraphPriority(listener, self._chessboard)
+    self:addChessboardListener()
 
     self:initChessboardArray()
+end
+
+function ChessboardNode:addChessboardListener()
+    self._listener = cc.EventListenerTouchOneByOne:create()
+    self._listener:registerScriptHandler(handler(self, self.onTouchBegan), cc.Handler.EVENT_TOUCH_BEGAN)
+
+    cc.Director:getInstance():getEventDispatcher():addEventListenerWithSceneGraphPriority(self._listener, self._chessboard)
+end
+
+function ChessboardNode:remveChessboardListener()
+    cc.Director:getInstance():getEventDispatcher():removeEventListener(self._listener)
 end
 
 function ChessboardNode:initChessboardArray()
@@ -40,6 +51,7 @@ function ChessboardNode:initChessboardArray()
 
     self._currentChessTip = nil
     self._chess = {}
+    chessNumber = 0
 
     isGameOver = false
 
@@ -50,8 +62,8 @@ function ChessboardNode:getChessBoardArray()
     return self._chessboardArray
 end
 
-function ChessboardNode:addTouchCallFunc(callfunc)
-    self._touchCallFunc = callfunc
+function ChessboardNode:addTouchCallFunc(callFunc)
+    self._touchCallFunc = callFunc
 end
 
 function ChessboardNode:onTouchBegan(touch, event)
@@ -93,10 +105,16 @@ function ChessboardNode:getBehindChessType()
     return firstChessType == BLACK and WHITE or BLACK
 end
 
-function ChessboardNode:addChess(row, col)
-    if row == nil or col == nil then return end
+function ChessboardNode:addChess(row, col, callFunc)
+    if row == nil or col == nil then
+        if callFunc then callFunc() end
+        return
+    end
     --触摸到边界外
-    if row < 1 or row > CHESS_GRID_NUM or col < 1 or col > CHESS_GRID_NUM  or self._chessboardArray[row][col].type ~= NO_CHESS or isGameOver then  return end
+    if row < 1 or row > CHESS_GRID_NUM or col < 1 or col > CHESS_GRID_NUM  or self._chessboardArray[row][col].type ~= NO_CHESS or isGameOver then
+      if callFunc then callFunc() end
+      return
+    end
 
     SoundManager.playEffect("chess.wav")
     local posX = (row - 1) * CHESS_SETP + CHESS_OFFSETX
@@ -116,21 +134,37 @@ function ChessboardNode:addChess(row, col)
     chess.col = col
     chess:setPosition(posX, posY)
     chess:addTo(self._chessboard)
+    --给棋子添加序号
+    if IS_SHOW_CHESSNUMBER then
+        self._lable = cc.Label:createWithSystemFont(chessNumber, "", 22)
+        self._lable:setTextColor(cc.RED)
+        chess:addChild(self._lable)
+        self._lable:setPosition(cc.p(chess:getContentSize().width / 2 , chess:getContentSize().height / 2))
+        chessNumber = chessNumber + 1
+    end
+
     --储存所下棋子 悔棋时用
     table.insert(self._chess, chess)
-    --更新下棋方
-    self:updataChessTurn()
 
     --当前棋子提示
     if self._currentChessTip == nil then
         self._currentChessTip = display.newSprite("current_chess_tip.png")
         self._currentChessTip:addTo(self._chessboard, 1)
+        if IS_SHOW_CHESSNUMBER then
+            self._currentChessTip:setVisible(false)
+        end
     end
     self._currentChessTip:setPosition(posX, posY)
 
     --检查是否连成五子
-    local chessType = self:getCurrentChessType()
+    local chessType = isWhiteTurn and WHITE or BLACK
     self:checkChessboard(row, col, chessType)
+
+    --更新下棋方
+    self:updataChessTurn()
+
+    if callFunc then callFunc() end
+    return
 end
 
 function ChessboardNode:updataChessTurn()
@@ -165,6 +199,9 @@ function ChessboardNode:retractChess()
     self._chessboardArray[chess.row][chess.col].type = NO_CHESS
     self._chessboardArray[chess.row][chess.col].chess = nil
     chess:removeSelf()
+    if IS_SHOW_CHESSNUMBER then
+        chessNumber = chessNumber - 1
+    end
 
     self:updataChessTurn()
     if #self._chess == 0 then
@@ -225,7 +262,7 @@ function ChessboardNode:checkChessboard(row, col, chessType)
         end
         if chessNum >= 5 then
             self:gameOver(chessType, chessSpriteTb)
-            break
+            return
         end
     end
 
