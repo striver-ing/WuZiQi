@@ -17,12 +17,12 @@ require "utils.GameInit"
 function __G__TRACKBACK__(errorMessage)
     Log.d("-----------------------------------------------------------------------")
     print("LUA ERROR: " .. tostring(errorMessage))
-    debug.tracebackex()
+    -- print(debug.tracebackex("", 2))
     Log.d("-----------------------------------------------------------------------")
 end
 
 local function main()
-    Log.d("enter main")
+    Log.d("\n***************** enter main *****************\n")
     --垃圾回收
     collectgarbage("collect")
     -- avoid memory leak

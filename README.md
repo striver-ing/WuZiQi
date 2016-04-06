@@ -112,11 +112,19 @@ ChessBoard[15][15] chessBoard;
  ```
 
 * 遍历棋子列表（chessLineRecord），查找列表中是否有对应的棋型，如果有则加上所对应棋型的分数。
-* 遍历结束，返回总分，即为该点的分数
+* 遍历结束，返回总分，即为该点的分数  
+  
+**挑选可下子空位**
+
+>如果改空位附近n格内有棋子，则把该空位看作可下子空位（即规定在一定的矩形区域内下子）
+
+**简易算法（眼前利益）**
+
+>观察局势，如果以计算机角度下子的利益大于等于以人角度下子的利益，则以计算机身份下子，否则下在人最有可能下子的位置
 
 **极大极小算法**
 
->极大极小算法，估值函数返回的是当前棋盘 maxComputerSource － maxHumanScore 的分数， 电脑选择极大值， 人选择极小值
+>*极大极小算法*，估值函数返回的是当前棋盘 maxComputerSource － maxHumanScore 的分数， 电脑选择极大值， 人选择极小值
 
 ```
 1.极大极小值算法：
@@ -151,7 +159,7 @@ int MinMax(局面 p, int depth)//depth是搜索深度
 ```
 **负极大值算法：**
 
->评估函数： 如果是电脑方返回maxComputerSource － maxHumanScore 的分数，那么它的父节点必然是对手，对手希望取maxHumanScore － maxComputerScore 的最大值，也就是 －max（maxComputerSource － maxHumanScore）
+>*评估函数*： 如果是电脑方返回maxComputerSource － maxHumanScore 的分数，那么它的父节点必然是对手，对手希望取maxHumanScore － maxComputerScore 的最大值，也就是 －max（maxComputerSource － maxHumanScore）
 相反如果是人方，估值函数返回 maxHumanScore - maxComputerScore的分数，那么它的父节点是电脑，电脑希望取的maxComputerScore － maxHumanScore 的最大值，也就是 －max（maxHumanScore － maxComputerScore）。所以负号就是这个意思
 
 ```
@@ -177,4 +185,21 @@ long NegaMax(局面 p, ing Side, int depth)//depth是搜索深度
    }
   return bestvalue;
 }
+```
+
+
+**alpha-beta 剪枝**
+>*思想*：
+
+*伪代码*
+
+```
+极大极小AlpahBeta算法
+
+```
+
+
+```
+负极大值AlpahBeta算法
+
 ```

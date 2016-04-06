@@ -432,14 +432,20 @@ function AI.negaMaxAlphaBeta(chessboardArray, point, chessType, depth, alpha, be
         value = -AI.negaMaxAlphaBeta(chessboardArray, p, AI.reverseChessType(chessType), depth - 1, -beta, -alpha)
         chessboardArray[p.row][p.col].type = NO_CHESS
 
-        if value >= alpha then
+        if value > alpha then
             alpha = value
         end
 
+        -- if value >= beta then
+        --     ABcut = ABcut + 1
+        --     -- break  --beta 剪枝
+        --     return beta
+        -- end
         if alpha >= beta then
             ABcut = ABcut + 1
             break  --beta 剪枝
         end
+
     end
 
     return alpha
@@ -450,6 +456,7 @@ end
 
 --找出下一个落子点 返回point｛row = "", col = ""｝
 function AI.getNextPlayChessPosition(chessboardArray, depth)
+    local beginTime = os.clock()
     chessNum = 1
     local playChessPositionTb = AI.getPlayChessPosition(chessboardArray)
     local maxScore = -INFINITY
@@ -471,10 +478,12 @@ function AI.getNextPlayChessPosition(chessboardArray, depth)
         end
     end
 
+    local endedTime = os.clock()
     Log.d("-----------------------------")
     Log.d("剪枝数 ＝ " .. ABcut)
     Log.d("遍历的节点数 = " .. chessNum)
     Log.d("maxScore = " .. maxScore)
+    Log.d("用时 ＝ " .. endedTime - beginTime .. " seconds ")
     dump(nextPosition, "nextPosition")
 
     return #nextPosition == 0 and {row = 8, col = 8} or nextPosition[1]  --多个同等价值的候选点 随机返回一个
