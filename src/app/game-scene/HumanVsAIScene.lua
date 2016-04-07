@@ -38,7 +38,7 @@ function HumanVsAIScene:onCreate()
                 Log.d("电脑下子")
                 AI.setComputerChessType(computer)
                 -- self:aiAddChess()
-                self:aiAddChessByFeatureStep(2)
+                self:aiAddChessByFeatureStep(3)
             end, 0.01)
         end
     end)

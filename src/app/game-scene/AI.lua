@@ -14,8 +14,9 @@ local human = nil
 local ORDER_FIRST = "first"
 local ORDER_SECOND = "second"
 
-local chessNum = 0
-local ABcut  = 0
+local chessNum = 0  --节点数
+local visitedChessNum = 0  -- 遍历节点数
+local ABcut  = 0  -- 剪枝数
 
 local chessLineRecord = {
     left     = {}, --左斜
@@ -234,19 +235,27 @@ end
 ------------------下子算法相关------------------------
 
 --找出可能的落子点（todo）
-function AI.getPlayChessPosition(chessboardArray)
+function AI.getPlayChessPosition(chessboardArray, chessType)
     local positionTb = {}
     local i = 1
     for row = 1, CHESS_GRID_NUM do
         for col = 1, CHESS_GRID_NUM do
             if chessboardArray[row][col].type == NO_CHESS and AI.isHasNeighbor(chessboardArray, row, col, 2, 1) then
-                positionTb[i]     = {}
-                positionTb[i].row = row
-                positionTb[i].col = col
+                positionTb[i]       = {}
+                positionTb[i].row   = row
+                positionTb[i].col   = col
+                positionTb[i].score = AI.evalatePoint(chessboardArray, row, col, chessType)
                 i = i + 1
             end
         end
     end
+
+    --根据分数从大到小
+    table.sort(positionTb, function(p1, p2)
+        return p1.score > p2.score
+    end)
+
+    chessNum = chessNum + i - 1
     return positionTb
 end
 
@@ -307,7 +316,6 @@ function  AI.getChessboardScore(chessboardArray, chessType)
     for row = 1, CHESS_GRID_NUM do
         for col = 1, CHESS_GRID_NUM do
             if chessboardArray[row][col].type ~= NO_CHESS then
-                chessNum = chessNum + 1
                 if chessboardArray[row][col].type == computer then
                     maxComputerScore =math.max(AI.evalatePoint(chessboardArray, row, col, computer), maxComputerScore)
                 else
@@ -324,9 +332,9 @@ function  AI.getChessboardScore(chessboardArray, chessType)
     end
 end
 
-
 --极大极小算法 找出depth步之内的最佳落子点 depth为搜索深度
 function AI.maxMin(chessboardArray, point, chessType, depth)
+    visitedChessNum = visitedChessNum + 1
     local bestValue, value
 
     if depth <= 0 or AI.isGameOver(chessboardArray, point) then
@@ -339,7 +347,7 @@ function AI.maxMin(chessboardArray, point, chessType, depth)
         bestValue = INFINITY
     end
 
-    local playChessPositionTb = AI.getPlayChessPosition(chessboardArray)
+    local playChessPositionTb = AI.getPlayChessPosition(chessboardArray, chessType)
     for _, p in ipairs(playChessPositionTb) do
         chessboardArray[p.row][p.col].type = chessType
         value = AI.maxMin(chessboardArray, p, AI.reverseChessType(chessType), depth - 1)
@@ -358,12 +366,13 @@ end
 
 --alpha-beta（对极大极小的优化 剪枝）
 function AI.maxMinAplhaBeta(chessboardArray, point, chessType, depth, alpha, beta)
+    visitedChessNum = visitedChessNum + 1
     local value
      if depth <= 0 or AI.isGameOver(chessboardArray, point) then
         return AI.getChessboardScore(chessboardArray)
     end
 
-    local playChessPositionTb = AI.getPlayChessPosition(chessboardArray)
+    local playChessPositionTb = AI.getPlayChessPosition(chessboardArray, chessType)
     --取极大值节点
     if chessType == computer then
         for _, p in ipairs(playChessPositionTb) do
@@ -401,13 +410,14 @@ end
 
 --负极大值算法
 function AI.negaMax(chessboardArray, point, chessType, depth)
+    visitedChessNum = visitedChessNum + 1
     local value
     local bestValue = -INFINITY
     if depth <= 0 or AI.isGameOver(chessboardArray, point) then
         return AI.getChessboardScore(chessboardArray, chessType)
     end
 
-    local nextPositionTb = AI.getPlayChessPosition(chessboardArray)
+    local nextPositionTb = AI.getPlayChessPosition(chessboardArray, chessType)
     for _, p in ipairs(nextPositionTb) do
         chessboardArray[p.row][p.col].type = chessType
         value = -AI.negaMax(chessboardArray, p, AI.reverseChessType(chessType), depth - 1)
@@ -421,12 +431,13 @@ end
 
 --负极大值算法剪枝
 function AI.negaMaxAlphaBeta(chessboardArray, point, chessType, depth, alpha, beta)
+    visitedChessNum = visitedChessNum + 1
     local value
     if depth <= 0 or AI.isGameOver(chessboardArray, point) then
         return AI.getChessboardScore(chessboardArray, chessType)
     end
 
-    local nextPositionTb = AI.getPlayChessPosition(chessboardArray)
+    local nextPositionTb = AI.getPlayChessPosition(chessboardArray, chessType)
     for _, p in ipairs(nextPositionTb) do
         chessboardArray[p.row][p.col].type = chessType
         value = -AI.negaMaxAlphaBeta(chessboardArray, p, AI.reverseChessType(chessType), depth - 1, -beta, -alpha)
@@ -436,15 +447,14 @@ function AI.negaMaxAlphaBeta(chessboardArray, point, chessType, depth, alpha, be
             alpha = value
         end
 
-        -- if value >= beta then
-        --     ABcut = ABcut + 1
-        --     -- break  --beta 剪枝
-        --     return beta
-        -- end
-        if alpha >= beta then
+        if value >= beta then
             ABcut = ABcut + 1
-            break  --beta 剪枝
+            return beta
         end
+        -- if alpha >= beta then
+        --     ABcut = ABcut + 1
+        --     break  --beta 剪枝
+        -- end
 
     end
 
@@ -456,9 +466,11 @@ end
 
 --找出下一个落子点 返回point｛row = "", col = ""｝
 function AI.getNextPlayChessPosition(chessboardArray, depth)
+    chessNum = 0
+    visitedChessNum = 0
+
     local beginTime = os.clock()
-    chessNum = 1
-    local playChessPositionTb = AI.getPlayChessPosition(chessboardArray)
+    local playChessPositionTb = AI.getPlayChessPosition(chessboardArray, computer)
     local maxScore = -INFINITY
     local nextPosition = {}
     local value = 0
@@ -466,9 +478,9 @@ function AI.getNextPlayChessPosition(chessboardArray, depth)
     for _, p in ipairs(playChessPositionTb) do
         chessboardArray[p.row][p.col].type = computer
         -- value = AI.maxMin(chessboardArray, p, human, depth - 1)
-        value = AI.maxMinAplhaBeta(chessboardArray, p, human, depth - 1, -INFINITY, INFINITY)
+        -- value = AI.maxMinAplhaBeta(chessboardArray, p, human, depth - 1, -INFINITY, INFINITY)
         -- value = -AI.negaMax(chessboardArray, p, human, depth - 1)
-        -- value = -AI.negaMaxAlphaBeta(chessboardArray, p, human, depth - 1, -INFINITY, INFINITY)
+        value = -AI.negaMaxAlphaBeta(chessboardArray, p, human, depth - 1, -INFINITY, INFINITY)
         chessboardArray[p.row][p.col].type = NO_CHESS
 
         if value >= maxScore then
@@ -480,10 +492,11 @@ function AI.getNextPlayChessPosition(chessboardArray, depth)
 
     local endedTime = os.clock()
     Log.d("-----------------------------")
-    Log.d("剪枝数 ＝ " .. ABcut)
-    Log.d("遍历的节点数 = " .. chessNum)
-    Log.d("maxScore = " .. maxScore)
-    Log.d("用时 ＝ " .. endedTime - beginTime .. " seconds ")
+    Log.d("总节点数    ＝ " .. chessNum)
+    Log.d("遍历的节点数 = " .. visitedChessNum)
+    Log.d("剪枝数      ＝ " .. ABcut)
+    Log.d("maxScore   = " .. maxScore)
+    Log.d("用时       ＝ " .. endedTime - beginTime .. " seconds ")
     dump(nextPosition, "nextPosition")
 
     return #nextPosition == 0 and {row = 8, col = 8} or nextPosition[1]  --多个同等价值的候选点 随机返回一个
