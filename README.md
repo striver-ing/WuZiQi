@@ -4,7 +4,7 @@
 
 **棋盘数据结构**  
 
-````
+``` 
 struct ChessBoard{
 	int type;
 	Sprite * chess;

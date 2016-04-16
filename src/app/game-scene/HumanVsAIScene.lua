@@ -7,7 +7,7 @@
 ----------------------------
 
 local HumanVsAIScene = class("HumanVsAIScene", require("app.game-scene.GameBaseScene"))
-local AI = require("app.game-scene.AI")
+local AI = require("app.ai-algorithm.AI")
 
 local computer = WHITE
 local human = BLACK
@@ -38,7 +38,7 @@ function HumanVsAIScene:onCreate()
                 Log.d("电脑下子")
                 AI.setComputerChessType(computer)
                 -- self:aiAddChess()
-                self:aiAddChessByFeatureStep(3)
+                self:aiAddChessByFeatureStep(1)
             end, 0.01)
         end
     end)

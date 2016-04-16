@@ -461,6 +461,92 @@ function AI.negaMaxAlphaBeta(chessboardArray, point, chessType, depth, alpha, be
     return alpha
 end
 
+
+--超出边界（Fail-soft）的Alpah-Beta  3depth  25s
+function AI.negaMaxFailAlphaBeta(chessboardArray, point, chessType, depth, alpha, beta)
+    visitedChessNum = visitedChessNum + 1
+    local maxScore = -INFINITY
+    local value
+    if depth <= 0 or AI.isGameOver(chessboardArray, point) then
+        return AI.getChessboardScore(chessboardArray, chessType)
+    end
+
+    local nextPositionTb = AI.getPlayChessPosition(chessboardArray, chessType)
+    for _, p in ipairs(nextPositionTb) do
+        chessboardArray[p.row][p.col].type = chessType
+        value = -AI.negaMaxFailAlphaBeta(chessboardArray, p, AI.reverseChessType(chessType), depth - 1, -beta, -alpha)
+        chessboardArray[p.row][p.col].type = NO_CHESS
+
+        if value > maxScore then
+            maxScore =  value
+        end
+
+        if maxScore > alpha then
+            alpha = maxScore
+        end
+
+        if maxScore >= beta then
+            ABcut = ABcut + 1
+            break
+        end
+    end
+
+    return maxScore
+end
+
+--负值侦察(NegaScout)和主要变例搜索(Principal Variation Search，简称PVS) 3depth  22s
+function AI.negaMaxPVSAlphaBeta(chessboardArray, point, chessType, depth, alpha, beta)
+    visitedChessNum = visitedChessNum + 1
+    local value, bestScore
+    if depth <= 0 or AI.isGameOver(chessboardArray, point) then
+        return AI.getChessboardScore(chessboardArray, chessType)
+    end
+
+    local nextPositionTb = AI.getPlayChessPosition(chessboardArray, chessType)
+
+    local p1 = nextPositionTb[1]
+    chessboardArray[p1.row][p1.col].type = chessType
+    bestScore = -AI.negaMaxPVSAlphaBeta(chessboardArray, p1, AI.reverseChessType(chessType), depth - 1, -beta, -alpha)
+    chessboardArray[p1.row][p1.col].type = NO_CHESS
+
+    for i = 2, #nextPositionTb do
+        local p = nextPositionTb[i]
+        -- chessboardArray[p.row][p.col].type = chessType
+        -- value = -AI.negaMaxPVSAlphaBeta(chessboardArray, p, AI.reverseChessType(chessType), depth - 1, -alpha - 1, -alpha)
+        -- if value > alpha and value < beta then
+        --     value = -AI.negaMaxPVSAlphaBeta(chessboardArray, p, AI.reverseChessType(chessType), depth - 1, -beta, -alpha)
+        -- end
+        -- chessboardArray[p.row][p.col].type = NO_CHESS
+
+        -- if value >= bestScore then
+        --     bestScore = value
+        --     if value > alpha then
+        --         alpha = value
+        --     end
+        --     if value >= beta then
+        --         ABcut = ABcut + 1
+        --         break
+        --     end
+        -- end
+
+        if bestScore < beta then
+           if bestScore > alpha then
+                alpha = bestScore
+           end
+           chessboardArray[p.row][p.col].type = chessType
+           value = -AI.negaMaxPVSAlphaBeta(chessboardArray, p, AI.reverseChessType(chessType), depth - 1, -alpha - 1, -alpha)
+           if value > alpha and value < beta then
+                bestScore = -AI.negaMaxPVSAlphaBeta(chessboardArray, p, AI.reverseChessType(chessType), depth - 1, -beta, -value)
+           elseif value > bestScore then
+                bestScore = value
+           end
+           chessboardArray[p.row][p.col].type = NO_CHESS
+        end
+
+    end
+
+    return bestScore
+end
 -------------下子相关算法 end--------------
 
 
@@ -479,8 +565,23 @@ function AI.getNextPlayChessPosition(chessboardArray, depth)
         chessboardArray[p.row][p.col].type = computer
         -- value = AI.maxMin(chessboardArray, p, human, depth - 1)
         -- value = AI.maxMinAplhaBeta(chessboardArray, p, human, depth - 1, -INFINITY, INFINITY)
-        -- value = -AI.negaMax(chessboardArray, p, human, depth - 1)
-        value = -AI.negaMaxAlphaBeta(chessboardArray, p, human, depth - 1, -INFINITY, INFINITY)
+        value = -AI.negaMax(chessboardArray, p, human, depth - 1)
+        -- value = -AI.negaMaxAlphaBeta(chessboardArray, p, human, depth - 1, -INFINITY, INFINITY)  -- 4depth 303.6468 seconds
+        -- value = -AI.negaMaxFailAlphaBeta(chessboardArray, p, human, depth - 1, -INFINITY, INFINITY)   -- 4depth 283.23119 seconds
+        -- value = -AI.negaMaxPVSAlphaBeta(chessboardArray, p, human, depth - 1, -INFINITY, INFINITY)  -- 4depth 279.392369 seconds
+
+        -- --渴望搜索
+        -- local x = -AI.negaMaxFailAlphaBeta(chessboardArray, p, human, depth - 2, -10000, 10000)
+        -- local y = -AI.negaMaxFailAlphaBeta(chessboardArray, p, human, depth - 1, x - 50, x + 50)
+        -- if y < x - 50 then
+        --     value = -AI.negaMaxFailAlphaBeta(chessboardArray, p, human, depth - 1, -10000, y)
+        -- elseif y > x + 50 then
+        --     value = -AI.negaMaxFailAlphaBeta(chessboardArray, p, human, depth - 1, y, 10000)
+        -- else
+        --     value = y
+        -- end
+
+
         chessboardArray[p.row][p.col].type = NO_CHESS
 
         if value >= maxScore then
