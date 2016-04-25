@@ -121,23 +121,23 @@ function TranspositionTable.lookUpHashTable(alpha, beta, depth, tableNo)
 
     -- dump(hashTb[tableNo][tempHashKey32], "hashTb[" .. tableNo .. "][" .. tempHashKey32 .."]")
 
-    if hashItem.checkSum == hashKey64 then
-        Log.d("哈西表中有此局面")
-    end
+    -- if hashItem.checkSum == hashKey64 then
+    --     Log.d("哈西表中有此局面")
+    -- end
 
     if hashItem.depth >= depth and hashItem.checkSum == hashKey64 then
-        Log.d("命中")
+        -- Log.d("命中")
         if hashItem.entryType == ENTRY_TYPE.exact then
-            Log.d("精确值 = " .. hashItem.score)
+            -- Log.d("精确值 = " .. hashItem.score)
             return hashItem.score
         elseif hashItem.entryType == ENTRY_TYPE.lowerBound then
             if hashItem.score >= beta then
-                Log.d("最差值 = " .. hashItem.score)
+                -- Log.d("最差值 = " .. hashItem.score)
                 return hashItem.score
             end
         elseif hashItem.entryType == ENTRY_TYPE.upperBound then
             if hashItem.score <= alpha then
-                Log.d("最好值 = " .. hashItem.score)
+                -- Log.d("最好值 = " .. hashItem.score)
                 return hashItem.score
             end
         end

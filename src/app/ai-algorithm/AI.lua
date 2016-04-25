@@ -520,16 +520,16 @@ function AI.negaMaxFailAlphaBeta(chessboardArray, point, chessType, depth, alpha
 
         if maxScore >= beta then
             ABcut = ABcut + 1
-            TranspositionTable.enterHashTable(ENTRY_TYPE.lowerBound, score, depth, AI.getTableNo(depth))
+            TranspositionTable.enterHashTable(ENTRY_TYPE.lowerBound, value, depth, AI.getTableNo(depth))
             break
         end
     end
 
-    if isExactEval then
-        TranspositionTable.enterHashTable(ENTRY_TYPE.exact, score, depth, AI.getTableNo(depth))
-    else
-        TranspositionTable.enterHashTable(ENTRY_TYPE.upperBound, score, depth, AI.getTableNo(depth))
-    end
+    -- if isExactEval then
+    --     TranspositionTable.enterHashTable(ENTRY_TYPE.exact, alpha, depth, AI.getTableNo(depth))
+    -- else
+    --     TranspositionTable.enterHashTable(ENTRY_TYPE.upperBound, alpha, depth, AI.getTableNo(depth))
+    -- end
 
     return maxScore
 end
@@ -566,39 +566,39 @@ function AI.negaMaxPVSAlphaBeta(chessboardArray, point, chessType, depth, alpha,
 
     for i = 2, #nextPositionTb do
         local p = nextPositionTb[i]
-        AI.makeMove(chessboardArray, p, chessType)
-        value = -AI.negaMaxPVSAlphaBeta(chessboardArray, p, AI.reverseChessType(chessType), depth - 1, -alpha - 1, -alpha)
-        if value > alpha and value < beta then
-            value = -AI.negaMaxPVSAlphaBeta(chessboardArray, p, AI.reverseChessType(chessType), depth - 1, -beta, -alpha)
-        end
-        AI.unmakeMove(chessboardArray, p, chessType)
-
-        if value >= bestScore then
-            bestScore = value
-            if value > alpha then
-                alpha = value
-                -- isExactEval = true
-            end
-            if value >= beta then
-                ABcut = ABcut + 1
-                -- TranspositionTable.enterHashTable(ENTRY_TYPE.lowerBound, score, depth, AI.getTableNo(depth))
-                break
-            end
-        end
-
-        -- if bestScore < beta then
-        --    if bestScore > alpha then
-        --         alpha = bestScore
-        --    end
-        --    AI.makeMove(chessboardArray, p, chessType)
-        --    value = -AI.negaMaxPVSAlphaBeta(chessboardArray, p, AI.reverseChessType(chessType), depth - 1, -alpha - 1, -alpha)
-        --    if value > alpha and value < beta then
-        --         bestScore = -AI.negaMaxPVSAlphaBeta(chessboardArray, p, AI.reverseChessType(chessType), depth - 1, -beta, -value)
-        --    elseif value > bestScore then
-        --         bestScore = value
-        --    end
-        --    AI.unmakeMove(chessboardArray, p, chessType)
+        -- AI.makeMove(chessboardArray, p, chessType)
+        -- value = -AI.negaMaxPVSAlphaBeta(chessboardArray, p, AI.reverseChessType(chessType), depth - 1, -alpha - 1, -alpha)
+        -- if value > alpha and value < beta then
+        --     value = -AI.negaMaxPVSAlphaBeta(chessboardArray, p, AI.reverseChessType(chessType), depth - 1, -beta, -alpha)
         -- end
+        -- AI.unmakeMove(chessboardArray, p, chessType)
+
+        -- if value >= bestScore then
+        --     bestScore = value
+        --     if value > alpha then
+        --         alpha = value
+        --         -- isExactEval = true
+        --     end
+        --     if value >= beta then
+        --         ABcut = ABcut + 1
+        --         -- TranspositionTable.enterHashTable(ENTRY_TYPE.lowerBound, score, depth, AI.getTableNo(depth))
+        --         break
+        --     end
+        -- end
+
+        if bestScore < beta then
+           if bestScore > alpha then
+                alpha = bestScore
+           end
+           AI.makeMove(chessboardArray, p, chessType)
+           value = -AI.negaMaxPVSAlphaBeta(chessboardArray, p, AI.reverseChessType(chessType), depth - 1, -alpha - 1, -alpha)
+           if value > alpha and value < beta then
+                bestScore = -AI.negaMaxPVSAlphaBeta(chessboardArray, p, AI.reverseChessType(chessType), depth - 1, -beta, -value)
+           elseif value > bestScore then
+                bestScore = value
+           end
+           AI.unmakeMove(chessboardArray, p, chessType)
+        end
 
     end
 
@@ -645,8 +645,8 @@ function AI.getNextPlayChessPosition(chessboardArray, depth)
         -- value = AI.maxMinAplhaBeta(chessboardArray, p, human, depth - 1, -INFINITY, INFINITY)
         -- value = -AI.negaMax(chessboardArray, p, human, depth - 1)
         -- value = -AI.negaMaxAlphaBeta(chessboardArray, p, human, depth - 1, -INFINITY, INFINITY)  -- 4depth 303.6468 seconds
-        value = -AI.negaMaxFailAlphaBeta(chessboardArray, p, human, depth - 1, -INFINITY, INFINITY)   -- 4depth 283.23119 seconds
-        -- value = -AI.negaMaxPVSAlphaBeta(chessboardArray, p, human, depth - 1, -INFINITY, INFINITY)  -- 4depth 279.392369 seconds
+        -- value = -AI.negaMaxFailAlphaBeta(chessboardArray, p, human, depth - 1, -INFINITY, INFINITY)   -- 4depth 283.23119 seconds
+        value = -AI.negaMaxPVSAlphaBeta(chessboardArray, p, human, depth - 1, -INFINITY, INFINITY)  -- 4depth 279.392369 seconds
 
         -- --渴望搜索
         -- local x = -AI.negaMaxFailAlphaBeta(chessboardArray, p, human, depth - 2, -10000, 10000)
@@ -677,7 +677,8 @@ function AI.getNextPlayChessPosition(chessboardArray, depth)
     Log.d("置换表命中次数 = " .. hashTbUsed)
     Log.d("maxScore   = " .. maxScore)
     Log.d("用时       ＝ " .. endedTime - beginTime .. " seconds ")
-    dump(nextPosition, "nextPosition")
+    -- dump(nextPosition, "nextPosition")
+    -- TranspositionTable.dumpHashTb()
 
     return #nextPosition == 0 and {row = 8, col = 8} or nextPosition[1]  --多个同等价值的候选点 随机返回一个
     -- return #nextPosition == 0 and {row = 8, col = 8} or nextPosition[math.random(1, #nextPosition)]  --多个同等价值的候选点 随机返回一个

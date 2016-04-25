@@ -27,7 +27,7 @@ INFINITY = 0Xffffff
 --置换表的大小
 HASH_TABLE_SIZE = 1024 * 1024
 --描述棋盘估分的含义  准确值 最坏值 最好值
-ENTRY_TYPE = {exact = "0", lowerBound = "1", upperBound = "2"}
+ENTRY_TYPE = {exact = 0, lowerBound = 1, upperBound = 2}
 
 -- --棋型分数  从高位到低位分别表示
 -- --连五，活四，眠四，活三，活二/眠三，活一/眠二, 眠一
