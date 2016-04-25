@@ -23,6 +23,7 @@ end
 
 local function main()
     Log.d("\n***************** enter main *****************\n")
+
     --垃圾回收
     collectgarbage("collect")
     -- avoid memory leak

@@ -13,3 +13,4 @@ cc.FileUtils:getInstance():addSearchPath("res/images/startui/")
 
 require "utils.Log"
 require "utils.SoundManager"
+require "utils.LuaExtenstion"

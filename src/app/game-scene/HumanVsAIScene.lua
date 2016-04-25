@@ -19,17 +19,17 @@ function HumanVsAIScene:onCreate()
     --设置悔棋步数
     self:setRetractChessStep(2)
 
-    self:isComputerFirst(true)
+    self:isComputerFirst(false)
 
     self._chessboard:addTouchCallFunc(function(row, col)
         if isAdding then return end
 
         if self._chessboard:getNextTurnChessType() == human then
-            -- self._chessboard:addChess(row, col)
+            self._chessboard:addChess(row, col)
 
-            AI.setComputerChessType(human)
-            Log.d("aiAddChess() color = " .. human)
-            self:aiAddChess()
+            -- AI.setComputerChessType(human)
+            -- Log.d("aiAddChess() color = " .. human)
+            -- self:aiAddChess()
         end
         if self._chessboard:getNextTurnChessType() == computer then
             isAdding = true
@@ -38,7 +38,7 @@ function HumanVsAIScene:onCreate()
                 Log.d("电脑下子")
                 AI.setComputerChessType(computer)
                 -- self:aiAddChess()
-                self:aiAddChessByFeatureStep(1)
+                self:aiAddChessByFeatureStep(2)
             end, 0.01)
         end
     end)
