@@ -35,15 +35,8 @@ local function main()
 
     --按钮声音
     SoundManager.init()
-    SoundManager.stopMusic()
 
-    local configs = {
-        viewsRoot  = "app.start-ui",
-        modelsRoot = "app.models",
-        defaultSceneName = "StartScene",
-    }
-
-    local startScene = require("app.start-ui.StartScene"):create()
+    local startScene = require("app.start-scene.StartScene"):create()
     display.runScene(startScene)
 end
 

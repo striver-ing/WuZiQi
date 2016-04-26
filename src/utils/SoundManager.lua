@@ -6,9 +6,10 @@
 --备注:
 ----------------------------
 cc.exports.SoundManager = {}
+local ccUserDefault = cc.UserDefault:getInstance()
 
-local _useEffect = true
-local _useBgMusic = true
+local _useEffect = ccUserDefault:getBoolForKey(SAVA_STRING_SOUND_EFFECT_ENABLE, true);
+local _useBgMusic = ccUserDefault:getBoolForKey(SAVA_STRING_SOUND_MUSIC_ENABLE, true);
 local bgMusic = "chq.mp3"
 
 function SoundManager.init()
@@ -53,6 +54,11 @@ end
 function SoundManager.setMusicEnable(bOpen)
     _useBgMusic = bOpen
     ccUserDefault:setBoolForKey(SAVA_STRING_SOUND_MUSIC_ENABLE, _useBgMusic)
+end
+
+function SoundManager.isMusicEnable()
+    _useBgMusic = ccUserDefault:getBoolForKey(SAVA_STRING_SOUND_MUSIC_ENABLE, true);
+    return _useBgMusic
 end
 
 function SoundManager.setEffectsEnable(bOpen)
