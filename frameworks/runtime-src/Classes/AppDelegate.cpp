@@ -3,6 +3,7 @@
 #include "SimpleAudioEngine.h"
 #include "cocos2d.h"
 #include "lua_module_register.h"
+#include "BleToothManagerTest.h"
 
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_LINUX)
 #include "ide-support/CodeIDESupport.h"
@@ -17,6 +18,8 @@ using namespace CocosDenshion;
 
 USING_NS_CC;
 using namespace std;
+
+#define RUN_WITH_LUA 0
 
 AppDelegate::AppDelegate()
 {
@@ -53,35 +56,64 @@ static int register_all_packages()
 
 bool AppDelegate::applicationDidFinishLaunching()
 {
-    // set default FPS
-    Director::getInstance()->setAnimationInterval(1.0 / 60.0f);
 
-    // register lua module
-    auto engine = LuaEngine::getInstance();
-    ScriptEngineManager::getInstance()->setScriptEngine(engine);
-    lua_State* L = engine->getLuaStack()->getLuaState();
-    lua_module_register(L);
+    FileUtils::getInstance()->addSearchPath("../../../../external/");
 
-    register_all_packages();
+    if (RUN_WITH_LUA) {
+        // set default FPS
+        Director::getInstance()->setAnimationInterval(1.0 / 60.0f);
 
-    LuaStack* stack = engine->getLuaStack();
-    stack->setXXTEAKeyAndSign("2dxLua", strlen("2dxLua"), "XXTEA", strlen("XXTEA"));
+        // register lua module
+        auto engine = LuaEngine::getInstance();
+        ScriptEngineManager::getInstance()->setScriptEngine(engine);
+        lua_State* L = engine->getLuaStack()->getLuaState();
+        lua_module_register(L);
 
-    //register custom function
-    //LuaStack* stack = engine->getLuaStack();
-    //register_custom_function(stack->getLuaState());
+        register_all_packages();
+
+        LuaStack* stack = engine->getLuaStack();
+        stack->setXXTEAKeyAndSign("2dxLua", strlen("2dxLua"), "XXTEA", strlen("XXTEA"));
+
+        //register custom function
+        //LuaStack* stack = engine->getLuaStack();
+        //register_custom_function(stack->getLuaState());
 
 #if (COCOS2D_DEBUG > 0) && (CC_CODE_IDE_DEBUG_SUPPORT > 0)
-    // NOTE:Please don't remove this call if you want to debug with Cocos Code IDE
-    auto runtimeEngine = RuntimeEngine::getInstance();
-    runtimeEngine->addRuntime(RuntimeLuaImpl::create(), kRuntimeEngineLua);
-    runtimeEngine->start();
+        // NOTE:Please don't remove this call if you want to debug with Cocos Code IDE
+        auto runtimeEngine = RuntimeEngine::getInstance();
+        runtimeEngine->addRuntime(RuntimeLuaImpl::create(), kRuntimeEngineLua);
+        runtimeEngine->start();
 #else
-    if (engine->executeScriptFile("src/main.lua"))
-    {
-        return false;
-    }
+        if (engine->executeScriptFile("src/main.lua"))
+        {
+            return false;
+        }
 #endif
+    }else{
+        // initialize director
+        auto director = Director::getInstance();
+        auto glview = director->getOpenGLView();
+        if(!glview) {
+            glview = GLViewImpl::create("My Game");
+            director->setOpenGLView(glview);
+        }
+
+        // turn on display FPS
+        director->setDisplayStats(true);
+
+        // set FPS. the default value is 1.0/60 if you don't call this
+        director->setAnimationInterval(1.0 / 60);
+
+        register_all_packages();
+
+        // create a scene. it's an autorelease object
+        auto scene = Scene::create();
+        scene->addChild(BleToothManagerTest::create());
+        
+        // run
+        director->runWithScene(scene);
+    }
+
 
     return true;
 }
