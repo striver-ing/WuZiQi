@@ -22,6 +22,6 @@ void BleManager::sendMessage(const char* message) {
     [[BlueToothController getInstance] sendMessage:msg];
 }
 
-void BleManager::addReceiveMessageCallBack(ReceiveMessageCallback receiveMessageCallback) {
-    [[BlueToothController getInstance] addReceiveMessageCallBack:receiveMessageCallback];
+void BleManager::addReceivedMessageCallBack(ReceivedMessageCallback receivedMessageCallback) {
+    [[BlueToothController getInstance] addReceivedMessageCallBack:receivedMessageCallback];
 }

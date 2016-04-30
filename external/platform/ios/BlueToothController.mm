@@ -75,10 +75,14 @@ static BlueToothController *blueToothController = nil;
         NSData *data = [msg dataUsingEncoding:NSUTF8StringEncoding];
         [_currentSession sendDataToAllPeers:data withDataMode:GKSendDataReliable error:nil];
     }
+
+    if (_receivedMessageCallback) {
+        _receivedMessageCallback([message UTF8String]);
+    }
 }
 
 //注册接受到数据的回调
-- (void)addReceiveMessageCallBack:(ReceivedMessageCallback)receiveMessageCallback {
+- (void)addReceivedMessageCallBack:(ReceivedMessageCallback)receiveMessageCallback {
     _receivedMessageCallback = receiveMessageCallback;
 }
 
@@ -150,7 +154,10 @@ static BlueToothController *blueToothController = nil;
     NSString *msg = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     NSLog(@"%@", msg);
     //    [SVProgressHUD showSuccessWithStatus:@"数据接收成功"];
-    (*_receivedMessageCallback)([msg UTF8String]);  //执行回调  [NSString UTF8String] 把NSString 转化为const char ＊
+    //    (*_receivedMessageCallback)([msg UTF8String]);  //执行回调  [NSString UTF8String] 把NSString 转化为const char ＊
+    if (_receivedMessageCallback) {
+        _receivedMessageCallback([msg UTF8String]);
+    }
 }
 
 @end

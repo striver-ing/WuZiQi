@@ -12,10 +12,11 @@
 #include "audioengine/lua_cocos2dx_audioengine_manual.h"
 #include "physics3d/lua_cocos2dx_physics3d_manual.h"
 #include "navmesh/lua_cocos2dx_navmesh_manual.h"
+#include "luabinding/lua_wuziqi_auto.hpp"
+#include "luabinding/lua_wuziqi_manual.hpp"
 
-static int lua_module_register(lua_State* L)
-{
-    //Dont' change the module register order unless you know what your are doing
+static int lua_module_register(lua_State* L) {
+    // Dont' change the module register order unless you know what your are doing
     register_cocosdenshion_module(L);
     register_network_module(L);
     register_cocosbuilder_module(L);
@@ -25,6 +26,8 @@ static int lua_module_register(lua_State* L)
     register_spine_module(L);
     register_cocos3d_module(L);
     register_audioengine_module(L);
+    register_all_wuziqi(L);
+    register_all_wuziqi_manual(L);
 #if CC_USE_3D_PHYSICS && CC_ENABLE_BULLET_INTEGRATION
     register_physics3d_module(L);
 #endif
@@ -35,4 +38,3 @@ static int lua_module_register(lua_State* L)
 }
 
 #endif  // __LUA_TEMPLATE_RUNTIME_FRAMEWORKS_RUNTIME_SRC_CLASSES_LUA_MODULE_REGISTER_H__
-

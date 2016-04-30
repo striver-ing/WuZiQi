@@ -7,6 +7,7 @@
 //
 #include "BleToothManagerTest.h"
 #include "BleManager.h"
+#include "NetworkManagerFactory.h"
 
 bool BleToothManagerTest::init() {
     if (!Layer::init()) {
@@ -17,7 +18,9 @@ bool BleToothManagerTest::init() {
     auto connecBtn = createBtn((char*)"搜索蓝牙", Vec2(visibleSize.width / 2, visibleSize.height * 0.8));
     connecBtn->addTouchEventListener([=](Ref* sender, Widget::TouchEventType type) {
         if (type == Widget::TouchEventType::ENDED) {
-            BleManager::getInstance()->searchBleAndConnect();
+            //            BleManager::getInstance()->searchBleAndConnect();
+            NetworkManagerProtocol* ble = NetworkManagerFactory::produceBleManager();
+            ble->searchBleAndConnect();
         }
 
     });
@@ -38,7 +41,7 @@ bool BleToothManagerTest::init() {
 
     });
 
-    BleManager::getInstance()->addReceiveMessageCallBack([](const char* msg) { MessageBox(msg, "收到数据"); });
+    BleManager::getInstance()->addReceivedMessageCallBack([=](const char* msg) { MessageBox(msg, "收到数据"); });
 
     return true;
 }

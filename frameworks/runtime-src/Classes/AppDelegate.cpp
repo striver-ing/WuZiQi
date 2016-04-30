@@ -19,29 +19,25 @@ using namespace CocosDenshion;
 USING_NS_CC;
 using namespace std;
 
-#define RUN_WITH_LUA 0
+#define RUN_WITH_LUA 1
 
-AppDelegate::AppDelegate()
-{
+AppDelegate::AppDelegate() {
 }
 
-AppDelegate::~AppDelegate()
-{
+AppDelegate::~AppDelegate() {
     SimpleAudioEngine::end();
 
 #if (COCOS2D_DEBUG > 0) && (CC_CODE_IDE_DEBUG_SUPPORT > 0)
     // NOTE:Please don't remove this call if you want to debug with Cocos Code IDE
     RuntimeEngine::getInstance()->end();
 #endif
-
 }
 
-//if you want a different context,just modify the value of glContextAttrs
-//it will takes effect on all platforms
-void AppDelegate::initGLContextAttrs()
-{
-    //set OpenGL context attributions,now can only set six attributions:
-    //red,green,blue,alpha,depth,stencil
+// if you want a different context,just modify the value of glContextAttrs
+// it will takes effect on all platforms
+void AppDelegate::initGLContextAttrs() {
+    // set OpenGL context attributions,now can only set six attributions:
+    // red,green,blue,alpha,depth,stencil
     GLContextAttrs glContextAttrs = {8, 8, 8, 8, 24, 8};
 
     GLView::setGLContextAttrs(glContextAttrs);
@@ -49,14 +45,11 @@ void AppDelegate::initGLContextAttrs()
 
 // If you want to use packages manager to install more packages,
 // don't modify or remove this function
-static int register_all_packages()
-{
-   return 0; //flag for packages manager
+static int register_all_packages() {
+    return 0;  // flag for packages manager
 }
 
-bool AppDelegate::applicationDidFinishLaunching()
-{
-
+bool AppDelegate::applicationDidFinishLaunching() {
     FileUtils::getInstance()->addSearchPath("../../../../external/");
 
     if (RUN_WITH_LUA) {
@@ -74,9 +67,9 @@ bool AppDelegate::applicationDidFinishLaunching()
         LuaStack* stack = engine->getLuaStack();
         stack->setXXTEAKeyAndSign("2dxLua", strlen("2dxLua"), "XXTEA", strlen("XXTEA"));
 
-        //register custom function
-        //LuaStack* stack = engine->getLuaStack();
-        //register_custom_function(stack->getLuaState());
+// register custom function
+// LuaStack* stack = engine->getLuaStack();
+// register_custom_function(stack->getLuaState());
 
 #if (COCOS2D_DEBUG > 0) && (CC_CODE_IDE_DEBUG_SUPPORT > 0)
         // NOTE:Please don't remove this call if you want to debug with Cocos Code IDE
@@ -84,16 +77,15 @@ bool AppDelegate::applicationDidFinishLaunching()
         runtimeEngine->addRuntime(RuntimeLuaImpl::create(), kRuntimeEngineLua);
         runtimeEngine->start();
 #else
-        if (engine->executeScriptFile("src/main.lua"))
-        {
+        if (engine->executeScriptFile("src/main.lua")) {
             return false;
         }
 #endif
-    }else{
+    } else {
         // initialize director
         auto director = Director::getInstance();
         auto glview = director->getOpenGLView();
-        if(!glview) {
+        if (!glview) {
             glview = GLViewImpl::create("My Game");
             director->setOpenGLView(glview);
         }
@@ -109,26 +101,23 @@ bool AppDelegate::applicationDidFinishLaunching()
         // create a scene. it's an autorelease object
         auto scene = Scene::create();
         scene->addChild(BleToothManagerTest::create());
-        
+
         // run
         director->runWithScene(scene);
     }
-
 
     return true;
 }
 
 // This function will be called when the app is inactive. When comes a phone call,it's be invoked too
-void AppDelegate::applicationDidEnterBackground()
-{
+void AppDelegate::applicationDidEnterBackground() {
     Director::getInstance()->stopAnimation();
 
     SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
 }
 
 // this function will be called when the app is active again
-void AppDelegate::applicationWillEnterForeground()
-{
+void AppDelegate::applicationWillEnterForeground() {
     Director::getInstance()->startAnimation();
 
     SimpleAudioEngine::getInstance()->resumeBackgroundMusic();

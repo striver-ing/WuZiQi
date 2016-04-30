@@ -15,11 +15,17 @@
 		15A8A4881834C90F00142BE0 /* libcurl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 15A8A4871834C90E00142BE0 /* libcurl.dylib */; };
 		1AF4C403178663F200122817 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AF4C402178663F200122817 /* libz.dylib */; };
 		3A4E592A1CD3176600254897 /* NetworkManagerProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A4E59281CD3176600254897 /* NetworkManagerProtocol.cpp */; };
+		3A4E59311CD3730E00254897 /* NetworkManagerFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A4E592F1CD3730E00254897 /* NetworkManagerFactory.cpp */; };
+		3A64C9C51CD4887D0009B3CB /* lua_wuziqi_auto_api.lua in Resources */ = {isa = PBXBuildFile; fileRef = 3A64C9C01CD4887D0009B3CB /* lua_wuziqi_auto_api.lua */; };
+		3A64C9C61CD4887D0009B3CB /* NetworkManagerFactory.lua in Resources */ = {isa = PBXBuildFile; fileRef = 3A64C9C11CD4887D0009B3CB /* NetworkManagerFactory.lua */; };
+		3A64C9C71CD4887D0009B3CB /* NetworkManagerProtocol.lua in Resources */ = {isa = PBXBuildFile; fileRef = 3A64C9C21CD4887D0009B3CB /* NetworkManagerProtocol.lua */; };
+		3A64C9C81CD4887D0009B3CB /* lua_wuziqi_auto.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A64C9C31CD4887D0009B3CB /* lua_wuziqi_auto.cpp */; };
+		3A64C9D21CD4EC860009B3CB /* lua_wuziqi_manual.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A64C9D01CD4EC860009B3CB /* lua_wuziqi_manual.cpp */; };
 		3AB0D43C1CCF89AE000CF354 /* external in Resources */ = {isa = PBXBuildFile; fileRef = 3AB0D43B1CCF89AE000CF354 /* external */; };
 		3AD632B61CD073FF004A8434 /* BleToothManagerTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AD632B41CD073FF004A8434 /* BleToothManagerTest.cpp */; };
 		3AD632E51CD0C097004A8434 /* BleManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AD632CB1CD0C097004A8434 /* BleManager.cpp */; };
 		3AD632EA1CD0C097004A8434 /* BleManagerImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3AD632D81CD0C097004A8434 /* BleManagerImpl.mm */; };
-		3AD632EB1CD0C097004A8434 /* BlueToothController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD632DA1CD0C097004A8434 /* BlueToothController.m */; };
+		3AD632EB1CD0C097004A8434 /* BlueToothController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3AD632DA1CD0C097004A8434 /* BlueToothController.mm */; };
 		3AD632EC1CD0C097004A8434 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AD632DC1CD0C097004A8434 /* GameKit.framework */; };
 		3AD632ED1CD0C097004A8434 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD632E01CD0C097004A8434 /* MBProgressHUD.m */; };
 		3AD632EE1CD0C097004A8434 /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3AD632E21CD0C097004A8434 /* SVProgressHUD.bundle */; };
@@ -186,6 +192,15 @@
 		1AF4C402178663F200122817 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		3A4E59281CD3176600254897 /* NetworkManagerProtocol.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NetworkManagerProtocol.cpp; sourceTree = "<group>"; };
 		3A4E59291CD3176600254897 /* NetworkManagerProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkManagerProtocol.h; sourceTree = "<group>"; };
+		3A4E592F1CD3730E00254897 /* NetworkManagerFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NetworkManagerFactory.cpp; sourceTree = "<group>"; };
+		3A4E59301CD3730E00254897 /* NetworkManagerFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkManagerFactory.h; sourceTree = "<group>"; };
+		3A64C9C01CD4887D0009B3CB /* lua_wuziqi_auto_api.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lua_wuziqi_auto_api.lua; sourceTree = "<group>"; };
+		3A64C9C11CD4887D0009B3CB /* NetworkManagerFactory.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NetworkManagerFactory.lua; sourceTree = "<group>"; };
+		3A64C9C21CD4887D0009B3CB /* NetworkManagerProtocol.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NetworkManagerProtocol.lua; sourceTree = "<group>"; };
+		3A64C9C31CD4887D0009B3CB /* lua_wuziqi_auto.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lua_wuziqi_auto.cpp; sourceTree = "<group>"; };
+		3A64C9C41CD4887D0009B3CB /* lua_wuziqi_auto.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = lua_wuziqi_auto.hpp; sourceTree = "<group>"; };
+		3A64C9D01CD4EC860009B3CB /* lua_wuziqi_manual.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lua_wuziqi_manual.cpp; sourceTree = "<group>"; };
+		3A64C9D11CD4EC860009B3CB /* lua_wuziqi_manual.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = lua_wuziqi_manual.hpp; sourceTree = "<group>"; };
 		3AB0D43B1CCF89AE000CF354 /* external */ = {isa = PBXFileReference; lastKnownFileType = folder; name = external; path = "/Users/liubo/Workspaces/cocos2d-x/WuZiQi/external"; sourceTree = "<absolute>"; };
 		3AD632B41CD073FF004A8434 /* BleToothManagerTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BleToothManagerTest.cpp; path = ../Classes/BleToothManagerTest.cpp; sourceTree = "<group>"; };
 		3AD632B51CD073FF004A8434 /* BleToothManagerTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BleToothManagerTest.h; path = ../Classes/BleToothManagerTest.h; sourceTree = "<group>"; };
@@ -193,7 +208,7 @@
 		3AD632CC1CD0C097004A8434 /* BleManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BleManager.h; sourceTree = "<group>"; };
 		3AD632D81CD0C097004A8434 /* BleManagerImpl.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BleManagerImpl.mm; sourceTree = "<group>"; };
 		3AD632D91CD0C097004A8434 /* BlueToothController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlueToothController.h; sourceTree = "<group>"; };
-		3AD632DA1CD0C097004A8434 /* BlueToothController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlueToothController.m; sourceTree = "<group>"; };
+		3AD632DA1CD0C097004A8434 /* BlueToothController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BlueToothController.mm; sourceTree = "<group>"; };
 		3AD632DC1CD0C097004A8434 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GameKit.framework; sourceTree = "<group>"; };
 		3AD632DF1CD0C097004A8434 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		3AD632E01CD0C097004A8434 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
@@ -334,11 +349,23 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		3A64C9BF1CD4887D0009B3CB /* api */ = {
+			isa = PBXGroup;
+			children = (
+				3A64C9C01CD4887D0009B3CB /* lua_wuziqi_auto_api.lua */,
+				3A64C9C11CD4887D0009B3CB /* NetworkManagerFactory.lua */,
+				3A64C9C21CD4887D0009B3CB /* NetworkManagerProtocol.lua */,
+			);
+			path = api;
+			sourceTree = "<group>";
+		};
 		3AD632CA1CD0C097004A8434 /* external */ = {
 			isa = PBXGroup;
 			children = (
 				3A4E59281CD3176600254897 /* NetworkManagerProtocol.cpp */,
 				3A4E59291CD3176600254897 /* NetworkManagerProtocol.h */,
+				3A4E592F1CD3730E00254897 /* NetworkManagerFactory.cpp */,
+				3A4E59301CD3730E00254897 /* NetworkManagerFactory.h */,
 				3AD632CB1CD0C097004A8434 /* BleManager.cpp */,
 				3AD632CC1CD0C097004A8434 /* BleManager.h */,
 				3AD632CF1CD0C097004A8434 /* luabinding */,
@@ -352,6 +379,11 @@
 		3AD632CF1CD0C097004A8434 /* luabinding */ = {
 			isa = PBXGroup;
 			children = (
+				3A64C9BF1CD4887D0009B3CB /* api */,
+				3A64C9D01CD4EC860009B3CB /* lua_wuziqi_manual.cpp */,
+				3A64C9D11CD4EC860009B3CB /* lua_wuziqi_manual.hpp */,
+				3A64C9C31CD4887D0009B3CB /* lua_wuziqi_auto.cpp */,
+				3A64C9C41CD4887D0009B3CB /* lua_wuziqi_auto.hpp */,
 			);
 			path = luabinding;
 			sourceTree = "<group>";
@@ -377,7 +409,7 @@
 			children = (
 				3AD632D81CD0C097004A8434 /* BleManagerImpl.mm */,
 				3AD632D91CD0C097004A8434 /* BlueToothController.h */,
-				3AD632DA1CD0C097004A8434 /* BlueToothController.m */,
+				3AD632DA1CD0C097004A8434 /* BlueToothController.mm */,
 			);
 			path = ios;
 			sourceTree = "<group>";
@@ -741,6 +773,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3AD632EE1CD0C097004A8434 /* SVProgressHUD.bundle in Resources */,
+				3A64C9C71CD4887D0009B3CB /* NetworkManagerProtocol.lua in Resources */,
 				15A8A4491834C64F00142BE0 /* Icon-114.png in Resources */,
 				5023811D17EBBCAC00990C9B /* Icon-120.png in Resources */,
 				5091733B17ECE17A00D62437 /* Icon-100.png in Resources */,
@@ -750,6 +783,7 @@
 				5023811917EBBCAC00990C9B /* Default-568h@2x.png in Resources */,
 				5091733917ECE17A00D62437 /* Icon-58.png in Resources */,
 				5023811F17EBBCAC00990C9B /* Icon-152.png in Resources */,
+				3A64C9C51CD4887D0009B3CB /* lua_wuziqi_auto_api.lua in Resources */,
 				5023812017EBBCAC00990C9B /* Icon-57.png in Resources */,
 				521A8E7019F0C3D200D177D7 /* Default-667h@2x.png in Resources */,
 				C03781B918BF655400FE4F13 /* res in Resources */,
@@ -761,6 +795,7 @@
 				C03781BB18BF655400FE4F13 /* src in Resources */,
 				5091733817ECE17A00D62437 /* Icon-50.png in Resources */,
 				5023812117EBBCAC00990C9B /* Icon-72.png in Resources */,
+				3A64C9C61CD4887D0009B3CB /* NetworkManagerFactory.lua in Resources */,
 				C05D1C121923449100B808A4 /* config.json in Resources */,
 				521A8E7119F0C3D200D177D7 /* Default-736h@3x.png in Resources */,
 			);
@@ -808,11 +843,14 @@
 				5023812517EBBCAC00990C9B /* RootViewController.mm in Sources */,
 				F293BB9C15EB831F00256477 /* AppDelegate.cpp in Sources */,
 				9FFE009F1ACCF59E00D6E35A /* lua_debugger.c in Sources */,
+				3A64C9C81CD4887D0009B3CB /* lua_wuziqi_auto.cpp in Sources */,
 				3AD632B61CD073FF004A8434 /* BleToothManagerTest.cpp in Sources */,
-				3AD632EB1CD0C097004A8434 /* BlueToothController.m in Sources */,
+				3AD632EB1CD0C097004A8434 /* BlueToothController.mm in Sources */,
+				3A64C9D21CD4EC860009B3CB /* lua_wuziqi_manual.cpp in Sources */,
 				5023812417EBBCAC00990C9B /* main.m in Sources */,
 				3AD632E51CD0C097004A8434 /* BleManager.cpp in Sources */,
 				3AD632EA1CD0C097004A8434 /* BleManagerImpl.mm in Sources */,
+				3A4E59311CD3730E00254897 /* NetworkManagerFactory.cpp in Sources */,
 				9FFE00A11ACCF59E00D6E35A /* RuntimeLuaImpl.cpp in Sources */,
 				5023811817EBBCAC00990C9B /* AppController.mm in Sources */,
 				3AD632ED1CD0C097004A8434 /* MBProgressHUD.m in Sources */,

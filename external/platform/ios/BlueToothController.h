@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import <GameKit/GameKit.h>  //蓝牙需要
+#include <functional>
 
-typedef void (*ReceivedMessageCallback)(const char* msg);
+// typedef void (*ReceivedMessageCallback)(const char* msg);
+typedef std::function<void(const char*)> ReceivedMessageCallback;
 
 @interface BlueToothController : UIViewController<GKPeerPickerControllerDelegate, GKSessionDelegate> {
 }
@@ -20,7 +22,7 @@ typedef void (*ReceivedMessageCallback)(const char* msg);
 - (void)closeConnected;
 
 - (void)sendMessage:(NSString*)message;
-- (void)addReceiveMessageCallBack:(ReceivedMessageCallback)receiveMessageCallback;
-//@property(nonatomic, assign, setter=addReceiveMessageCallBack:) ReceivedMessageCallback* receivedMessageCallback;
+- (void)addReceivedMessageCallBack:(ReceivedMessageCallback)receiveMessageCallback;
+//@property(nonatomic, assign, setter=addReceivedMessageCallBack:) ReceivedMessageCallback* receivedMessageCallback;
 
 @end

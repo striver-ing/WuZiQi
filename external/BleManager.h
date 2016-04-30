@@ -10,6 +10,7 @@
 
 #pragma once
 #include "NetworkManagerProtocol.h"
+#include "BleManager.h"
 
 class BleManager : public NetworkManagerProtocol {
 public:
@@ -17,5 +18,5 @@ public:
     virtual void searchBleAndConnect();
     virtual void closeConnected();
     virtual void sendMessage(const char* message);
-    virtual void addReceiveMessageCallBack(ReceiveMessageCallback receiveMessageCallback);
+    virtual void addReceivedMessageCallBack(ReceivedMessageCallback receivedMessageCallback);
 };

@@ -12,14 +12,13 @@
 #include <stdio.h>
 #include <iostream>
 
-typedef void (*ReceiveMessageCallback)(const char* msg);
+// typedef void (*ReceiveMessageCallback)(const char* msg);
+typedef std::function<void(const char*)> ReceivedMessageCallback;
 
 class NetworkManagerProtocol {
 public:
-    //    static NetworkManagerProtocol* getInstance();
-
     virtual void searchBleAndConnect() = 0;
     virtual void closeConnected() = 0;
     virtual void sendMessage(const char* message) = 0;
-    virtual void addReceiveMessageCallBack(ReceiveMessageCallback receiveMessageCallback) = 0;
+    virtual void addReceivedMessageCallBack(ReceivedMessageCallback receivedMessageCallback) = 0;
 };
