@@ -41,7 +41,7 @@ bool BleToothManagerTest::init() {
 
     });
 
-    BleManager::getInstance()->addReceivedMessageCallBack([=](const char* msg) { MessageBox(msg, "收到数据"); });
+    BleManager::getInstance()->addReceivedMessageCallback([=](const char* msg) { MessageBox(msg, "收到数据"); });
 
     return true;
 }

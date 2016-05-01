@@ -20,5 +20,5 @@ public:
     virtual void searchBleAndConnect() = 0;
     virtual void closeConnected() = 0;
     virtual void sendMessage(const char* message) = 0;
-    virtual void addReceivedMessageCallBack(ReceivedMessageCallback receivedMessageCallback) = 0;
+    virtual void addReceivedMessageCallback(ReceivedMessageCallback receivedMessageCallback) = 0;
 };

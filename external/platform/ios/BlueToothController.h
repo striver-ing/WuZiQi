@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <GameKit/GameKit.h>  //蓝牙需要
 #include <functional>
+#include <vector>
 
 // typedef void (*ReceivedMessageCallback)(const char* msg);
 typedef std::function<void(const char*)> ReceivedMessageCallback;
@@ -22,7 +23,7 @@ typedef std::function<void(const char*)> ReceivedMessageCallback;
 - (void)closeConnected;
 
 - (void)sendMessage:(NSString*)message;
-- (void)addReceivedMessageCallBack:(ReceivedMessageCallback)receiveMessageCallback;
+- (void)addReceivedMessageCallback:(ReceivedMessageCallback)receiveMessageCallback;
 //@property(nonatomic, assign, setter=addReceivedMessageCallBack:) ReceivedMessageCallback* receivedMessageCallback;
 
 @end

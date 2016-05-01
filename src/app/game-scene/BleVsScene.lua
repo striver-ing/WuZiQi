@@ -26,9 +26,14 @@ function BleVsScene:onCreate()
 
     -- BleManager:searchBleAndConnect()
 
-    -- BleManager.addReceivedMessageCallBack(function (msg)
-    --     Log.d(msg)
-    -- end)
+    BleManager.addReceivedMessageCallback(function (msg)
+        Log.d(msg)
+    end)
+
+   self:addButton(nil, display.cx, display.visibleoriginX + 80, self, function(sender, eventType)
+        BleManager.sendMessage("😄")
+    end, "发送消息😄", 50)
+
 end
 
 return BleVsScene

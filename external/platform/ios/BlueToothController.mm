@@ -13,7 +13,7 @@
 static BlueToothController *blueToothController = nil;
 
 @interface BlueToothController ()
-
+- (void)executeReceivedMessageCallback:(NSString *)message;
 @end
 
 @implementation BlueToothController {
@@ -24,7 +24,8 @@ static BlueToothController *blueToothController = nil;
 
     //    NSString *_msg;
 
-    ReceivedMessageCallback _receivedMessageCallback;
+    //    ReceivedMessageCallback _receivedMessageCallback;
+    std::vector<ReceivedMessageCallback> _receivedMessageCallbacks;
 }
 
 //#pragma mark - init
@@ -75,15 +76,19 @@ static BlueToothController *blueToothController = nil;
         NSData *data = [msg dataUsingEncoding:NSUTF8StringEncoding];
         [_currentSession sendDataToAllPeers:data withDataMode:GKSendDataReliable error:nil];
     }
-
-    if (_receivedMessageCallback) {
-        _receivedMessageCallback([message UTF8String]);
-    }
+    [self executeReceivedMessageCallback:message];
 }
 
 //注册接受到数据的回调
-- (void)addReceivedMessageCallBack:(ReceivedMessageCallback)receiveMessageCallback {
-    _receivedMessageCallback = receiveMessageCallback;
+- (void)addReceivedMessageCallback:(ReceivedMessageCallback)receiveMessageCallback {
+    _receivedMessageCallbacks.push_back(receiveMessageCallback);
+}
+
+//执行回调
+- (void)executeReceivedMessageCallback:(NSString *)message {
+    for (ReceivedMessageCallback callback : _receivedMessageCallbacks) {
+        callback([message UTF8String]);
+    }
 }
 
 //取消连接
@@ -155,9 +160,7 @@ static BlueToothController *blueToothController = nil;
     NSLog(@"%@", msg);
     //    [SVProgressHUD showSuccessWithStatus:@"数据接收成功"];
     //    (*_receivedMessageCallback)([msg UTF8String]);  //执行回调  [NSString UTF8String] 把NSString 转化为const char ＊
-    if (_receivedMessageCallback) {
-        _receivedMessageCallback([msg UTF8String]);
-    }
+    [self executeReceivedMessageCallback:msg];
 }
 
 @end

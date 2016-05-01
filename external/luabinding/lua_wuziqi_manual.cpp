@@ -5,7 +5,7 @@
 #include "LuaBasicConversions.h"
 
 //注册callback 方法 todo
-int lua_wuziqi_NetworkManagerProtocol_addReceivedMessageCallBack(lua_State* tolua_S) {
+int lua_wuziqi_NetworkManagerProtocol_addReceivedMessageCallback(lua_State* tolua_S) {
     int argc = 0;
     NetworkManagerProtocol* cobj = nullptr;
     bool ok = true;
@@ -23,7 +23,7 @@ int lua_wuziqi_NetworkManagerProtocol_addReceivedMessageCallBack(lua_State* tolu
 
 #if COCOS2D_DEBUG >= 1
     if (!cobj) {
-        tolua_error(tolua_S, "invalid 'cobj' in function 'lua_wuziqi_NetworkManagerProtocol_addReceivedMessageCallBack'", nullptr);
+        tolua_error(tolua_S, "invalid 'cobj' in function 'lua_wuziqi_NetworkManagerProtocol_addReceivedMessageCallback'", nullptr);
         return 0;
     }
 #endif
@@ -39,12 +39,12 @@ int lua_wuziqi_NetworkManagerProtocol_addReceivedMessageCallBack(lua_State* tolu
         //        } while(0)
         ;
         if (!ok) {
-            tolua_error(tolua_S, "invalid arguments in function 'lua_wuziqi_NetworkManagerProtocol_addReceivedMessageCallBack'", nullptr);
+            tolua_error(tolua_S, "invalid arguments in function 'lua_wuziqi_NetworkManagerProtocol_addReceivedMessageCallback'", nullptr);
             return 0;
         }
 
         LUA_FUNCTION handler = (toluafix_ref_function(tolua_S, 2, 0));
-        cobj->addReceivedMessageCallBack([=](const char* msg) {
+        cobj->addReceivedMessageCallback([=](const char* msg) {
             LuaStack* stack = LuaEngine::getInstance()->getLuaStack();
 
             stack->pushString(msg);
@@ -57,12 +57,12 @@ int lua_wuziqi_NetworkManagerProtocol_addReceivedMessageCallBack(lua_State* tolu
         return 1;
     }
 
-    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "NetworkManagerProtocol:addReceivedMessageCallBack", argc, 0);
+    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "NetworkManagerProtocol:addReceivedMessageCallback", argc, 0);
     return 0;
 
 #if COCOS2D_DEBUG >= 1
 tolua_lerror:
-    tolua_error(tolua_S, "#ferror in function 'lua_wuziqi_NetworkManagerProtocol_addReceivedMessageCallBack'.", &tolua_err);
+    tolua_error(tolua_S, "#ferror in function 'lua_wuziqi_NetworkManagerProtocol_addReceivedMessageCallback'.", &tolua_err);
 #endif
 
     return 0;
@@ -73,7 +73,7 @@ int lua_register_wuziqi_NetworkManagerProtocol_module(lua_State* tolua_S) {
     tolua_cclass(tolua_S, "NetworkManagerProtocol", "NetworkManagerProtocol", "", nullptr);
 
     tolua_beginmodule(tolua_S, "NetworkManagerProtocol");
-    tolua_function(tolua_S, "addReceivedMessageCallBack", lua_wuziqi_NetworkManagerProtocol_addReceivedMessageCallBack);
+    tolua_function(tolua_S, "addReceivedMessageCallback", lua_wuziqi_NetworkManagerProtocol_addReceivedMessageCallback);
     tolua_endmodule(tolua_S);
     std::string typeName = typeid(NetworkManagerProtocol).name();
     g_luaType[typeName] = "NetworkManagerProtocol";
