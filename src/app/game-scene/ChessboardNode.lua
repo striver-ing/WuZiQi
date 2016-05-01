@@ -10,7 +10,7 @@ local ChessboardNode = class("ChessboardNode", function ()
     return display.newNode()
 end)
 
-local isWhiteTurn = false;
+local isWhiteTurn = false
 local firstChessType = BLACK
 local isGameOver = false
 local chessNumber = 0  -- 棋子上显示序列号用
@@ -54,8 +54,7 @@ function ChessboardNode:initChessboardArray()
     chessNumber = 0
 
     isGameOver = false
-
-    isGameOver = false
+    isWhiteTurn = false
 
     -- dump(self._chessboardArray, "chessboardArray")
 end

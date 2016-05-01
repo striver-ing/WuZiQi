@@ -8,24 +8,35 @@
 
 local BleVsScene = class("BleVsScene", require("app.game-scene.GameBaseScene"))
 
--- local BleManager = NetworkManagerFactory:produceBleManager()
 local BleManager = require("utils.BleManager")
+local ownPlayChessType = nil
 
 function BleVsScene:onCreate()
     Log.d("蓝牙对弈")
+    self.init();
+    -- BleManager:searchBleAndConnect()
 
-    local isWhiteTurn = true
     self._chessboard:addTouchCallFunc(function(row, col)
-        BleManager.ownSideAddChess(row, col)
-            -- self._chessboard:addChess(row, col)
+         if ownPlayChessType == nil then
+            self._chessboard:addChess(row, col)
+            ownPlayChessType = self._chessboard:getCurrentChessType()
+            BleManager.ownSideAddChess(row, col)
+
+        elseif ownPlayChessType == self._chessboard:getNextTurnChessType() then
+            self._chessboard:addChess(row, col)
+            BleManager.ownSideAddChess(row, col)
+        end
+
+
     end)
 
+    --添加对方下棋的回调
     BleManager.enemySideAddChessCallback(function(row, col)
         self._chessboard:addChess(row, col)
     end)
 
-    -- BleManager:searchBleAndConnect()
 
+    --接收到消息的回调
     BleManager.addReceivedMessageCallback(function (msg)
         Log.d(msg)
     end)
@@ -34,6 +45,10 @@ function BleVsScene:onCreate()
         BleManager.sendMessage("😄")
     end, "发送消息😄", 50)
 
+end
+
+function BleVsScene:init()
+    ownPlayChessType = nil
 end
 
 return BleVsScene

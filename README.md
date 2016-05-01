@@ -76,7 +76,18 @@ ChessBoard[15][15] chessBoard;
 ***封装AI***
 
 * 评估某一点的分数
-* .....
+* 评估棋盘分数
+* 找出可下子点
+* 简易五子棋算法
+* 极大极小值算法
+* 负极大值算法
+* alpah－beta剪枝
+* Fail-soft Alpah-Beta 算法 （超出边界算法）
+* 启发式搜索
+* 置换表
+* 迭代加深（todo）
+* 算杀（todo）
+
 
 **思路  **  
 1.评估某一点分数
@@ -203,3 +214,12 @@ long NegaMax(局面 p, ing Side, int depth)//depth是搜索深度
 负极大值AlpahBeta算法
 
 ```
+
+---
+
+### 五、网络对弈
+1. 蓝牙对弈
+2. wifi对弈
+
+**封装**
+（制图todo）
