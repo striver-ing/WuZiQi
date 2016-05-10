@@ -15,6 +15,7 @@ local firstChessType = BLACK
 local isGameOver = false
 local chessNumber = 0  -- 棋子上显示序列号用
 local IS_SHOW_CHESSNUMBER = true
+local GameoverLayer = require("app.gameover-layer.GameoverLayer")
 
 function ChessboardNode:ctor()
     --棋盘
