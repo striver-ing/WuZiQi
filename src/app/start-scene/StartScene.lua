@@ -28,14 +28,14 @@ function StartScene:ctor()
     end)
 
     --蓝牙对弈
-    self:addButton("doublem.png", display.visiblesizeWidth / 2, display.visiblesizeHeight * 0.3, function(sender, eventType)
+    self:addButton("blebtn.png", display.visiblesizeWidth / 2, display.visiblesizeHeight * 0.3, function(sender, eventType)
         local scene = require("app.game-scene.BleVsScene"):create()
         display.runScene(scene)
     end)
 
 
-    --残局对弈
-    self:addButton("doublem.png", display.visiblesizeWidth / 2, display.visiblesizeHeight * 0.15, function(sender, eventType)
+    --wifi对弈
+    self:addButton("wifibtn.png", display.visiblesizeWidth / 2, display.visiblesizeHeight * 0.15, function(sender, eventType)
     end)
 end
 
