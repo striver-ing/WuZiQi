@@ -46,6 +46,8 @@ function GameBaseScene:ctor()
     self:addGameoverCallback()
 
     self:tipWhoAddChess()
+    self:addAddingChessTip()
+    self:hideAddingChess()
 
     --子类程序入口
     if self.onCreate then self:onCreate() end
@@ -117,6 +119,26 @@ function GameBaseScene:tipWhoAddChess()
             wihteChessTip:setVisible(true)
         end
     end)
+end
+
+-- 正在下子  等待
+function GameBaseScene:addAddingChessTip()
+    self._addingChessTip = display.newSprite("rotate.png")
+    self._addingChessTip:setPosition(cc.p(self._timeLabel:getPositionX() - self._timeLabel:getContentSize().width / 2 , self._timeLabel:getPositionY() - 50))
+    self._addingChessTip:addTo(self)
+
+    -- 旋转
+    local rotate = cc.RotateBy:create(2, 360)
+    local repeatRotate = cc.RepeatForever:create(rotate)
+    self._addingChessTip:runAction(repeatRotate)
+end
+
+function GameBaseScene:showAddingChessTip()
+    self._addingChessTip:setVisible(true)
+end
+
+function GameBaseScene:hideAddingChess()
+    self._addingChessTip:setVisible(false)
 end
 
 --改变 time label

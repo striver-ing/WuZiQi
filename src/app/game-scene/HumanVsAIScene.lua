@@ -34,11 +34,13 @@ function HumanVsAIScene:onCreate()
         end
         if self._chessboard:getNextTurnChessType() == computer then
             isAdding = true
+            self:showAddingChessTip()
+
             performWithDelay(self, function()
                 -- Log.d("电脑下子")
                 -- AI.setComputerChessType(computer)
-                self:aiAddChess()
-                -- self:aiAddChessByFeatureStep(2)
+                -- self:aiAddChess()
+                self:aiAddChessByFeatureStep(2)
             end, 0.01)
         end
     end)
@@ -66,6 +68,7 @@ function HumanVsAIScene:aiAddChess()
     local position = AI.getMaxSorcePoint(self._chessboard:getChessBoardArray())
     self._chessboard:addChess(position.row, position.col, function ()
         isAdding = false;
+        self:hideAddingChess()
     end)
 end
 
@@ -74,6 +77,7 @@ function HumanVsAIScene:aiAddChessByFeatureStep(depth)
     local position = AI.getNextPlayChessPosition(self._chessboard:getChessBoardArray(), depth)
     self._chessboard:addChess(position.row, position.col, function ()
         isAdding = false;
+        self:hideAddingChess()
         Log.d("电脑下子完毕")
     end)
 end
