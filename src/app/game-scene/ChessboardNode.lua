@@ -120,6 +120,11 @@ function ChessboardNode:getBehindChessType()
     return firstChessType == BLACK and WHITE or BLACK
 end
 
+-- 轮到下一方下子通知
+function ChessboardNode:addNextTurnNotifyCallback(callFunc)
+    self._nextTurnNotifyCallback = callFunc
+end
+
 function ChessboardNode:addChess(row, col, callFunc)
     if row == nil or col == nil then
         if callFunc then callFunc() end
@@ -184,6 +189,11 @@ function ChessboardNode:addChess(row, col, callFunc)
     self:updataChessTurn()
 
     if callFunc then callFunc() end
+
+    if self._nextTurnNotifyCallback then
+        self._nextTurnNotifyCallback(self:getNextTurnChessType())
+    end
+
     return
 end
 

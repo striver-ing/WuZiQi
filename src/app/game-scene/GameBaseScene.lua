@@ -27,8 +27,8 @@ function GameBaseScene:ctor()
     self._gameTime = 0
     --时间 label
     self._timeLabel = cc.Label:createWithSystemFont("00:00", "Marker Felt.ttf", 60)
-    self._timeLabel:setAnchorPoint(cc.p(1, 1))
-    self._timeLabel:setPosition(cc.p(display.width - 30, display.height * 0.85))
+    self._timeLabel:setAnchorPoint(cc.p(1, 0))
+    self._timeLabel:setPosition(cc.p(display.width - 30, display.height * 0.82))
     self._timeLabel:enableOutline(cc.c4b(82, 45, 13, 255), 1)
     self._timeLabel:addTo(self)
 
@@ -44,6 +44,8 @@ function GameBaseScene:ctor()
     self:addGameTime()
     -- 游戏结束callback
     self:addGameoverCallback()
+
+    self:tipWhoAddChess()
 
     --子类程序入口
     if self.onCreate then self:onCreate() end
@@ -94,6 +96,30 @@ function GameBaseScene:addGameTime()
     end)
 end
 
+--下子方提示
+function GameBaseScene:tipWhoAddChess()
+    local function addChessTip(file)
+        local tip = display.newSprite(file)
+        tip:setPosition(cc.p(self._timeLabel:getPositionX() - self._timeLabel:getContentSize().width / 2 , self._timeLabel:getPositionY() - 50))
+        tip:addTo(self)
+        return tip
+    end
+
+    local wihteChessTip = addChessTip("white_img.png")
+    local blackChessTip = addChessTip("black_img.png")
+
+    self._chessboard:addNextTurnNotifyCallback(function(nextChessType)
+        if nextChessType == BLACK then
+            wihteChessTip:setVisible(false)
+            blackChessTip:setVisible(true)
+        elseif nextChessType ==WHITE then
+            blackChessTip:setVisible(false)
+            wihteChessTip:setVisible(true)
+        end
+    end)
+end
+
+--改变 time label
 function GameBaseScene:changeGameTimeLabel()
     local minute = self._gameTime / 60
     local second = self._gameTime % 60
