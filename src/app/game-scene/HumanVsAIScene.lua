@@ -34,7 +34,6 @@ function HumanVsAIScene:onCreate()
         end
         if self._chessboard:getNextTurnChessType() == computer then
             isAdding = true
-            -- local scheduler = cc.Director:getInstance():getScheduler()
             performWithDelay(self, function()
                 -- Log.d("电脑下子")
                 -- AI.setComputerChessType(computer)
@@ -89,6 +88,8 @@ end
 function HumanVsAIScene:reStart()
     self._chessboard:restartGame()
     self:setComputerFirst(not isComputerFirst)
+    self:resetGameTime()
+    self:stopAction(self._scheduleAction)
 end
 
 return HumanVsAIScene

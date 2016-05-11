@@ -10,16 +10,29 @@ local GameBaseScene = class("GameBaseScene", function()
     return display.newScene()
 end)
 
-local _retractCount = 1 --悔棋步数
 local AI = require("app.ai-algorithm.AI")
 local GameoverLayer = require("app.gameover-layer.GameoverLayer")
 
+
+local _retractCount = 1 --悔棋步数
+
 function GameBaseScene:ctor()
-    -- add background image
+     -- add background image
     display.newSprite("bg.jpg")
         :move(display.center)
         :addTo(self)
 
+    ------------------------------------------------
+
+    self._gameTime = 0
+    --时间 label
+    self._timeLabel = cc.Label:createWithSystemFont("00:00", "Marker Felt.ttf", 60)
+    self._timeLabel:setAnchorPoint(cc.p(1, 1))
+    self._timeLabel:setPosition(cc.p(display.width - 30, display.height * 0.85))
+    self._timeLabel:enableOutline(cc.c4b(82, 45, 13, 255), 1)
+    self._timeLabel:addTo(self)
+
+    ------------------------------------------------
     --棋盘
     self._chessboard = require("app.game-scene.ChessboardNode"):new()
     self._chessboard:setPosition(cc.p(display.cx,  display.visibleoriginY + 150))
@@ -27,7 +40,9 @@ function GameBaseScene:ctor()
 
     --功能菜单
     self:addMenu()
-
+    -- 游戏时间
+    self:addGameTime()
+    -- 游戏结束callback
     self:addGameoverCallback()
 
     --子类程序入口
@@ -56,7 +71,9 @@ end
 
 --重玩
 function GameBaseScene:reStart()
+    self:stopAction(self._scheduleAction)
     self._chessboard:restartGame()
+    self:resetGameTime()
 end
 
 --返回主页
@@ -66,13 +83,40 @@ function GameBaseScene:goHome()
 
 end
 
+--游戏时间
+function GameBaseScene:addGameTime()
+    self._chessboard:addStartGameCallback(function()
+        self._scheduleAction = schedule(self, function()
+        self._gameTime = self._gameTime + 1
+        self:changeGameTimeLabel()
+    end, 1)
+
+    end)
+end
+
+function GameBaseScene:changeGameTimeLabel()
+    local minute = self._gameTime / 60
+    local second = self._gameTime % 60
+    self._gameTimeStr = string.format("%02d:%02d", minute, second)
+    Log.d(self._gameTimeStr)
+    self._timeLabel:setString(self._gameTimeStr)
+end
+
+function GameBaseScene:resetGameTime()
+    self._gameTime = 0
+    self:changeGameTimeLabel()
+end
+
 function GameBaseScene:addGameoverCallback()
     self._gameoverLayer = nil
 
     --游戏结束掉出结束层
     self._chessboard:setGameoverCallback(function(chessType, step)
+        -- 停止时间计时
+        self:stopAction(self._scheduleAction)
+
         performWithDelay(self, function()
-            self._gameoverLayer = GameoverLayer.new(chessType, step)
+            self._gameoverLayer = GameoverLayer.new(chessType, step, self._gameTimeStr)
             self._gameoverLayer:addTo(self, 100)
 
             -- 设置 悔棋 重玩 和 回到主页的回调

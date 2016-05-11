@@ -11,6 +11,7 @@ cc.FileUtils:getInstance():addSearchPath("res/sound/music")
 cc.FileUtils:getInstance():addSearchPath("res/images/playui/")
 cc.FileUtils:getInstance():addSearchPath("res/images/startui/")
 cc.FileUtils:getInstance():addSearchPath("res/images/gameover/")
+cc.FileUtils:getInstance():addSearchPath("res/fonts")
 
 require "utils.Log"
 require "utils.SoundManager"

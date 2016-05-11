@@ -10,7 +10,7 @@ local GameoverLayer = class("GameoverLayer", function()
     -- return display.newLayer()
 end)
 
-function GameoverLayer:ctor(chessType, step)
+function GameoverLayer:ctor(chessType, step, time)
     --花 和 竹的装饰
     self:addSprite("taohua_right.png", cc.p(1, 1), cc.p(display.width, display.height))
     self:addSprite("taohua_left.png", cc.p(0, 1), cc.p(0, display.height))
@@ -18,7 +18,9 @@ function GameoverLayer:ctor(chessType, step)
     self:addSprite("zhu_left.png", cc.p(0, 0), cc.p(0, 0))
 
     -- self:okOrUndo()
-    self:result(chessType, step)
+    self:result(chessType, step, time)
+
+    SoundManager.playEffect("gameover.mp3")
 
 end
 
@@ -53,10 +55,7 @@ function GameoverLayer:setGoHomeCallback(callback)
     self._goHomeCallback = callback
 end
 
-function GameoverLayer:result(chessType, step)
-
-    local time = "60:00s"
-
+function GameoverLayer:result(chessType, step, time)
     local resultBg = display.newSprite("bk.png")
     resultBg:setPosition(cc.p(display.cx, display.height * 0.55))
     resultBg:setScale((display.width / resultBg:getContentSize().width) * 0.95)

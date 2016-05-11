@@ -13,6 +13,8 @@ end)
 local isWhiteTurn = false
 local firstChessType = BLACK
 local isGameOver = false
+local isNotExecuteStartGameCallback = false
+
 local whitechessNumber = 0  -- 棋子上显示序列号用
 local blackchessNumber = 0  -- 棋子上显示序列号用
 
@@ -58,6 +60,7 @@ function ChessboardNode:initChessboardArray()
 
     isGameOver = false
     isWhiteTurn = false
+    isNotExecuteStartGameCallback = true
 
     -- dump(self._chessboardArray, "chessboardArray")
 end
@@ -70,11 +73,19 @@ function ChessboardNode:addTouchCallFunc(callFunc)
     self._touchCallFunc = callFunc
 end
 
+function ChessboardNode:addStartGameCallback(callback)
+    self._startGameCallback = callback
+end
+
 function ChessboardNode:onTouchBegan(touch, event)
     local row, col = self:convertToChessSpace(touch)
     --执行回调
     if self._touchCallFunc then
         self._touchCallFunc(row, col)
+    end
+    if isNotExecuteStartGameCallback and self._startGameCallback then
+        self._startGameCallback()
+        isNotExecuteStartGameCallback = false
     end
     return true
 end
