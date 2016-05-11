@@ -6,11 +6,11 @@
 --备注:
 ----------------------------
 local GameoverLayer = class("GameoverLayer", function()
-    return cc.LayerColor:create(cc.c4b(0, 0, 0, 255))
+    return cc.LayerColor:create(cc.c4b(0, 0, 0, 100))
     -- return display.newLayer()
 end)
 
-function GameoverLayer:ctor(chessType)
+function GameoverLayer:ctor(chessType, step)
     --花 和 竹的装饰
     self:addSprite("taohua_right.png", cc.p(1, 1), cc.p(display.width, display.height))
     self:addSprite("taohua_left.png", cc.p(0, 1), cc.p(0, display.height))
@@ -18,7 +18,7 @@ function GameoverLayer:ctor(chessType)
     self:addSprite("zhu_left.png", cc.p(0, 0), cc.p(0, 0))
 
     -- self:okOrUndo()
-    self:result(chessType)
+    self:result(chessType, step)
 
 end
 
@@ -38,10 +38,24 @@ function GameoverLayer:okOrUndo()
     end)
 end
 
-function GameoverLayer:result(chessType)
+--悔棋callback
+function GameoverLayer:setRetractCallback(callback)
+    self._retractCallback = callback
+end
 
-    local time = "60"
-    local step = "5"
+--再次尝试callback
+function GameoverLayer:setRetryCallback(callback)
+    self._reTryCallback = callback
+end
+
+--回到主页callback
+function GameoverLayer:setGoHomeCallback(callback)
+    self._goHomeCallback = callback
+end
+
+function GameoverLayer:result(chessType, step)
+
+    local time = "60:00s"
 
     local resultBg = display.newSprite("bk.png")
     resultBg:setPosition(cc.p(display.cx, display.height * 0.55))
@@ -85,23 +99,18 @@ function GameoverLayer:result(chessType)
 
     -- 悔棋
     local undoBtn = self:addButton("kill/undo.png", resultBgWidth * 0.5, resultBgHeight * 0.35, resultBg, function()
-
+        if self._retractCallback then self._retractCallback() end
     end)
 
     -- 重新挑战
-    local reStartBtn = self:addButton("restart.png", resultBgWidth / 3 - 25, resultBgHeight * 0.15, resultBg, function()
-
+    local reTryBtn = self:addButton("re_try.png", resultBgWidth / 3 - 25, resultBgHeight * 0.15, resultBg, function()
+        if self._reTryCallback then self._reTryCallback() end
     end)
 
     --返回主页
     local goHomeBtn = self:addButton("home.png", resultBgWidth / 3 * 2 + 25, resultBgHeight * 0.15, resultBg, function()
-
+        if self._goHomeCallback then self._goHomeCallback() end
     end)
-
-
-
-
-
 
 end
 

@@ -17,7 +17,7 @@ require "utils.GameInit"
 function __G__TRACKBACK__(errorMessage)
     Log.d("-----------------------------------------------------------------------")
     print("LUA ERROR: " .. tostring(errorMessage))
-    -- print(debug.tracebackex("", 2))
+    print(debug.tracebackex("", 2))
     Log.d("-----------------------------------------------------------------------")
 end
 

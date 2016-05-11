@@ -9,24 +9,11 @@ local StartScene = class("StartScene", function()
     return display.newScene()
 end)
 
-local GameoverLayer = require("app.gameover-layer.GameoverLayer")
-
 function StartScene:ctor()
     -- add background image
     display.newSprite("bk.jpg")
         :move(display.center)
         :addTo(self)
-
--------------------
-    performWithDelay(self, function()
-        local chessType = WHITE
-        local gameoverLayer = GameoverLayer.new(chessType)
-        self:addChild(gameoverLayer, 100)
-
-    end, 0.5)
-
-
--------------------
 
     --人机对战
     self:addButton("model.png", display.visiblesizeWidth / 2, display.visiblesizeHeight * 0.6 , function(sender, eventType)

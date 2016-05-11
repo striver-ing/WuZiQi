@@ -13,9 +13,10 @@ end)
 local isWhiteTurn = false
 local firstChessType = BLACK
 local isGameOver = false
-local chessNumber = 0  -- 棋子上显示序列号用
+local whitechessNumber = 0  -- 棋子上显示序列号用
+local blackchessNumber = 0  -- 棋子上显示序列号用
+
 local IS_SHOW_CHESSNUMBER = true
-local GameoverLayer = require("app.gameover-layer.GameoverLayer")
 
 function ChessboardNode:ctor()
     --棋盘
@@ -52,7 +53,8 @@ function ChessboardNode:initChessboardArray()
 
     self._currentChessTip = nil
     self._chess = {}
-    chessNumber = 0
+    whitechessNumber = 0
+    blackchessNumber = 0
 
     isGameOver = false
     isWhiteTurn = false
@@ -127,23 +129,28 @@ function ChessboardNode:addChess(row, col, callFunc)
         chess = display.newSprite("white.png")
         self._chessboardArray[row][col].type = WHITE
         self._chessboardArray[row][col].chess = chess
+        whitechessNumber = whitechessNumber + 1
     else
         chess = display.newSprite("black.png")
         self._chessboardArray[row][col].type = BLACK
         self._chessboardArray[row][col].chess = chess
+        blackchessNumber = blackchessNumber + 1
     end
     chess.row = row
     chess.col = col
     chess:setPosition(posX, posY)
     chess:addTo(self._chessboard)
+
     --给棋子添加序号
     if IS_SHOW_CHESSNUMBER then
+        local chessNumber = isWhiteTurn and whitechessNumber or blackchessNumber
         self._lable = cc.Label:createWithSystemFont(chessNumber, "", 22)
         self._lable:setTextColor(cc.RED)
         chess:addChild(self._lable)
         self._lable:setPosition(cc.p(chess:getContentSize().width / 2 , chess:getContentSize().height / 2))
-        chessNumber = chessNumber + 1
     end
+
+
 
     --储存所下棋子 悔棋时用
     table.insert(self._chess, chess)
@@ -195,15 +202,21 @@ end
 
 --悔棋
 function ChessboardNode:retractChess()
+    isGameOver = false
+
     if #self._chess == 0 then return end
+
+    local chessType = self:getCurrentChessType()
+    if chessType == WHITE then
+        whitechessNumber = whitechessNumber - 1
+    elseif chessType == BLACK then
+        blackchessNumber = blackchessNumber - 1
+    end
 
     local chess = table.remove(self._chess)
     self._chessboardArray[chess.row][chess.col].type = NO_CHESS
     self._chessboardArray[chess.row][chess.col].chess = nil
     chess:removeSelf()
-    if IS_SHOW_CHESSNUMBER then
-        chessNumber = chessNumber - 1
-    end
 
     self:updataChessTurn()
     if #self._chess == 0 then
@@ -276,20 +289,19 @@ function ChessboardNode:restartGame()
     self:initChessboardArray()
 end
 
+function ChessboardNode:setGameoverCallback(callback)
+    self._callback = callback
+end
+
 function ChessboardNode:gameOver(chessType, chessSpriteTb)
     isGameOver = true
-    --和棋
-    if chessType == nil or chessSpriteTb == nil then
-        Log.d("*************和棋***********")
-        return
-    end
-    --赢了
-    Log.d("******赢了*******" .. chessType .. "*****赢了******")
-    Log.d("chessSpriteTb = " .. #chessSpriteTb)
+
     local blink = cc.Blink:create(1.5, 3)
     for _, chess in ipairs(chessSpriteTb) do
         chess:runAction(blink:clone())
     end
+    local step = chessType == WHITE and whitechessNumber or blackchessNumber
+    if self._callback then self._callback(chessType, tostring(step)) end
 end
 
 return ChessboardNode

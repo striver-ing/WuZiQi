@@ -12,6 +12,7 @@ end)
 
 local _retractCount = 1 --悔棋步数
 local AI = require("app.ai-algorithm.AI")
+local GameoverLayer = require("app.gameover-layer.GameoverLayer")
 
 function GameBaseScene:ctor()
     -- add background image
@@ -26,6 +27,8 @@ function GameBaseScene:ctor()
 
     --功能菜单
     self:addMenu()
+
+    self:addGameoverCallback()
 
     --子类程序入口
     if self.onCreate then self:onCreate() end
@@ -42,6 +45,54 @@ function GameBaseScene:hint()
         AI.setComputerChessType(self._chessboard:getNextTurnChessType())
         self._chessboard:addChess(position.row, position.col, function ()
     end)
+end
+
+--悔棋
+function GameBaseScene:retractChess()
+    for i = 1, _retractCount do
+       self._chessboard:retractChess()
+    end
+end
+
+--重玩
+function GameBaseScene:reStart()
+    self._chessboard:restartGame()
+end
+
+--返回主页
+function GameBaseScene:goHome()
+    local scene = require("app.start-scene.StartScene"):create()
+    display.runScene(scene)
+
+end
+
+function GameBaseScene:addGameoverCallback()
+    self._gameoverLayer = nil
+
+    --游戏结束掉出结束层
+    self._chessboard:setGameoverCallback(function(chessType, step)
+        performWithDelay(self, function()
+            self._gameoverLayer = GameoverLayer.new(chessType, step)
+            self._gameoverLayer:addTo(self, 100)
+
+            -- 设置 悔棋 重玩 和 回到主页的回调
+            self._gameoverLayer:setRetractCallback(function()
+                self:retractChess()
+                self._gameoverLayer:removeSelf()
+            end)
+
+            self._gameoverLayer:setRetryCallback(function()
+                self:reStart()
+                self._gameoverLayer:removeSelf()
+            end)
+
+            self._gameoverLayer:setGoHomeCallback(function()
+                self:goHome()
+            end)
+        end, 1.5)
+    end)
+
+
 end
 
 --添加一些功能按钮
@@ -85,8 +136,7 @@ function GameBaseScene:addMenu()
 
     --返回主菜单
     self:addButton("back.png", menuBtnPositionX - 50, menuBtnPositionY - 20, self, function(sender, eventType)
-        local scene = require("app.start-scene.StartScene"):create()
-        display.runScene(scene)
+        self:goHome()
     end)
 
     --声音
@@ -100,14 +150,12 @@ function GameBaseScene:addMenu()
 
     --重玩
     self:addButton("replay.png", menuBtnPositionX * 3 - 10, menuBtnPositionY, self, function(sender, eventType)
-        self._chessboard:restartGame()
+        self:reStart()
     end)
 
     --悔棋
     self:addButton("undo.png", menuBtnPositionX * 4 + 10, menuBtnPositionY, self, function(sender, eventType)
-      for i = 1, _retractCount do
-         self._chessboard:retractChess()
-      end
+         self:retractChess()
     end)
 
     --提示

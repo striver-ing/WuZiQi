@@ -12,6 +12,7 @@ local AI = require("app.ai-algorithm.AI")
 local computer = WHITE
 local human = BLACK
 local isAdding = false
+local isComputerFirst = true
 
 function HumanVsAIScene:onCreate()
     Log.d("人机对弈")
@@ -19,7 +20,7 @@ function HumanVsAIScene:onCreate()
     --设置悔棋步数
     self:setRetractChessStep(2)
 
-    self:isComputerFirst(true)
+    self:setComputerFirst(true)
 
     self._chessboard:addTouchCallFunc(function(row, col)
         if isAdding then return end
@@ -46,7 +47,9 @@ function HumanVsAIScene:onCreate()
 end
 
 --必须设置（在下子前设置）
-function HumanVsAIScene:isComputerFirst(flag)
+function HumanVsAIScene:setComputerFirst(flag)
+    isComputerFirst = flag
+
     if flag then
         self._chessboard:addChess(8, 8)
         computer = self._chessboard:getFirstChessType()
@@ -82,5 +85,10 @@ function HumanVsAIScene:hint()
     self:aiAddChess() -- 电脑自己下
 end
 
+--重写gameBaseScene reStart 方法
+function HumanVsAIScene:reStart()
+    self._chessboard:restartGame()
+    self:setComputerFirst(not isComputerFirst)
+end
 
 return HumanVsAIScene
