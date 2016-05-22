@@ -146,7 +146,7 @@ function GameBaseScene:changeGameTimeLabel()
     local minute = self._gameTime / 60
     local second = self._gameTime % 60
     self._gameTimeStr = string.format("%02d:%02d", minute, second)
-    Log.d(self._gameTimeStr)
+    -- Log.d(self._gameTimeStr)
     self._timeLabel:setString(self._gameTimeStr)
 end
 

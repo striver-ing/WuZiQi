@@ -18,7 +18,7 @@ local isNotExecuteStartGameCallback = false
 local whitechessNumber = 0  -- 棋子上显示序列号用
 local blackchessNumber = 0  -- 棋子上显示序列号用
 
-local IS_SHOW_CHESSNUMBER = true
+local IS_SHOW_CHESSNUMBER = false
 
 function ChessboardNode:ctor()
     --棋盘
@@ -317,10 +317,13 @@ end
 function ChessboardNode:gameOver(chessType, chessSpriteTb)
     isGameOver = true
 
-    local blink = cc.Blink:create(1.5, 3)
-    for _, chess in ipairs(chessSpriteTb) do
-        chess:runAction(blink:clone())
+    if chessSpriteTb then
+        local blink = cc.Blink:create(1.5, 3)
+        for _, chess in ipairs(chessSpriteTb) do
+            chess:runAction(blink:clone())
+        end
     end
+
     local step = chessType == WHITE and whitechessNumber or blackchessNumber
     if self._callback then self._callback(chessType, tostring(step)) end
 end
