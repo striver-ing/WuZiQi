@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="/Users/liubo/Workspaces/cocos2d-x/WuZiQi/frameworks/cocos2d-x/cocos/platform/android/libcocos2dx/src/main/assets"/></dataSet><dataSet config="release"><source path="/Users/liubo/Workspaces/cocos2d-x/WuZiQi/frameworks/cocos2d-x/cocos/platform/android/libcocos2dx/src/release/assets"/></dataSet></merger>

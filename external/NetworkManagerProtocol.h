@@ -11,6 +11,8 @@
 #pragma once
 #include <stdio.h>
 #include <iostream>
+#include <functional>
+using namespace std;
 
 // typedef void (*ReceiveMessageCallback)(const char* msg);
 typedef std::function<void(const char*)> ReceivedMessageCallback;

@@ -235,8 +235,8 @@ function AI.getMaxSorcePoint(chessboardArray)
         end
     end
 
-    return  #maxScorePoint == 0 and {row = 8, col = 8} or maxScorePoint[1]
-    -- return  #maxScorePoint == 0 and {row = 8, col = 8} or maxScorePoint[math.random(1, #maxScorePoint)]
+    -- return  #maxScorePoint == 0 and {row = 8, col = 8} or maxScorePoint[1]
+    return  #maxScorePoint == 0 and {row = 8, col = 8} or maxScorePoint[math.random(1, #maxScorePoint)]
 end
 
 ------------------下子算法相关------------------------
