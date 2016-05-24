@@ -14,6 +14,8 @@ endef
 
 # 遍历Classes目录
 ALLFILES = $(call walk, $(LOCAL_PATH)/../../../Classes)
+
+# 手动添加些cpp文件
 FILE_LIST := hellolua/main.cpp \
 $(EXTERNAL_PATH)/BleManager.cpp \
 $(EXTERNAL_PATH)/NetworkManagerFactory.cpp \
@@ -26,6 +28,7 @@ $(EXTERNAL_PATH)/platform/android/BleManagerImpl.cpp \
 FILE_LIST += $(filter %.cpp, $(ALLFILES))
 LOCAL_SRC_FILES := $(FILE_LIST:$(LOCAL_PATH)/%=%)
 
+#文件夹包含
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../../Classes \
 $(EXTERNAL_PATH) \
 $(EXTERNAL_PATH)\luabinding \
