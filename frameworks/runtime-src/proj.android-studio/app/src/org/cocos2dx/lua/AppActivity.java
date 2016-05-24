@@ -52,9 +52,30 @@ import android.widget.Toast;
 public class AppActivity extends Cocos2dxActivity{
 
     static String hostIPAdress = "0.0.0.0";
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        BluetoothManager.getInstance().onResume();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        BluetoothManager.getInstance().onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        BluetoothManager.getInstance().onDestroy();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        BluetoothManager.getInstance().init(this);
         
         if(nativeIsLandScape()) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
