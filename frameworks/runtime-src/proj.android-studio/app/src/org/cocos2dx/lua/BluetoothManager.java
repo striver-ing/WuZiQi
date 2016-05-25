@@ -110,6 +110,7 @@ public class BluetoothManager {
     }
 
     public static BluetoothManager getInstance(){
+        System.out.print("bluetoothManager getInstance");
         if (bluetoothManager == null){
             bluetoothManager = new BluetoothManager();
         }
@@ -123,75 +124,77 @@ public class BluetoothManager {
 
     //----------- C++ 调用 ------------
 
-    public void searchBleAndConnect(){
-        Handler handler = new Handler(new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message message) {
-                initBluetooth();
-                useBluetooth();
+    private Handler searchBleAndConnectHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message message) {
+            initBluetooth();
+            useBluetooth();
 
-                //弹出创建server 或者 连接server的对话框
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                //    指定下拉列表的显示数据
-                final String[] choose = {"创建游戏", "加入游戏"};
-                //    设置一个下拉的列表选择项
-                builder.setItems(choose, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(context, "选择为：" + choose[which], Toast.LENGTH_SHORT).show();
-                        if (choose[which].equals("创建游戏") && simpleBluetooth != null) {
-                            simpleBluetooth.createBluetoothServerConnection();
+            //弹出创建server 或者 连接server的对话框
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            //    指定下拉列表的显示数据
+            final String[] choose = {"创建游戏", "加入游戏"};
+            //    设置一个下拉的列表选择项
+            builder.setItems(choose, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (choose[which].equals("创建游戏") && simpleBluetooth != null) {
+                        simpleBluetooth.createBluetoothServerConnection();
 
-                        } else if (choose[which].equals("加入游戏") && simpleBluetooth != null) {
-                            if (curMacAddress != null) {
-                                simpleBluetooth.connectToBluetoothServer(curMacAddress);
-                            } else {
-                                simpleBluetooth.scan(CHOOSE_SERVER_REQUEST);
-                            }
+                    } else if (choose[which].equals("加入游戏") && simpleBluetooth != null) {
+                        if (curMacAddress != null) {
+                            simpleBluetooth.connectToBluetoothServer(curMacAddress);
+                        } else {
+                            simpleBluetooth.scan(CHOOSE_SERVER_REQUEST);
                         }
-
                     }
-                });
-                builder.show();
-                return false;
-            }
-        });
 
-        Message message = Message.obtain(handler);
+                }
+            });
+            builder.show();
+            return false;
+        }
+    });
+
+    private Handler sendMessageHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message message) {
+            String data = message.obj.toString();
+            Toast.makeText(context, data, Toast.LENGTH_SHORT).show();
+            if (simpleBluetooth != null){
+                simpleBluetooth.sendData(data);
+            }
+            return false;
+        }
+    });
+
+    private Handler closeConnectedHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message message) {
+            if (simpleBluetooth != null) {
+                simpleBluetooth.cancelScan();
+                simpleBluetooth.endSimpleBluetooth();
+            }
+            return false;
+        }
+    });
+
+
+    //-------------[ call in c++ ]---------------
+
+    public void searchBleAndConnect(){
+        Message message = Message.obtain(searchBleAndConnectHandler);
         message.sendToTarget();
     }
 
-    public void sendMessage(final String message){
-        Handler handler = new Handler(new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message message) {
-                String data = message.obj.toString();
-                Toast.makeText(context, data, Toast.LENGTH_SHORT).show();
-                if (simpleBluetooth != null){
-                    simpleBluetooth.sendData(data);
-                }
-                return false;
-            }
-        });
-
-        Message msg = Message.obtain(handler);
+    public void sendMessage(String message){
+        Message msg = Message.obtain(sendMessageHandler);
         msg.obj = message;
         msg.sendToTarget();
     }
 
     public void closeConnected(){
-        Handler handler = new Handler(new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message message) {
-                if (simpleBluetooth != null) {
-                    simpleBluetooth.cancelScan();
-                    simpleBluetooth.endSimpleBluetooth();
-                }
-                return false;
-            }
-        });
-
-        Message message = Message.obtain(handler);
+        Message message = Message.obtain(closeConnectedHandler);
         message.sendToTarget();
 
     }

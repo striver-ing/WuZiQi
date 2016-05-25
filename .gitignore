@@ -3,6 +3,7 @@
 
 #Java
 *.class
+*.apk
 
 # XCode
 *.moved-aside

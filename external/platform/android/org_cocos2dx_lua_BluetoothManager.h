@@ -16,8 +16,7 @@ extern "C" {
  * Method:    onDataReceived
  * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_org_cocos2dx_lua_BluetoothManager_onDataReceived
-  (JNIEnv *, jobject, jstring);
+JNIEXPORT void JNICALL Java_org_cocos2dx_lua_BluetoothManager_onDataReceived(JNIEnv *, jobject, jstring);
 
 #ifdef __cplusplus
 }

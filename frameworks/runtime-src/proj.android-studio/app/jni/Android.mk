@@ -23,6 +23,7 @@ $(EXTERNAL_PATH)/NetworkManagerProtocol.cpp \
 $(EXTERNAL_PATH)/luabinding/lua_wuziqi_auto.cpp \
 $(EXTERNAL_PATH)/luabinding/lua_wuziqi_manual.cpp \
 $(EXTERNAL_PATH)/platform/android/BleManagerImpl.cpp \
+$(EXTERNAL_PATH)/platform/android/org_cocos2dx_lua_BluetoothManager.cpp \
 
 # 从所有文件中提取出所有.cpp文件
 FILE_LIST += $(filter %.cpp, $(ALLFILES))

@@ -14,10 +14,10 @@ local ownPlayChessType = nil
 function BleVsScene:onCreate()
     Log.d("蓝牙对弈")
     self.init();
-    -- BleManager:searchBleAndConnect()
+    BleManager:searchBleAndConnect()
 
     self._chessboard:addTouchCallFunc(function(row, col)
-         if ownPlayChessType == nil then
+        if ownPlayChessType == nil then
             self._chessboard:addChess(row, col)
             ownPlayChessType = self._chessboard:getCurrentChessType()
             BleManager.ownSideAddChess(row, col)
@@ -32,6 +32,7 @@ function BleVsScene:onCreate()
 
     --添加对方下棋的回调
     BleManager.enemySideAddChessCallback(function(row, col)
+        Log.d("add chess " .. " row = " .. row .. " col = " .. col)
         self._chessboard:addChess(row, col)
     end)
 
@@ -42,8 +43,8 @@ function BleVsScene:onCreate()
     end)
 
    self:addButton(nil, display.cx, display.visibleoriginX + 80, self, function(sender, eventType)
-        BleManager.sendMessage("😄")
-    end, "发送消息😄", 50)
+        BleManager.sendMessage("hello")
+    end, "hello", 50)
 
 end
 
