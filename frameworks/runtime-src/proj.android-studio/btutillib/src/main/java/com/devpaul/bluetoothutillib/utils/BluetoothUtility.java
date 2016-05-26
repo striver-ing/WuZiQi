@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.devpaul.bluetoothutillib.errordialogs.InvalidMacAddressDialog;
 import com.devpaul.bluetoothutillib.handlers.BluetoothHandler;
@@ -859,8 +860,9 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
                         @Override
                         public void run() {
                             if(shouldShowSnackbars) {
-                                Snackbar.make(((Activity)mContext).findViewById(android.R.id.content), "Device not available.",
-                                        Snackbar.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, "Device not available", Toast.LENGTH_SHORT).show();
+//                                Snackbar.make(((Activity)mContext).findViewById(android.R.id.content), "Device not available.",
+//                                        Snackbar.LENGTH_SHORT).show();
                             }
                         }
                     });
