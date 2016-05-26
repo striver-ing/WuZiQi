@@ -32,19 +32,19 @@ function BleVsScene:onCreate()
 
     --添加对方下棋的回调
     BleManager.enemySideAddChessCallback(function(row, col)
-        Log.d("add chess " .. " row = " .. row .. " col = " .. col)
+        -- Log.d("add chess " .. " row = " .. row .. " col = " .. col)
         self._chessboard:addChess(row, col)
     end)
 
 
-    --接收到消息的回调
-    BleManager.addReceivedMessageCallback(function (msg)
-        Log.d(msg)
-    end)
+    -- --接收到消息的回调
+    -- BleManager.addReceivedMessageCallback(function (msg)
+    --     Log.d(msg)
+    -- end)
 
-   self:addButton(nil, display.cx, display.visibleoriginX + 80, self, function(sender, eventType)
-        BleManager.sendMessage("hello")
-    end, "hello", 50)
+   -- self:addButton(nil, display.cx, display.visibleoriginX + 80, self, function(sender, eventType)
+   --      BleManager.sendMessage("hello")
+   --  end, "hello", 50)
 
 end
 

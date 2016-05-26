@@ -37,8 +37,6 @@ public class BluetoothManager {
                 @Override
                 public void onBluetoothDataReceived(byte[] bytes, String data) {
                     //read the data coming in.
-                    Toast.makeText(context, "Data: " + data, Toast.LENGTH_SHORT).show();
-
                     onDataReceived(data);
                     Log.w("SIMPLEBT", "Data received");
                 }
@@ -110,7 +108,6 @@ public class BluetoothManager {
     }
 
     public static BluetoothManager getInstance(){
-        System.out.print("bluetoothManager getInstance");
         if (bluetoothManager == null){
             bluetoothManager = new BluetoothManager();
         }
@@ -160,7 +157,6 @@ public class BluetoothManager {
         @Override
         public boolean handleMessage(Message message) {
             String data = message.obj.toString();
-            Toast.makeText(context, data, Toast.LENGTH_SHORT).show();
             if (simpleBluetooth != null){
                 simpleBluetooth.sendData(data);
             }

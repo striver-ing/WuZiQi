@@ -15,7 +15,3 @@ void NetworkManagerProtocol::executeReceivedMessageCallback(const char* message)
         callback(message);
     }
 }
-
-void NetworkManagerProtocol::notifyReceivedMessageCallback(const char* message) {
-    executeReceivedMessageCallback(message);
-}

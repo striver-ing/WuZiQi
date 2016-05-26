@@ -21,7 +21,6 @@ typedef std::function<void(const char*)> ReceivedMessageCallback;
 class NetworkManagerProtocol {
 protected:
     std::vector<ReceivedMessageCallback> _receivedMessageCallbacks;
-    void executeReceivedMessageCallback(const char* message);
 
 public:
     virtual void searchBleAndConnect() = 0;
@@ -29,5 +28,5 @@ public:
     virtual void sendMessage(const char* message) = 0;
     virtual void addReceivedMessageCallback(ReceivedMessageCallback receivedMessageCallback) = 0;
 
-    void notifyReceivedMessageCallback(const char* message);
+    void executeReceivedMessageCallback(const char* message);
 };

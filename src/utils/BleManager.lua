@@ -29,6 +29,7 @@ end
 --对话calllback(msg)
 function BleManager.addReceivedMessageCallback(callback)
     bleManager:addReceivedMessageCallback(function(msg)
+        if msg == nil then return end
         local headPosBegin, headPosEnd = string.find(msg, MSG.TALK)
         if headPosBegin == nil then return end
         local talkContent = string.sub(msg, headPosEnd + 1, -1)
@@ -39,6 +40,7 @@ end
 --下棋callback(row, col)
 function BleManager.enemySideAddChessCallback(callback)
     bleManager:addReceivedMessageCallback(function (msg)
+        if msg == nil then return end
         local headPosBegin, headPosEnd = string.find(msg, MSG.ADD_CHESS)
         if headPosBegin == nil then return end
 

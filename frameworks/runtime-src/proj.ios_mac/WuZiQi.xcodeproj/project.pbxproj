@@ -22,8 +22,6 @@
 		3A64C9C81CD4887D0009B3CB /* lua_wuziqi_auto.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A64C9C31CD4887D0009B3CB /* lua_wuziqi_auto.cpp */; };
 		3A64C9D21CD4EC860009B3CB /* lua_wuziqi_manual.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A64C9D01CD4EC860009B3CB /* lua_wuziqi_manual.cpp */; };
 		3AB0D43C1CCF89AE000CF354 /* external in Resources */ = {isa = PBXBuildFile; fileRef = 3AB0D43B1CCF89AE000CF354 /* external */; };
-		3ABFB65B1CF5AE2100607F2F /* BleManagerImpl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3ABFB6581CF5AE2100607F2F /* BleManagerImpl.cpp */; };
-		3ABFB65C1CF5AE2100607F2F /* org_cocos2dx_lua_BluetoothManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3ABFB6591CF5AE2100607F2F /* org_cocos2dx_lua_BluetoothManager.cpp */; };
 		3AD632B61CD073FF004A8434 /* BleToothManagerTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AD632B41CD073FF004A8434 /* BleToothManagerTest.cpp */; };
 		3AD632E51CD0C097004A8434 /* BleManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AD632CB1CD0C097004A8434 /* BleManager.cpp */; };
 		3AD632EA1CD0C097004A8434 /* BleManagerImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3AD632D81CD0C097004A8434 /* BleManagerImpl.mm */; };
@@ -32,6 +30,8 @@
 		3AD632ED1CD0C097004A8434 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD632E01CD0C097004A8434 /* MBProgressHUD.m */; };
 		3AD632EE1CD0C097004A8434 /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3AD632E21CD0C097004A8434 /* SVProgressHUD.bundle */; };
 		3AD632EF1CD0C097004A8434 /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD632E41CD0C097004A8434 /* SVProgressHUD.m */; };
+		3AFBBFB61CF71FC100738251 /* BleManagerImpl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AFBBFB31CF71FC100738251 /* BleManagerImpl.cpp */; };
+		3AFBBFB71CF71FC100738251 /* org_cocos2dx_lua_BluetoothManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AFBBFB41CF71FC100738251 /* org_cocos2dx_lua_BluetoothManager.cpp */; };
 		3EEEDB61197107C0006A9FF8 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EEEDB60197107C0006A9FF8 /* MediaPlayer.framework */; };
 		5023811817EBBCAC00990C9B /* AppController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5023810817EBBCAC00990C9B /* AppController.mm */; };
 		5023811917EBBCAC00990C9B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5023810917EBBCAC00990C9B /* Default-568h@2x.png */; };
@@ -204,9 +204,6 @@
 		3A64C9D01CD4EC860009B3CB /* lua_wuziqi_manual.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lua_wuziqi_manual.cpp; sourceTree = "<group>"; };
 		3A64C9D11CD4EC860009B3CB /* lua_wuziqi_manual.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = lua_wuziqi_manual.hpp; sourceTree = "<group>"; };
 		3AB0D43B1CCF89AE000CF354 /* external */ = {isa = PBXFileReference; lastKnownFileType = folder; name = external; path = "/Users/liubo/Workspaces/cocos2d-x/WuZiQi/external"; sourceTree = "<absolute>"; };
-		3ABFB6581CF5AE2100607F2F /* BleManagerImpl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BleManagerImpl.cpp; sourceTree = "<group>"; };
-		3ABFB6591CF5AE2100607F2F /* org_cocos2dx_lua_BluetoothManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = org_cocos2dx_lua_BluetoothManager.cpp; sourceTree = "<group>"; };
-		3ABFB65A1CF5AE2100607F2F /* org_cocos2dx_lua_BluetoothManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = org_cocos2dx_lua_BluetoothManager.h; sourceTree = "<group>"; };
 		3AD632B41CD073FF004A8434 /* BleToothManagerTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BleToothManagerTest.cpp; path = ../Classes/BleToothManagerTest.cpp; sourceTree = "<group>"; };
 		3AD632B51CD073FF004A8434 /* BleToothManagerTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BleToothManagerTest.h; path = ../Classes/BleToothManagerTest.h; sourceTree = "<group>"; };
 		3AD632CB1CD0C097004A8434 /* BleManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BleManager.cpp; sourceTree = "<group>"; };
@@ -220,6 +217,9 @@
 		3AD632E21CD0C097004A8434 /* SVProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVProgressHUD.bundle; sourceTree = "<group>"; };
 		3AD632E31CD0C097004A8434 /* SVProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressHUD.h; sourceTree = "<group>"; };
 		3AD632E41CD0C097004A8434 /* SVProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVProgressHUD.m; sourceTree = "<group>"; };
+		3AFBBFB31CF71FC100738251 /* BleManagerImpl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BleManagerImpl.cpp; sourceTree = "<group>"; };
+		3AFBBFB41CF71FC100738251 /* org_cocos2dx_lua_BluetoothManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = org_cocos2dx_lua_BluetoothManager.cpp; sourceTree = "<group>"; };
+		3AFBBFB51CF71FC100738251 /* org_cocos2dx_lua_BluetoothManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = org_cocos2dx_lua_BluetoothManager.h; sourceTree = "<group>"; };
 		3EB51526195187AF006966AA /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		3EEEDB60197107C0006A9FF8 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk/System/Library/Frameworks/MediaPlayer.framework; sourceTree = DEVELOPER_DIR; };
 		5023810717EBBCAC00990C9B /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppController.h; sourceTree = "<group>"; };
@@ -364,16 +364,6 @@
 			path = api;
 			sourceTree = "<group>";
 		};
-		3ABFB6571CF5AE2100607F2F /* android */ = {
-			isa = PBXGroup;
-			children = (
-				3ABFB6581CF5AE2100607F2F /* BleManagerImpl.cpp */,
-				3ABFB6591CF5AE2100607F2F /* org_cocos2dx_lua_BluetoothManager.cpp */,
-				3ABFB65A1CF5AE2100607F2F /* org_cocos2dx_lua_BluetoothManager.h */,
-			);
-			path = android;
-			sourceTree = "<group>";
-		};
 		3AD632CA1CD0C097004A8434 /* external */ = {
 			isa = PBXGroup;
 			children = (
@@ -406,7 +396,7 @@
 		3AD632D51CD0C097004A8434 /* platform */ = {
 			isa = PBXGroup;
 			children = (
-				3ABFB6571CF5AE2100607F2F /* android */,
+				3AFBBFB21CF71FC100738251 /* android */,
 				3AD632D71CD0C097004A8434 /* ios */,
 			);
 			path = platform;
@@ -457,6 +447,16 @@
 				3AD632E41CD0C097004A8434 /* SVProgressHUD.m */,
 			);
 			path = SVProgressHUD;
+			sourceTree = "<group>";
+		};
+		3AFBBFB21CF71FC100738251 /* android */ = {
+			isa = PBXGroup;
+			children = (
+				3AFBBFB31CF71FC100738251 /* BleManagerImpl.cpp */,
+				3AFBBFB41CF71FC100738251 /* org_cocos2dx_lua_BluetoothManager.cpp */,
+				3AFBBFB51CF71FC100738251 /* org_cocos2dx_lua_BluetoothManager.h */,
+			);
+			path = android;
 			sourceTree = "<group>";
 		};
 		5023810617EBBCAC00990C9B /* ios */ = {
@@ -846,7 +846,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3A4E592A1CD3176600254897 /* NetworkManagerProtocol.cpp in Sources */,
-				3ABFB65B1CF5AE2100607F2F /* BleManagerImpl.cpp in Sources */,
+				3AFBBFB61CF71FC100738251 /* BleManagerImpl.cpp in Sources */,
 				3AD632EF1CD0C097004A8434 /* SVProgressHUD.m in Sources */,
 				9FC760451A677A4A00D1E6E7 /* SimpleConfigParser.cpp in Sources */,
 				5023812517EBBCAC00990C9B /* RootViewController.mm in Sources */,
@@ -862,7 +862,7 @@
 				3A4E59311CD3730E00254897 /* NetworkManagerFactory.cpp in Sources */,
 				9FFE00A11ACCF59E00D6E35A /* RuntimeLuaImpl.cpp in Sources */,
 				5023811817EBBCAC00990C9B /* AppController.mm in Sources */,
-				3ABFB65C1CF5AE2100607F2F /* org_cocos2dx_lua_BluetoothManager.cpp in Sources */,
+				3AFBBFB71CF71FC100738251 /* org_cocos2dx_lua_BluetoothManager.cpp in Sources */,
 				3AD632ED1CD0C097004A8434 /* MBProgressHUD.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
