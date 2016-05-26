@@ -46,6 +46,7 @@ public class BluetoothManager {
                     //a device is connected so you can now send stuff to it
                     Toast.makeText(context, "Connected!", Toast.LENGTH_SHORT).show();
                     Log.w("SIMPLEBT", "Device connected");
+                    isConnected();
                 }
 
                 @Override
@@ -53,6 +54,7 @@ public class BluetoothManager {
                     // device was disconnected so connect it again?
                     Toast.makeText(context, "Disconnected!", Toast.LENGTH_SHORT).show();
                     Log.w("SIMPLEBT", "Device disconnected");
+                    disConnected();
                 }
             });
         }
@@ -197,4 +199,6 @@ public class BluetoothManager {
 
 
     native public void onDataReceived(String data);
+    native public void isConnected();
+    native public void disConnected();
 }

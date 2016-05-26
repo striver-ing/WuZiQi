@@ -18,6 +18,20 @@ extern "C" {
  */
 JNIEXPORT void JNICALL Java_org_cocos2dx_lua_BluetoothManager_onDataReceived(JNIEnv *, jobject, jstring);
 
+/*
+ * Class:     org_cocos2dx_lua_BluetoothManager
+ * Method:    isConnected
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_org_cocos2dx_lua_BluetoothManager_isConnected(JNIEnv *, jobject);
+
+/*
+ * Class:     org_cocos2dx_lua_BluetoothManager
+ * Method:    disConnected
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_org_cocos2dx_lua_BluetoothManager_disConnected(JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif
