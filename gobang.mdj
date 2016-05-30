@@ -12653,6 +12653,7 @@
 									"visibility": "public",
 									"isStatic": false,
 									"isLeaf": false,
+									"type": "",
 									"isReadOnly": false,
 									"isOrdered": false,
 									"isUnique": false,
@@ -19943,6 +19944,73 @@
 					"isFinalSpecialization": false,
 					"isLeaf": false,
 					"isActive": false
+				},
+				{
+					"_type": "UMLClass",
+					"_id": "AAAAAAFVBQn5pYDFj8M=",
+					"_parent": {
+						"$ref": "AAAAAAFU8tvSGzrFyQI="
+					},
+					"name": "Class1",
+					"visibility": "public",
+					"isAbstract": false,
+					"isFinalSpecialization": false,
+					"isLeaf": false,
+					"isActive": false
+				},
+				{
+					"_type": "UMLClass",
+					"_id": "AAAAAAFVBQoN9IFmTeU=",
+					"_parent": {
+						"$ref": "AAAAAAFU8tvSGzrFyQI="
+					},
+					"name": "Class2",
+					"visibility": "public",
+					"isAbstract": false,
+					"isFinalSpecialization": false,
+					"isLeaf": false,
+					"isActive": false
+				}
+			],
+			"visibility": "public"
+		},
+		{
+			"_type": "UMLModel",
+			"_id": "AAAAAAFVBQq52oh8alQ=",
+			"_parent": {
+				"$ref": "AAAAAAFF+h6SjaM2Hec="
+			},
+			"name": "Model1",
+			"ownedElements": [
+				{
+					"_type": "UMLClassDiagram",
+					"_id": "AAAAAAFVBQq52oh9sCE=",
+					"_parent": {
+						"$ref": "AAAAAAFVBQq52oh8alQ="
+					},
+					"name": "ChessboardNode",
+					"visible": true,
+					"defaultDiagram": false
+				},
+				{
+					"_type": "UMLClassDiagram",
+					"_id": "AAAAAAFVBQtCV4ipWDs=",
+					"_parent": {
+						"$ref": "AAAAAAFVBQq52oh8alQ="
+					},
+					"name": "GameBaseScene",
+					"visible": true,
+					"defaultDiagram": false
+				},
+				{
+					"_type": "UMLClassDiagram",
+					"_id": "AAAAAAFVBQwWJ4jG30w=",
+					"_parent": {
+						"$ref": "AAAAAAFVBQq52oh8alQ="
+					},
+					"name": "TranspositionTable",
+					"visible": true,
+					"defaultDiagram": false
 				}
 			],
 			"visibility": "public"
