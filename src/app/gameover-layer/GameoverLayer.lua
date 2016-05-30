@@ -10,7 +10,10 @@ local GameoverLayer = class("GameoverLayer", function()
     -- return display.newLayer()
 end)
 
+
+
 function GameoverLayer:ctor(chessType, step, time)
+    self:createSheildLayer()
     --花 和 竹的装饰
     self:addSprite("taohua_right.png", cc.p(1, 1), cc.p(display.width, display.height))
     self:addSprite("taohua_left.png", cc.p(0, 1), cc.p(0, display.height))
@@ -22,6 +25,12 @@ function GameoverLayer:ctor(chessType, step, time)
 
     SoundManager.playEffect("gameover.mp3")
 
+end
+
+function GameoverLayer:createSheildLayer()
+    if self._sheildLayer then return end
+    self._sheildLayer = require("utils.MarkLayer").new()
+    self._sheildLayer:addTo(self, -1);
 end
 
 function GameoverLayer:okOrUndo()
