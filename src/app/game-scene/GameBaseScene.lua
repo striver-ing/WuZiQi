@@ -12,6 +12,7 @@ end)
 
 local AI = require("app.ai-algorithm.AI")
 local GameoverLayer = require("app.gameover-layer.GameoverLayer")
+local ScreenShoot = require("utils.ScreenShoot")
 
 
 local _retractCount = 1 --悔棋步数
@@ -257,7 +258,7 @@ function GameBaseScene:addMenu()
 
     --帮助
     self:addButton("help.png", menuBtnPositionX * 6 + 50, menuBtnPositionY, self, function(sender, eventType)
-        --截屏分享 todo
+        self:screenShoot()
     end)
 
 
@@ -271,6 +272,24 @@ function GameBaseScene:addMenu()
     end, cc.Handler.EVENT_TOUCH_BEGAN)
     local eventDispatcher = cc.Director:getInstance():getEventDispatcher():addEventListenerWithSceneGraphPriority(frameListener, self)
 
+end
+
+--截屏分享
+function GameBaseScene:screenShoot()
+    ScreenShoot.captured("shared.png", function(succeed, outputFile)
+            if succeed then
+                -- local shareBg = display.newSprite("sharebg.png")
+                -- shareBg:setPosition(display.center)
+                -- shareBg:addTo(self)
+
+                -- local screenShoot = display.newSprite(outputFile)
+                -- screenShoot:setScale(0.5)
+                -- screenShoot:addTo(shareBg)
+                -- screenShoot:setPosition(cc.p(shareBg:getContentSize().width / 2, shareBg:getContentSize().height / 2))
+            else
+                Log.d("截屏失败")
+            end
+        end)
 end
 
 function GameBaseScene:addButton(img, posX, posY, addToTarget, callFunc, text, fontSize)
