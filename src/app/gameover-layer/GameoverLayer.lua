@@ -6,7 +6,7 @@
 --备注:
 ----------------------------
 local GameoverLayer = class("GameoverLayer", function()
-    return cc.LayerColor:create(cc.c4b(0, 0, 0, 100))
+    return cc.LayerColor:create(cc.c4b(0, 0, 0, 0))
     -- return display.newLayer()
 end)
 

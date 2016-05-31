@@ -7,32 +7,47 @@
 ----------------------------
 
 --帧数
-FPS = 60
+FPS             = 60
 
 --棋盘
 -- 左下角坐标
-CHESS_OFFSETX = 25
-CHESS_OFFSETY = 51
+CHESS_OFFSETX   = 25
+CHESS_OFFSETY   = 51
 --棋盘格子的宽度
-CHESS_SETP    = 48
-CHESS_GRID_NUM = 15
+CHESS_SETP      = 48
+CHESS_GRID_NUM  = 15
 --棋子类型
-NO_CHESS     = -1
-WHITE = 0
-BLACK = 1
+NO_CHESS        = -1
+WHITE           = 0
+BLACK           = 1
 
 --无穷大
-INFINITY = 0Xffffff
+INFINITY        = 0Xffffff
 
 --置换表的大小
 HASH_TABLE_SIZE = 1024 * 1024
 --描述棋盘估分的含义  准确值 最坏值 最好值
-ENTRY_TYPE = {exact = 0, lowerBound = 1, upperBound = 2}
+ENTRY_TYPE      = {
+    exact           = 0,
+    lowerBound      = 1,
+    upperBound      = 2
+}
 
 --发送消息的头
-MSG = {
-    ADD_CHESS = 0x10000001,
-    TALK      = 0x10000002
+MSG             = {
+    ADD_CHESS       = 0x10000001,
+    TALK            = 0x10000002,
+    --请求 如悔棋重玩
+    REQUEST         = 0x10000003,
+    --悔棋
+    RETRACT         = 0x10000004,
+    RETRACT_OK      = 0x10000005,
+    RETRACT_REFUSED = 0x10000006,
+    --重玩
+    RESTART         = 0x10000007,
+    RESTART_OK      = 0x10000008,
+    RESTART_REFUSED = 0x10000009,
+
 }
 
 
@@ -55,4 +70,4 @@ MSG = {
 
 --音效
 SAVA_STRING_SOUND_EFFECT_ENABLE = "usersoundeffectenable"
-SAVA_STRING_SOUND_MUSIC_ENABLE = "usersoundmusicenable"
+SAVA_STRING_SOUND_MUSIC_ENABLE  = "usersoundmusicenable"

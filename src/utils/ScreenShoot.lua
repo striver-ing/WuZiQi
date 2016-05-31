@@ -14,4 +14,21 @@ function ScreenShoot.captured(fileName, afterCapturedCallFunc)
     cc.utils:captureScreen(afterCapturedCallFunc, fileName)
 end
 
+-- function ScreenShoot.screenShotCut(savedPicName)
+--     local winSize = cc.Director:getInstance():getWinSize()
+--     local fullScreenRender = cc.RenderTexture:create(winSize.width, winSize.height)
+--     local runningScene = cc.Director:getInstance():getRunningScene()
+--     fullScreenRender:begin()
+--     runningScene:visit()
+--     fullScreenRender:endToLua()
+--     local picType = string.sub(savedPicName, -3)
+--     if picType == "png" then
+--         fullScreenRender:saveToFile(savedPicName, 1, false)
+--     elseif picType == "jpg" then
+--         fullScreenRender:saveToFile(savedPicName, 0, false)
+--     else
+--         fullScreenRender:saveToFile(savedPicName .. ".png", 1)
+--     end
+-- end
+
 return ScreenShoot;

@@ -17,13 +17,9 @@ end
 function BleManager.closeConnected()
     bleManager:closeConnected()
 end
-
+--------------------------------------
 function BleManager.sendMessage(msg)
     bleManager:sendMessage(MSG.TALK .. msg)
-end
-
-function BleManager.ownSideAddChess(row, col)
-    bleManager:sendMessage(MSG.ADD_CHESS .. string.format("%d,%d",row,col))
 end
 
 --对话calllback(msg)
@@ -36,8 +32,13 @@ function BleManager.addReceivedMessageCallback(callback)
         callback(talkContent)
     end)
 end
+--------------------------------------
 
---下棋callback(row, col)
+function BleManager.ownSideAddChess(row, col)
+    bleManager:sendMessage(MSG.ADD_CHESS .. string.format("%d,%d",row,col))
+end
+
+--收到对方下棋callback(row, col)
 function BleManager.enemySideAddChessCallback(callback)
     bleManager:addReceivedMessageCallback(function (msg)
         if msg == nil then return end
@@ -50,6 +51,23 @@ function BleManager.enemySideAddChessCallback(callback)
         callback(row, col)
     end)
 end
+--------------------------------------
 
+--请求悔棋 重玩等
+function BleManager.sendRequest(msg)
+    bleManager:sendMessage(MSG.REQUEST .. msg)
+end
+
+--收到请求 calllback(request)
+function BleManager.addReceivedRequestCallback(callback)
+    bleManager:addReceivedMessageCallback(function(msg)
+        if msg == nil then return end
+        local headPosBegin, headPosEnd = string.find(msg, MSG.REQUEST)
+        if headPosBegin == nil then return end
+        local request = string.sub(msg, headPosEnd + 1, -1)
+        callback(tonumber(request))
+    end)
+end
+--------------------------------------
 
 return BleManager

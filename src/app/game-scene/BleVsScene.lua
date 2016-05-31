@@ -30,11 +30,7 @@ function BleVsScene:onCreate()
 
     end)
 
-    --添加对方下棋的回调
-    BleManager.enemySideAddChessCallback(function(row, col)
-        -- Log.d("add chess " .. " row = " .. row .. " col = " .. col)
-        self._chessboard:addChess(row, col)
-    end)
+    self:addCallback()
 
 
     -- --接收到消息的回调
@@ -51,5 +47,83 @@ end
 function BleVsScene:init()
     ownPlayChessType = nil
 end
+
+--悔棋
+function BleVsScene:retractChess()
+        -- 当前已下棋方不是自己 不能悔棋
+    if ownPlayChessType == nil or ownPlayChessType == self._chessboard:getNextTurnChessType() then
+        Dialog.show("现在不能悔棋😄")
+    else
+        BleManager.sendRequest(MSG.RETRACT)
+        Dialog.show("悔棋请求已发出...")
+    end
+end
+
+--重玩
+function BleVsScene:reStart()
+    BleManager.sendRequest(MSG.RESTART)
+    Dialog.show("重玩请求已发出...")
+end
+
+--回调
+function BleVsScene:addCallback()
+    --添加对方下棋的回调
+    BleManager.enemySideAddChessCallback(function(row, col)
+        self._chessboard:addChess(row, col)
+    end)
+
+    --收到请求回调
+    BleManager.addReceivedRequestCallback(function(request)
+        if request == MSG.RETRACT then              -- 悔棋请求
+            Log.d("悔棋请求")
+            Dialog.show("让我悔下棋吧😭...", "允 许", "拒 绝", function(btnPos)
+                if btnPos == 1 then                 --同意
+                    self._chessboard:retractChess()
+                    BleManager.sendRequest(MSG.RETRACT_OK)
+                elseif btnPos == 2 then             --拒绝
+                    BleManager.sendRequest(MSG.RETRACT_REFUSED)
+                end
+
+            end)
+
+        elseif request == MSG.RETRACT_OK then       -- 同意悔棋
+            Dialog.dismiss()
+            Dialog.show("对方同意了您的请求")
+            self._chessboard:retractChess()
+
+        elseif request == MSG.RETRACT_REFUSED then  -- 拒绝悔棋
+            Dialog.dismiss()
+            Dialog.show("对方拒绝了您的请求")
+
+        elseif request == MSG.RESTART then          -- 重玩请求
+            Dialog.show("咱俩重玩吧😭...", "允 许", "拒 绝", function(btnPos)
+                if btnPos == 1 then                 --同意
+                    self:stopAction(self._scheduleAction)
+                    self._chessboard:restartGame()
+                    self:resetGameTime()
+
+                    BleManager.sendRequest(MSG.RESTART_OK)
+
+                elseif btnPos == 2 then             --拒绝
+                    BleManager.sendRequest(MSG.RESTART_REFUSED)
+                end
+
+            end)
+
+        elseif request == MSG.RESTART_OK then       -- 同意重玩
+            Dialog.dismiss()
+            Dialog.show("对方同意了您的请求")
+
+            self:stopAction(self._scheduleAction)
+            self._chessboard:restartGame()
+            self:resetGameTime()
+
+        elseif request == MSG.RESTART_REFUSED then  -- 拒绝重玩
+            Dialog.dismiss()
+            Dialog.show("对方拒绝了您的请求")
+        end
+    end)
+end
+
 
 return BleVsScene

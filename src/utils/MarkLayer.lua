@@ -7,7 +7,7 @@
 ----------------------------
 
 local MarkLayer = class("MarkLayer", function ()
-    return cc.LayerColor:create(cc.c4b(0, 0, 0, 0))
+    return cc.LayerColor:create(cc.c4b(0, 0, 0, 100))
 end)
 
 function MarkLayer:ctor()
