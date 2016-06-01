@@ -36,7 +36,16 @@ function StartScene:ctor()
 
     --wifi对弈
     self:addButton("wifibtn.png", display.visiblesizeWidth / 2, display.visiblesizeHeight * 0.15, function(sender, eventType)
+        Dialog.show("sorry，正在紧急开发中")
     end)
+
+    --游戏规则指导
+    self:addButton("rule.png", display.visiblesizeWidth - 70, display.visibleoriginX + 70, function(sender, eventType)
+        local scene = require("app.start-scene.GuideScene"):new()
+        display.runScene(scene)
+
+    end)
+
 end
 
 function StartScene:addButton(img, posX, posY, callFunc)
