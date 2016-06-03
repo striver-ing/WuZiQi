@@ -21,6 +21,9 @@ params text1, text2: 按钮上的文字，可以为nil
 params callback: 点击按钮的回调函数，会传入所点击按钮的index(1或2)，可以为nil
 ]]
 function Dialog.show(context, text1, text2, callback)
+    -- 如果原来以出线弹框，则先消失弹窗
+    Dialog.dismiss()
+
     local runningScene = cc.Director:getInstance():getRunningScene()
      --屏蔽层
     Dialog.createSheildLayer()

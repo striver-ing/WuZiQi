@@ -9,6 +9,7 @@
 local BleVsScene = class("BleVsScene", require("app.game-scene.GameBaseScene"))
 
 local BleManager = require("utils.BleManager")
+local AI = require("app.ai-algorithm.AI")
 local ownPlayChessType = nil
 
 function BleVsScene:onCreate()
@@ -65,6 +66,11 @@ function BleVsScene:reStart()
     Dialog.show("重玩请求已发出...")
 end
 
+--提示
+function BleVsScene:hint()
+   Dialog.show("不要耍赖哦！", "好吧")
+end
+
 --回调
 function BleVsScene:addCallback()
     --添加对方下棋的回调
@@ -87,12 +93,10 @@ function BleVsScene:addCallback()
             end)
 
         elseif request == MSG.RETRACT_OK then       -- 同意悔棋
-            Dialog.dismiss()
             Dialog.show("对方同意了您的请求")
             self._chessboard:retractChess()
 
         elseif request == MSG.RETRACT_REFUSED then  -- 拒绝悔棋
-            Dialog.dismiss()
             Dialog.show("对方拒绝了您的请求")
 
         elseif request == MSG.RESTART then          -- 重玩请求
@@ -111,7 +115,6 @@ function BleVsScene:addCallback()
             end)
 
         elseif request == MSG.RESTART_OK then       -- 同意重玩
-            Dialog.dismiss()
             Dialog.show("对方同意了您的请求")
 
             self:stopAction(self._scheduleAction)
@@ -119,7 +122,6 @@ function BleVsScene:addCallback()
             self:resetGameTime()
 
         elseif request == MSG.RESTART_REFUSED then  -- 拒绝重玩
-            Dialog.dismiss()
             Dialog.show("对方拒绝了您的请求")
         end
     end)
