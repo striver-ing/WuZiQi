@@ -83,10 +83,7 @@ function ChessboardNode:onTouchBegan(touch, event)
     if self._touchCallFunc then
         self._touchCallFunc(row, col)
     end
-    if isNotExecuteStartGameCallback and self._startGameCallback then
-        self._startGameCallback()
-        isNotExecuteStartGameCallback = false
-    end
+
     return true
 end
 
@@ -134,6 +131,12 @@ function ChessboardNode:addChess(row, col, callFunc)
     if row < 1 or row > CHESS_GRID_NUM or col < 1 or col > CHESS_GRID_NUM  or self._chessboardArray[row][col].type ~= NO_CHESS or isGameOver then
       if callFunc then callFunc() end
       return
+    end
+
+    -- 执行开始下棋的回调
+    if isNotExecuteStartGameCallback and self._startGameCallback then
+        self._startGameCallback()
+        isNotExecuteStartGameCallback = false
     end
 
     SoundManager.playEffect("chess.wav")
