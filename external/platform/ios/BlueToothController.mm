@@ -8,7 +8,7 @@
 
 #import "BlueToothController.h"
 #import <GameKit/GameKit.h>
-#import "SVProgressHUD.h"
+//#import "SVProgressHUD.h"
 
 static BlueToothController *blueToothController = nil;
 
@@ -26,6 +26,9 @@ static BlueToothController *blueToothController = nil;
 
     //    ReceivedMessageCallback _receivedMessageCallback;
     std::vector<ReceivedMessageCallback> _receivedMessageCallbacks;
+    OnConnectedCallback _onConnectedCallback;
+    OnDisconnectedCallback _onDisconnectedCallback;
+    CannelConnectedCallback _cannelConnectedCallback;
 }
 
 //#pragma mark - init
@@ -64,7 +67,7 @@ static BlueToothController *blueToothController = nil;
     _pickerController.delegate = self;
 
     _pickerController.connectionTypesMask = GKPeerPickerConnectionTypeNearby;  // 使用蓝牙
-    //    pickerController.connectionTypesMask = GKPeerPickerConnectionTypeOnline; //基于互联网的连接
+    // pickerController.connectionTypesMask = GKPeerPickerConnectionTypeOnline; //基于互联网的连接
 
     [_pickerController show];
 }
@@ -84,14 +87,29 @@ static BlueToothController *blueToothController = nil;
     _receivedMessageCallbacks.push_back(receiveMessageCallback);
 }
 
-//执行回调
+//注册连接回调
+- (void)addOnConnectedCallback:(OnConnectedCallback)onConnectedCallback {
+    _onConnectedCallback = onConnectedCallback;
+}
+
+//注册断开连接回调
+- (void)addOnDisconnectedCallback:(OnDisconnectedCallback)onDisconnectedCallback {
+    _onDisconnectedCallback = onDisconnectedCallback;
+}
+
+//注册取消连接回调
+- (void)addCannelConnectedCallback:(CannelConnectedCallback)cannelConnectedCallback {
+    _cannelConnectedCallback = cannelConnectedCallback;
+}
+
+//执行收到消息回调
 - (void)executeReceivedMessageCallback:(NSString *)message {
     for (ReceivedMessageCallback callback : _receivedMessageCallbacks) {
         callback([message UTF8String]);
     }
 }
 
-//取消连接
+//断开连接
 - (void)closeConnected {
     [_currentSession disconnectFromAllPeers];
     _currentSession = nil;
@@ -122,9 +140,13 @@ static BlueToothController *blueToothController = nil;
  * 如果用户取消了蓝牙选择器
  */
 - (void)peerPickerControllerDidCancel:(GKPeerPickerController *)picker {
-    //    [SVProgressHUD showErrorWithStatus:@"蓝牙连接取消"];
+    //[SVProgressHUD showSuccessWithStatus:@"蓝牙连接取消"];
+
     picker.delegate = nil;
     _currentSession = nil;
+    if (_cannelConnectedCallback) {
+        _cannelConnectedCallback();  //执行取消连接的回调
+    }
 }
 
 //连接后
@@ -142,12 +164,18 @@ static BlueToothController *blueToothController = nil;
 - (void)session:(GKSession *)session peer:(NSString *)peerID didChangeState:(GKPeerConnectionState)state {
     switch (state) {
         case GKPeerStateConnected:
-            //            [SVProgressHUD showSuccessWithStatus:@"蓝牙已连接"];
+            //[SVProgressHUD showSuccessWithStatus:@"蓝牙已连接"];
+            if (_onConnectedCallback) {
+                _onConnectedCallback();  //执行连接上的回调
+            }
             break;
         case GKPeerStateDisconnected:
-            //            [SVProgressHUD showSuccessWithStatus:@"蓝牙已断开"];
+            //[SVProgressHUD showErrorWithStatus:@"蓝牙已断开"];
             _pickerController.delegate = nil;
             _currentSession = nil;
+            if (_onDisconnectedCallback) {
+                _onDisconnectedCallback();  //执行断开连接的回调
+            }
             break;
         default:
             break;
@@ -158,8 +186,7 @@ static BlueToothController *blueToothController = nil;
 - (void)receiveData:(NSData *)data fromPeer:(NSString *)peer inSession:(GKSession *)session context:(void *)context {
     NSString *msg = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     NSLog(@"%@", msg);
-    //    [SVProgressHUD showSuccessWithStatus:@"数据接收成功"];
-    //    (*_receivedMessageCallback)([msg UTF8String]);  //执行回调  [NSString UTF8String] 把NSString 转化为const char ＊
+    //[SVProgressHUD showSuccessWithStatus:@"数据接收成功"];
     [self executeReceivedMessageCallback:msg];
 }
 

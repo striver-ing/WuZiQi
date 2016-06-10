@@ -15,3 +15,21 @@ void NetworkManagerProtocol::executeReceivedMessageCallback(const char* message)
         callback(message);
     }
 }
+
+void NetworkManagerProtocol::executeOnConnectedCallback() {
+    if (_onConnectedCallback) {
+        _onConnectedCallback();
+    }
+}
+
+void NetworkManagerProtocol::executeOnDisconnectedCallback() {
+    if (_onDisconnectedCallback) {
+        _onDisconnectedCallback();
+    }
+}
+
+void NetworkManagerProtocol::executeCannelConnectedCallback() {
+    if (_cannelConnectedCallback) {
+        _cannelConnectedCallback();
+    }
+}

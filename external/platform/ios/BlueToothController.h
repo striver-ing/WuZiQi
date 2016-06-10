@@ -13,6 +13,9 @@
 
 // typedef void (*ReceivedMessageCallback)(const char* msg);
 typedef std::function<void(const char*)> ReceivedMessageCallback;
+typedef std::function<void()> OnConnectedCallback;
+typedef std::function<void()> OnDisconnectedCallback;
+typedef std::function<void()> CannelConnectedCallback;
 
 @interface BlueToothController : UIViewController<GKPeerPickerControllerDelegate, GKSessionDelegate> {
 }
@@ -24,6 +27,9 @@ typedef std::function<void(const char*)> ReceivedMessageCallback;
 
 - (void)sendMessage:(NSString*)message;
 - (void)addReceivedMessageCallback:(ReceivedMessageCallback)receiveMessageCallback;
+- (void)addOnConnectedCallback:(OnConnectedCallback)onConnectedCallback;
+- (void)addOnDisconnectedCallback:(OnDisconnectedCallback)onDisconnectedCallback;
+- (void)addCannelConnectedCallback:(CannelConnectedCallback)cannelConnectedCallback;
 //@property(nonatomic, assign, setter=addReceivedMessageCallBack:) ReceivedMessageCallback* receivedMessageCallback;
 
 @end

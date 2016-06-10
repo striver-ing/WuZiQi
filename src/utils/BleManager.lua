@@ -70,4 +70,26 @@ function BleManager.addReceivedRequestCallback(callback)
 end
 --------------------------------------
 
+--连接上设备
+function BleManager.addOnConnectedCallback(callback)
+    if callback then
+        bleManager:addOnConnectedCallback(callback)
+    end
+end
+
+--连接断开
+function BleManager.addOnDisconnectedCallback(callback)
+    if callback then
+        bleManager:addOnDisconnectedCallback(callback)
+    end
+end
+
+--取消连接
+function BleManager.addCannelConnectedCallback(callback)
+    if callback then
+        bleManager:addCannelConnectedCallback(callback)
+    end
+end
+
+
 return BleManager

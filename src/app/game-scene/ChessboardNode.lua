@@ -77,6 +77,14 @@ function ChessboardNode:addStartGameCallback(callback)
     self._startGameCallback = callback
 end
 
+function ChessboardNode:notifyGameStarted()
+    -- 执行开始下棋的回调
+    if isNotExecuteStartGameCallback and self._startGameCallback then
+        self._startGameCallback()
+        isNotExecuteStartGameCallback = false
+    end
+end
+
 function ChessboardNode:onTouchBegan(touch, event)
     local row, col = self:convertToChessSpace(touch)
     --执行回调
@@ -133,11 +141,7 @@ function ChessboardNode:addChess(row, col, callFunc)
       return
     end
 
-    -- 执行开始下棋的回调
-    if isNotExecuteStartGameCallback and self._startGameCallback then
-        self._startGameCallback()
-        isNotExecuteStartGameCallback = false
-    end
+    self:notifyGameStarted()
 
     SoundManager.playEffect("chess.wav")
     local posX = (row - 1) * CHESS_SETP + CHESS_OFFSETX

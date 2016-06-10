@@ -10,43 +10,65 @@ local BleVsScene = class("BleVsScene", require("app.game-scene.GameBaseScene"))
 
 local BleManager = require("utils.BleManager")
 local AI = require("app.ai-algorithm.AI")
+
 local ownPlayChessType = nil
+local isConnected = false
+
+local FIRST_PLAY_CHESS_MSG = "对方先下了,亲后下吧"
+local SECOND_PLAY_CHESS_MSG = "对方选择了后下,\n 亲可以先下子"
 
 function BleVsScene:onCreate()
     Log.d("蓝牙对弈")
-    self.init();
     BleManager:searchBleAndConnect()
 
     self._chessboard:addTouchCallFunc(function(row, col)
-        if ownPlayChessType == nil then
-            self._chessboard:addChess(row, col)
-            ownPlayChessType = self._chessboard:getCurrentChessType()
-            BleManager.ownSideAddChess(row, col)
-
-        elseif ownPlayChessType == self._chessboard:getNextTurnChessType() then
-            self._chessboard:addChess(row, col)
-            BleManager.ownSideAddChess(row, col)
+        if isConnected then
+            self._connectedStatus:setString(ownPlayChessType)
+            if ownPlayChessType == self._chessboard:getNextTurnChessType() then
+                self._chessboard:addChess(row, col)
+                BleManager.ownSideAddChess(row, col)
+            end
+        else
+            Dialog.show("请连接设备", "连接", "取消", function(btnPos)
+                if btnPos == 1 then
+                   BleManager:searchBleAndConnect()
+                elseif btnPos == 2 then
+                    self:goHome()
+                end
+            end)
         end
+
+        -- if ownPlayChessType == nil then
+        --     self._chessboard:addChess(row, col)
+        --     ownPlayChessType = self._chessboard:getCurrentChessType()
+        --     BleManager.ownSideAddChess(row, col)
+
+        -- elseif ownPlayChessType == self._chessboard:getNextTurnChessType() then
+        --     self._chessboard:addChess(row, col)
+        --     BleManager.ownSideAddChess(row, col)
+        -- end
 
 
     end)
 
+    self:addConnectedStatus()
     self:addCallback()
-
-
-    -- --接收到消息的回调
-    -- BleManager.addReceivedMessageCallback(function (msg)
-    --     Log.d(msg)
-    -- end)
-
-   -- self:addButton(nil, display.cx, display.visibleoriginX + 80, self, function(sender, eventType)
-   --      BleManager.sendMessage("hello")
-   --  end, "hello", 50)
 
 end
 
-function BleVsScene:init()
-    ownPlayChessType = nil
+--  连接状态显示的label
+function BleVsScene:addConnectedStatus()
+    self._connectedStatus = cc.Label:createWithSystemFont("未连接", "Marker Felt.ttf", 40)
+    self._connectedStatus:setPosition(cc.p(display.cx, display.height * 0.75))
+    self._connectedStatus:addTo(self)
+end
+
+function BleVsScene:setFirstPlayChess(flag)
+    if flag then
+        ownPlayChessType = self._chessboard:getFirstChessType()
+    else
+        ownPlayChessType = self._chessboard:getBehindChessType()
+    end
 end
 
 --悔棋
@@ -76,6 +98,33 @@ function BleVsScene:addCallback()
     --添加对方下棋的回调
     BleManager.enemySideAddChessCallback(function(row, col)
         self._chessboard:addChess(row, col)
+        self._chessboard:notifyGameStarted()
+    end)
+
+    --添加连接上设备的回调
+    BleManager.addOnConnectedCallback(function()
+        isConnected = true
+        self._connectedStatus:setString("已连接")
+        self:setPlayChessSequence(" 成功连接设备\n亲是先下还是后下")
+    end)
+
+    --添加断开设备的回调
+    BleManager.addOnDisconnectedCallback(function()
+        isConnected = false
+        self._connectedStatus:setString("未连接")
+        Dialog.show("  连接断开啦\n是否重新连接？", "是", "否", function(btnPos)
+                if btnPos == 1 then
+                   BleManager:searchBleAndConnect()
+                elseif btnPos == 2 then
+                    self:goHome()
+                end
+        end)
+    end)
+
+    --添加取消连接的回调
+    BleManager.addCannelConnectedCallback(function()
+        Log.d("取消连接")
+        self:goHome()
     end)
 
     --收到请求回调
@@ -105,6 +154,11 @@ function BleVsScene:addCallback()
                     self:stopAction(self._scheduleAction)
                     self._chessboard:restartGame()
                     self:resetGameTime()
+                    if self:getChildByName("gameoverLayer") then -- 如果游戏结束 收到重玩请求 同意 需要撤掉己方的gameverLayer 然后进入游戏场景
+                        self._gameoverLayer:removeSelf()
+                    end
+
+                    self:setPlayChessSequence()
 
                     BleManager.sendRequest(MSG.RESTART_OK)
 
@@ -121,10 +175,37 @@ function BleVsScene:addCallback()
             self._chessboard:restartGame()
             self:resetGameTime()
 
+            self:setPlayChessSequence()
+
         elseif request == MSG.RESTART_REFUSED then  -- 拒绝重玩
             Dialog.show("对方拒绝了您的请求")
         end
     end)
+
+    --接收到消息的回调(先手 后手的消息)
+    BleManager.addReceivedMessageCallback(function (msg)
+        Dialog.show(msg)
+        if msg == FIRST_PLAY_CHESS_MSG then -- 对方先手 设置己方后手
+            self:setFirstPlayChess(false, "好吧")
+        elseif msg == SECOND_PLAY_CHESS_MSG then-- 对方后手 设置己方先手
+            self:setFirstPlayChess(true, "好啊")
+        end
+    end)
+end
+
+--设置先后手
+function BleVsScene:setPlayChessSequence(context)
+    context = context == nil and "亲是先下子还是后下子" or context
+    Dialog.show(context, "先下", "后下", function(btnPos)
+        if btnPos == 1 then
+            self:setFirstPlayChess(true)
+            BleManager.sendMessage(FIRST_PLAY_CHESS_MSG)
+        elseif btnPos == 2 then
+            self:setFirstPlayChess(false)
+            BleManager.sendMessage(SECOND_PLAY_CHESS_MSG)
+        end
+    end)
+
 end
 
 

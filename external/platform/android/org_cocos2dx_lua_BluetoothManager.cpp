@@ -23,7 +23,9 @@ JNIEXPORT void JNICALL Java_org_cocos2dx_lua_BluetoothManager_onDataReceived(JNI
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_lua_BluetoothManager_isConnected(JNIEnv *, jobject) {
+    Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() { BleManager::getInstance()->executeOnConnectedCallback(); });
 }
 
 JNIEXPORT void JNICALL Java_org_cocos2dx_lua_BluetoothManager_disConnected(JNIEnv *, jobject) {
+    Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() { BleManager::getInstance()->executeOnDisconnectedCallback(); });
 }

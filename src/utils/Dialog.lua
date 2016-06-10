@@ -21,7 +21,7 @@ params text1, text2: 按钮上的文字，可以为nil
 params callback: 点击按钮的回调函数，会传入所点击按钮的index(1或2)，可以为nil
 ]]
 function Dialog.show(context, text1, text2, callback)
-    -- 如果原来以出线弹框，则先消失弹窗
+    -- 如果原来已出现弹框，则先消失弹窗
     Dialog.dismiss()
 
     local runningScene = cc.Director:getInstance():getRunningScene()
@@ -32,7 +32,7 @@ function Dialog.show(context, text1, text2, callback)
     --背景
     dialog = display.newSprite("dialog/dialog.png")
     dialog:setPosition(display.center)
-    dialog:addTo(runningScene)
+    dialog:addTo(runningScene, 1000)
     dialog:setTag(dialogTag)
 
     --内容信息
@@ -96,7 +96,7 @@ end
 function Dialog.createSheildLayer()
     local runningScene = cc.Director:getInstance():getRunningScene()
     sheildLayer = require("utils.MarkLayer").new()
-    sheildLayer:addTo(runningScene)
+    sheildLayer:addTo(runningScene, 1000)
     sheildLayer:setTag(sheildLayerTag)
 end
 

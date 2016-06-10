@@ -9,7 +9,6 @@
 #import "BlueToothController.h"
 
 void BleManager::searchBleAndConnect() {
-    NSLog(@"getConnect");
     [[BlueToothController getInstance] searchBleAndConnect];
 }
 
@@ -24,4 +23,14 @@ void BleManager::sendMessage(const char* message) {
 
 void BleManager::addReceivedMessageCallback(ReceivedMessageCallback receivedMessageCallback) {
     [[BlueToothController getInstance] addReceivedMessageCallback:receivedMessageCallback];
+}
+
+void BleManager::addOnConnectedCallback(OnConnectedCallback onConnectedCallback) {
+    [[BlueToothController getInstance] addOnConnectedCallback:onConnectedCallback];
+}
+void BleManager::addOnDisconnectedCallback(OnDisconnectedCallback onDisconnectedCallback) {
+    [[BlueToothController getInstance] addOnDisconnectedCallback:onDisconnectedCallback];
+}
+void BleManager::addCannelConnectedCallback(CannelConnectedCallback cannelConnectedCallback) {
+    [[BlueToothController getInstance] addCannelConnectedCallback:cannelConnectedCallback];
 }

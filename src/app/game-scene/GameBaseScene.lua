@@ -167,6 +167,7 @@ function GameBaseScene:addGameoverCallback()
         performWithDelay(self, function()
             self._gameoverLayer = GameoverLayer.new(chessType, step, self._gameTimeStr)
             self._gameoverLayer:addTo(self, 100)
+            self._gameoverLayer:setName("gameoverLayer")
 
             -- 设置 悔棋 重玩 和 回到主页的回调
             self._gameoverLayer:setRetractCallback(function()
