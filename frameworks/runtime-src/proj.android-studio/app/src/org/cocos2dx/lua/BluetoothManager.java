@@ -30,6 +30,8 @@ public class BluetoothManager {
 
     private String curMacAddress;
 
+    private boolean isConnected = false;
+
 
     private void initBluetooth() {
         if (simpleBluetooth == null) {
@@ -47,6 +49,7 @@ public class BluetoothManager {
                     Toast.makeText(context, "Connected!", Toast.LENGTH_SHORT).show();
                     Log.w("SIMPLEBT", "Device connected");
                     onConnected();
+                    isConnected = true;
                 }
 
                 @Override
@@ -55,6 +58,7 @@ public class BluetoothManager {
                     Toast.makeText(context, "Disconnected!", Toast.LENGTH_SHORT).show();
                     Log.w("SIMPLEBT", "Device disconnected");
                     onDisconnected();
+                    isConnected = false;
                 }
             });
         }
@@ -141,11 +145,12 @@ public class BluetoothManager {
                         simpleBluetooth.createBluetoothServerConnection();
 
                     } else if (choose[which].equals("加入游戏") && simpleBluetooth != null) {
-                        if (curMacAddress != null) {
-                            simpleBluetooth.connectToBluetoothServer(curMacAddress);
-                        } else {
-                            simpleBluetooth.scan(CHOOSE_SERVER_REQUEST);
-                        }
+                        simpleBluetooth.scan(CHOOSE_SERVER_REQUEST);
+//                        if (curMacAddress != null) {
+//                            simpleBluetooth.connectToBluetoothServer(curMacAddress);
+//                        } else {
+//                            simpleBluetooth.scan(CHOOSE_SERVER_REQUEST);
+//                        }
                     }
 
                 }
@@ -180,6 +185,7 @@ public class BluetoothManager {
             if (simpleBluetooth != null) {
                 simpleBluetooth.cancelScan();
                 simpleBluetooth.endSimpleBluetooth();
+                isConnected = false;
             }
             return false;
         }
@@ -203,6 +209,10 @@ public class BluetoothManager {
         Message message = Message.obtain(closeConnectedHandler);
         message.sendToTarget();
 
+    }
+
+    public boolean isConnected(){
+        return isConnected;
     }
 
 

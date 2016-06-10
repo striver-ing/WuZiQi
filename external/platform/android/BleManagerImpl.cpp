@@ -70,6 +70,22 @@ void BleManager::sendMessage(const char *message) {
     callBluetoothManagerVoidMethod("sendMessage", "(Ljava/lang/String;)V", msg);
 }
 
+bool BleManager::isConnected() {
+    JNIEnv *env = cocos2d::JniHelper::getEnv();
+    bool result = false;
+    jclass classId = env->FindClass("org/cocos2dx/lua/BluetoothManager");
+    jmethodID mid = env->GetMethodID(classId, "isConnected", "()Z");
+
+    if (mid != 0 && sBluetoothManagerObj != nullptr) {
+        result = env->CallBooleanMethod(sBluetoothManagerObj, mid);
+    } else {
+        log("callBluetoothManagerBooleanMethod failed.");
+    }
+    env->DeleteLocalRef(classId);
+
+    return result;
+}
+
 void BleManager::addReceivedMessageCallback(ReceivedMessageCallback receivedMessageCallback) {
     _receivedMessageCallbacks.push_back(receivedMessageCallback);
 }

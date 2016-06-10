@@ -449,13 +449,13 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
                 if(connectedThread != null) {
                     connectedThread.write(data);
                 } else {
-//                    Log.d("BluetoothUtility", "Connected Thread is null");
+                    Log.d("BluetoothUtility", "Connected Thread is null");
                 }
             } else {
-//                Log.d("BluetoothUtility", "Socket is not connected.");
+                Log.d("BluetoothUtility", "Socket is not connected.");
             }
         } else {
-//            Log.d("BluetoothUtility", "Socket is null");
+            Log.d("BluetoothUtility", "Socket is null");
         }
     }
 

@@ -17,6 +17,10 @@ end
 function BleManager.closeConnected()
     bleManager:closeConnected()
 end
+
+function BleManager.isConnected()
+    return bleManager:isConnected()
+end
 --------------------------------------
 function BleManager.sendMessage(msg)
     bleManager:sendMessage(MSG.TALK .. msg)

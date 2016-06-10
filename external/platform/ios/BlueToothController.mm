@@ -29,6 +29,8 @@ static BlueToothController *blueToothController = nil;
     OnConnectedCallback _onConnectedCallback;
     OnDisconnectedCallback _onDisconnectedCallback;
     CannelConnectedCallback _cannelConnectedCallback;
+
+    bool _isConnected;
 }
 
 //#pragma mark - init
@@ -116,6 +118,10 @@ static BlueToothController *blueToothController = nil;
     _pickerController.delegate = nil;
 }
 
+- (bool)isConnected {
+    return _isConnected;
+}
+
 //#pragma mark - 空白处收起键盘
 //- (void)addGestRecognizer {
 //    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
@@ -167,6 +173,7 @@ static BlueToothController *blueToothController = nil;
             //[SVProgressHUD showSuccessWithStatus:@"蓝牙已连接"];
             if (_onConnectedCallback) {
                 _onConnectedCallback();  //执行连接上的回调
+                _isConnected = true;
             }
             break;
         case GKPeerStateDisconnected:
@@ -175,6 +182,8 @@ static BlueToothController *blueToothController = nil;
             _currentSession = nil;
             if (_onDisconnectedCallback) {
                 _onDisconnectedCallback();  //执行断开连接的回调
+
+                _isConnected = false;
             }
             break;
         default:

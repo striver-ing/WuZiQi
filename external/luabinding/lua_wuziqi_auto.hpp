@@ -12,10 +12,4 @@ extern "C" {
 
 int register_all_wuziqi(lua_State* tolua_S);
 
-
-
-
-
-
-
-#endif // __wuziqi_h__
+#endif  // __wuziqi_h__

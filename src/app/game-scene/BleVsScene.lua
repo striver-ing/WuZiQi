@@ -19,7 +19,14 @@ local SECOND_PLAY_CHESS_MSG = "对方选择了后下,\n  亲可以先下子"
 
 function BleVsScene:onCreate()
     Log.d("蓝牙对弈")
-    BleManager:searchBleAndConnect()
+
+    self:addConnectedStatus()
+
+    if BleManager.isConnected() then
+        self._connectedStatus:setString("已连接")
+    else
+        BleManager:searchBleAndConnect()
+    end
 
     self._chessboard:addTouchCallFunc(function(row, col)
         if isConnected then
@@ -52,7 +59,7 @@ function BleVsScene:onCreate()
 
     end)
 
-    self:addConnectedStatus()
+
     self:addCallback()
 
 end
@@ -94,11 +101,14 @@ function BleVsScene:hint()
    Dialog.show("不要耍赖哦！", "好吧")
 end
 
--- function BleVsScene:goHome()
---     BleManager.closeConnected()
---     local scene = require("app.start-scene.StartScene"):create()
---     display.runScene(scene)
--- end
+function BleVsScene:goHome()
+    if BleManager.isConnected() then
+       BleManager.closeConnected()
+    end
+
+    local scene = require("app.start-scene.StartScene"):create()
+    display.runScene(scene)
+end
 
 --回调
 function BleVsScene:addCallback()

@@ -18,6 +18,9 @@ public:
     virtual void searchBleAndConnect();
     virtual void closeConnected();
     virtual void sendMessage(const char* message);
+
+    virtual bool isConnected();
+
     virtual void addReceivedMessageCallback(ReceivedMessageCallback receivedMessageCallback);
     virtual void addOnConnectedCallback(OnConnectedCallback onConnectedCallback);
     virtual void addOnDisconnectedCallback(OnDisconnectedCallback onDisconnectedCallback);

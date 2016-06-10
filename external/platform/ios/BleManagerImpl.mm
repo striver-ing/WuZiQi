@@ -34,3 +34,7 @@ void BleManager::addOnDisconnectedCallback(OnDisconnectedCallback onDisconnected
 void BleManager::addCannelConnectedCallback(CannelConnectedCallback cannelConnectedCallback) {
     [[BlueToothController getInstance] addCannelConnectedCallback:cannelConnectedCallback];
 }
+
+bool BleManager::isConnected() {
+    return [[BlueToothController getInstance] isConnected];
+}

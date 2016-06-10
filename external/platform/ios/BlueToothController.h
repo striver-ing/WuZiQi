@@ -30,6 +30,8 @@ typedef std::function<void()> CannelConnectedCallback;
 - (void)addOnConnectedCallback:(OnConnectedCallback)onConnectedCallback;
 - (void)addOnDisconnectedCallback:(OnDisconnectedCallback)onDisconnectedCallback;
 - (void)addCannelConnectedCallback:(CannelConnectedCallback)cannelConnectedCallback;
+
+- (bool)isConnected;
 //@property(nonatomic, assign, setter=addReceivedMessageCallBack:) ReceivedMessageCallback* receivedMessageCallback;
 
 @end

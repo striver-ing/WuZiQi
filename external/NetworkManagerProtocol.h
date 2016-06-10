@@ -32,6 +32,8 @@ public:
     virtual void searchBleAndConnect() = 0;
     virtual void closeConnected() = 0;
     virtual void sendMessage(const char* message) = 0;
+    virtual bool isConnected() = 0;
+
     virtual void addReceivedMessageCallback(ReceivedMessageCallback receivedMessageCallback) = 0;
     virtual void addOnConnectedCallback(OnConnectedCallback onConnectedCallback) = 0;
     virtual void addOnDisconnectedCallback(OnDisconnectedCallback onDisconnectedCallback) = 0;
