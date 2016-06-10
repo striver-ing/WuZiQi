@@ -20,17 +20,24 @@ JNIEXPORT void JNICALL Java_org_cocos2dx_lua_BluetoothManager_onDataReceived(JNI
 
 /*
  * Class:     org_cocos2dx_lua_BluetoothManager
- * Method:    isConnected
+ * Method:    onConnected
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_cocos2dx_lua_BluetoothManager_isConnected(JNIEnv *, jobject);
+JNIEXPORT void JNICALL Java_org_cocos2dx_lua_BluetoothManager_onConnected(JNIEnv *, jobject);
 
 /*
  * Class:     org_cocos2dx_lua_BluetoothManager
- * Method:    disConnected
+ * Method:    onDisconnected
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_cocos2dx_lua_BluetoothManager_disConnected(JNIEnv *, jobject);
+JNIEXPORT void JNICALL Java_org_cocos2dx_lua_BluetoothManager_onDisconnected(JNIEnv *, jobject);
+
+/*
+ * Class:     org_cocos2dx_lua_BluetoothManager
+ * Method:    onCannelConnected
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_org_cocos2dx_lua_BluetoothManager_onCannelConnected(JNIEnv *, jobject);
 
 #ifdef __cplusplus
 }

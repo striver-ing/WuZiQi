@@ -46,7 +46,7 @@ public class BluetoothManager {
                     //a device is connected so you can now send stuff to it
                     Toast.makeText(context, "Connected!", Toast.LENGTH_SHORT).show();
                     Log.w("SIMPLEBT", "Device connected");
-                    isConnected();
+                    onConnected();
                 }
 
                 @Override
@@ -54,7 +54,7 @@ public class BluetoothManager {
                     // device was disconnected so connect it again?
                     Toast.makeText(context, "Disconnected!", Toast.LENGTH_SHORT).show();
                     Log.w("SIMPLEBT", "Device disconnected");
-                    disConnected();
+                    onDisconnected();
                 }
             });
         }
@@ -150,6 +150,14 @@ public class BluetoothManager {
 
                 }
             });
+            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    onCannelConnected();
+                }
+            });
+            builder.setCancelable(false);//对话框以外的地方不起作用。按返回键也不起作用
+            //builder.setCanceledOnTouchOutside(false);//按对话框以外的地方不起作用。按返回键还起作用
             builder.show();
             return false;
         }
@@ -199,6 +207,7 @@ public class BluetoothManager {
 
 
     native public void onDataReceived(String data);
-    native public void isConnected();
-    native public void disConnected();
+    native public void onConnected();
+    native public void onDisconnected();
+    native public void onCannelConnected();
 }

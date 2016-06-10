@@ -15,7 +15,7 @@ local ownPlayChessType = nil
 local isConnected = false
 
 local FIRST_PLAY_CHESS_MSG = "对方先下了,亲后下吧"
-local SECOND_PLAY_CHESS_MSG = "对方选择了后下,\n 亲可以先下子"
+local SECOND_PLAY_CHESS_MSG = "对方选择了后下,\n  亲可以先下子"
 
 function BleVsScene:onCreate()
     Log.d("蓝牙对弈")
@@ -23,7 +23,7 @@ function BleVsScene:onCreate()
 
     self._chessboard:addTouchCallFunc(function(row, col)
         if isConnected then
-            self._connectedStatus:setString(ownPlayChessType)
+            -- self._connectedStatus:setString(ownPlayChessType)
             if ownPlayChessType == self._chessboard:getNextTurnChessType() then
                 self._chessboard:addChess(row, col)
                 BleManager.ownSideAddChess(row, col)
@@ -38,6 +38,7 @@ function BleVsScene:onCreate()
             end)
         end
 
+        -- 不需要设置先后手  谁先下谁先手
         -- if ownPlayChessType == nil then
         --     self._chessboard:addChess(row, col)
         --     ownPlayChessType = self._chessboard:getCurrentChessType()
@@ -93,6 +94,12 @@ function BleVsScene:hint()
    Dialog.show("不要耍赖哦！", "好吧")
 end
 
+-- function BleVsScene:goHome()
+--     BleManager.closeConnected()
+--     local scene = require("app.start-scene.StartScene"):create()
+--     display.runScene(scene)
+-- end
+
 --回调
 function BleVsScene:addCallback()
     --添加对方下棋的回调
@@ -105,7 +112,7 @@ function BleVsScene:addCallback()
     BleManager.addOnConnectedCallback(function()
         isConnected = true
         self._connectedStatus:setString("已连接")
-        self:setPlayChessSequence(" 成功连接设备\n亲是先下还是后下")
+        self:setPlayChessSequence("  成功连接设备\n亲是先下还是后下")
     end)
 
     --添加断开设备的回调

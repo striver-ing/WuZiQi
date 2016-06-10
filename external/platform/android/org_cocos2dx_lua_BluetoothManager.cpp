@@ -22,10 +22,14 @@ JNIEXPORT void JNICALL Java_org_cocos2dx_lua_BluetoothManager_onDataReceived(JNI
     }
 }
 
-JNIEXPORT void JNICALL Java_org_cocos2dx_lua_BluetoothManager_isConnected(JNIEnv *, jobject) {
+JNIEXPORT void JNICALL Java_org_cocos2dx_lua_BluetoothManager_onConnected(JNIEnv *, jobject) {
     Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() { BleManager::getInstance()->executeOnConnectedCallback(); });
 }
 
-JNIEXPORT void JNICALL Java_org_cocos2dx_lua_BluetoothManager_disConnected(JNIEnv *, jobject) {
+JNIEXPORT void JNICALL Java_org_cocos2dx_lua_BluetoothManager_onDisconnected(JNIEnv *, jobject) {
     Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() { BleManager::getInstance()->executeOnDisconnectedCallback(); });
+}
+
+JNIEXPORT void JNICALL Java_org_cocos2dx_lua_BluetoothManager_onCannelConnected(JNIEnv *, jobject) {
+    Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() { BleManager::getInstance()->executeCannelConnectedCallback(); });
 }
