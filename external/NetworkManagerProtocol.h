@@ -34,10 +34,10 @@ public:
     virtual void sendMessage(const char* message) = 0;
     virtual bool isConnected() = 0;
 
-    virtual void addReceivedMessageCallback(ReceivedMessageCallback receivedMessageCallback) = 0;
-    virtual void addOnConnectedCallback(OnConnectedCallback onConnectedCallback) = 0;
-    virtual void addOnDisconnectedCallback(OnDisconnectedCallback onDisconnectedCallback) = 0;
-    virtual void addCannelConnectedCallback(CannelConnectedCallback cannelConnectedCallback) = 0;
+    void addReceivedMessageCallback(ReceivedMessageCallback receivedMessageCallback);
+    void addOnConnectedCallback(OnConnectedCallback onConnectedCallback);
+    void addOnDisconnectedCallback(OnDisconnectedCallback onDisconnectedCallback);
+    void addCannelConnectedCallback(CannelConnectedCallback cannelConnectedCallback);
 
     void executeReceivedMessageCallback(const char* message);
     void executeOnConnectedCallback();

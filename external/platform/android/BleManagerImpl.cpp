@@ -85,19 +85,3 @@ bool BleManager::isConnected() {
 
     return result;
 }
-
-void BleManager::addReceivedMessageCallback(ReceivedMessageCallback receivedMessageCallback) {
-    _receivedMessageCallbacks.push_back(receivedMessageCallback);
-}
-
-void BleManager::addOnConnectedCallback(OnConnectedCallback onConnectedCallback) {
-    _onConnectedCallback = onConnectedCallback;
-}
-
-void BleManager::addOnDisconnectedCallback(OnDisconnectedCallback onDisconnectedCallback) {
-    _onDisconnectedCallback = onDisconnectedCallback;
-}
-
-void BleManager::addCannelConnectedCallback(CannelConnectedCallback cannelConnectedCallback) {
-    _cannelConnectedCallback = cannelConnectedCallback;
-}
