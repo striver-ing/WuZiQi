@@ -21,6 +21,12 @@ end
 function BleManager.isConnected()
     return bleManager:isConnected()
 end
+
+--清空存放callback的 vector 以防止多次存放
+function BleManager.clearReceivedMessageCallback()
+    bleManager:clearReceivedMessageCallback()
+end
+
 --------------------------------------
 function BleManager.sendMessage(msg)
     bleManager:sendMessage(MSG.TALK .. msg)

@@ -8,43 +8,26 @@
 
 #import "BlueToothController.h"
 #import <GameKit/GameKit.h>
+#import "BleManager.h"
 //#import "SVProgressHUD.h"
 
 static BlueToothController *blueToothController = nil;
 
 @interface BlueToothController ()
-- (void)executeReceivedMessageCallback:(NSString *)message;
+//- (void)executeReceivedMessageCallback:(NSString *)message;
 @end
 
 @implementation BlueToothController {
     GKPeerPickerController *_pickerController;  //通过GKPeerPickerController开启手机蓝牙开关,不需要切换到Setting界面
     GKSession *_currentSession;                 ////GKSession对象用于表现两个蓝牙设备之间连接的一个会话，你也可以使用它在两个设备之间发送和接收数据
 
-    //    IBOutlet UIScrollView *scrollView;
-
-    //    NSString *_msg;
-
-    //    ReceivedMessageCallback _receivedMessageCallback;
-    std::vector<ReceivedMessageCallback> _receivedMessageCallbacks;
-    OnConnectedCallback _onConnectedCallback;
-    OnDisconnectedCallback _onDisconnectedCallback;
-    CannelConnectedCallback _cannelConnectedCallback;
+    //    std::vector<ReceivedMessageCallback> _receivedMessageCallbacks;
+    //    OnConnectedCallback _onConnectedCallback;
+    //    OnDisconnectedCallback _onDisconnectedCallback;
+    //    CannelConnectedCallback _cannelConnectedCallback;
 
     bool _isConnected;
 }
-
-//#pragma mark - init
-//- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-//    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-//    if (self) {
-//    }
-//    return self;
-//}
-//
-//- (void)viewDidLoad {
-//    [super viewDidLoad];
-//    [self addGestRecognizer];
-//}
 
 #pragma mark - click
 
@@ -81,34 +64,8 @@ static BlueToothController *blueToothController = nil;
         NSData *data = [msg dataUsingEncoding:NSUTF8StringEncoding];
         [_currentSession sendDataToAllPeers:data withDataMode:GKSendDataReliable error:nil];
     }
-    [self executeReceivedMessageCallback:message];
-}
-
-//注册接受到数据的回调
-- (void)addReceivedMessageCallback:(ReceivedMessageCallback)receiveMessageCallback {
-    _receivedMessageCallbacks.push_back(receiveMessageCallback);
-}
-
-//注册连接回调
-- (void)addOnConnectedCallback:(OnConnectedCallback)onConnectedCallback {
-    _onConnectedCallback = onConnectedCallback;
-}
-
-//注册断开连接回调
-- (void)addOnDisconnectedCallback:(OnDisconnectedCallback)onDisconnectedCallback {
-    _onDisconnectedCallback = onDisconnectedCallback;
-}
-
-//注册取消连接回调
-- (void)addCannelConnectedCallback:(CannelConnectedCallback)cannelConnectedCallback {
-    _cannelConnectedCallback = cannelConnectedCallback;
-}
-
-//执行收到消息回调
-- (void)executeReceivedMessageCallback:(NSString *)message {
-    for (ReceivedMessageCallback callback : _receivedMessageCallbacks) {
-        callback([message UTF8String]);
-    }
+    //    [self executeReceivedMessageCallback:message];
+    BleManager::getInstance()->executeReceivedMessageCallback([message UTF8String]);
 }
 
 //断开连接
@@ -122,16 +79,31 @@ static BlueToothController *blueToothController = nil;
     return _isConnected;
 }
 
-//#pragma mark - 空白处收起键盘
-//- (void)addGestRecognizer {
-//    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
-//    tap.numberOfTouchesRequired = 1;
-//    tap.numberOfTapsRequired = 1;
-//    tap.cancelsTouchesInView = NO;
-//    [scrollView addGestureRecognizer:tap];
+////注册接受到数据的回调
+//- (void)addReceivedMessageCallback:(ReceivedMessageCallback)receiveMessageCallback {
+//    _receivedMessageCallbacks.push_back(receiveMessageCallback);
 //}
-//- (void)tapped:(UIGestureRecognizer *)gestureRecognizer {
-//    [self.view endEditing:YES];
+//
+////注册连接回调
+//- (void)addOnConnectedCallback:(OnConnectedCallback)onConnectedCallback {
+//    _onConnectedCallback = onConnectedCallback;
+//}
+//
+////注册断开连接回调
+//- (void)addOnDisconnectedCallback:(OnDisconnectedCallback)onDisconnectedCallback {
+//    _onDisconnectedCallback = onDisconnectedCallback;
+//}
+//
+////注册取消连接回调
+//- (void)addCannelConnectedCallback:(CannelConnectedCallback)cannelConnectedCallback {
+//    _cannelConnectedCallback = cannelConnectedCallback;
+//}
+//
+////执行收到消息回调
+//- (void)executeReceivedMessageCallback:(NSString *)message {
+//    for (ReceivedMessageCallback callback : _receivedMessageCallbacks) {
+//        callback([message UTF8String]);
+//    }
 //}
 
 #pragma mark - GKPeerPickerControllerDelegate
@@ -150,9 +122,7 @@ static BlueToothController *blueToothController = nil;
 
     picker.delegate = nil;
     _currentSession = nil;
-    if (_cannelConnectedCallback) {
-        _cannelConnectedCallback();  //执行取消连接的回调
-    }
+    BleManager::getInstance()->executeCannelConnectedCallback();
 }
 
 //连接后
@@ -171,21 +141,20 @@ static BlueToothController *blueToothController = nil;
     switch (state) {
         case GKPeerStateConnected:
             //[SVProgressHUD showSuccessWithStatus:@"蓝牙已连接"];
-            if (_onConnectedCallback) {
-                _onConnectedCallback();  //执行连接上的回调
-                _isConnected = true;
-            }
+            _isConnected = true;
+
+            BleManager::getInstance()->executeOnConnectedCallback();
             break;
+
         case GKPeerStateDisconnected:
             //[SVProgressHUD showErrorWithStatus:@"蓝牙已断开"];
             _pickerController.delegate = nil;
             _currentSession = nil;
-            if (_onDisconnectedCallback) {
-                _onDisconnectedCallback();  //执行断开连接的回调
+            _isConnected = false;
 
-                _isConnected = false;
-            }
+            BleManager::getInstance()->executeOnDisconnectedCallback();
             break;
+
         default:
             break;
     }
@@ -196,7 +165,8 @@ static BlueToothController *blueToothController = nil;
     NSString *msg = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     NSLog(@"%@", msg);
     //[SVProgressHUD showSuccessWithStatus:@"数据接收成功"];
-    [self executeReceivedMessageCallback:msg];
+
+    BleManager::getInstance()->executeReceivedMessageCallback([msg UTF8String]);
 }
 
 @end

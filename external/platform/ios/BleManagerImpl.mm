@@ -21,19 +21,19 @@ void BleManager::sendMessage(const char* message) {
     [[BlueToothController getInstance] sendMessage:msg];
 }
 
-void BleManager::addReceivedMessageCallback(ReceivedMessageCallback receivedMessageCallback) {
-    [[BlueToothController getInstance] addReceivedMessageCallback:receivedMessageCallback];
-}
-
-void BleManager::addOnConnectedCallback(OnConnectedCallback onConnectedCallback) {
-    [[BlueToothController getInstance] addOnConnectedCallback:onConnectedCallback];
-}
-void BleManager::addOnDisconnectedCallback(OnDisconnectedCallback onDisconnectedCallback) {
-    [[BlueToothController getInstance] addOnDisconnectedCallback:onDisconnectedCallback];
-}
-void BleManager::addCannelConnectedCallback(CannelConnectedCallback cannelConnectedCallback) {
-    [[BlueToothController getInstance] addCannelConnectedCallback:cannelConnectedCallback];
-}
+// void BleManager::addReceivedMessageCallback(ReceivedMessageCallback receivedMessageCallback) {
+//    [[BlueToothController getInstance] addReceivedMessageCallback:receivedMessageCallback];
+//}
+//
+// void BleManager::addOnConnectedCallback(OnConnectedCallback onConnectedCallback) {
+//    [[BlueToothController getInstance] addOnConnectedCallback:onConnectedCallback];
+//}
+// void BleManager::addOnDisconnectedCallback(OnDisconnectedCallback onDisconnectedCallback) {
+//    [[BlueToothController getInstance] addOnDisconnectedCallback:onDisconnectedCallback];
+//}
+// void BleManager::addCannelConnectedCallback(CannelConnectedCallback cannelConnectedCallback) {
+//    [[BlueToothController getInstance] addCannelConnectedCallback:cannelConnectedCallback];
+//}
 
 bool BleManager::isConnected() {
     return [[BlueToothController getInstance] isConnected];

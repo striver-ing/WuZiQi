@@ -49,3 +49,7 @@ void NetworkManagerProtocol::executeCannelConnectedCallback() {
         _cannelConnectedCallback();
     }
 }
+
+void NetworkManagerProtocol::clearReceivedMessageCallback() {
+    _receivedMessageCallbacks.clear();
+}

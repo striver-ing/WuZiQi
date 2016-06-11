@@ -88,6 +88,14 @@ function BleVsScene:setFirstPlayChess(flag)
     else
         ownPlayChessType = self._chessboard:getBehindChessType()
     end
+
+    self:resetChessboard()
+end
+
+function BleVsScene:resetChessboard()
+    self:stopAction(self._scheduleAction)
+    self._chessboard:restartGame()
+    self:resetGameTime()
 end
 
 --悔棋
@@ -125,6 +133,9 @@ end
 
 --回调
 function BleVsScene:addCallback()
+    --清空存放callback的 vector 以防止多次存放
+    BleManager.clearReceivedMessageCallback()
+
     --添加对方下棋的回调
     BleManager.enemySideAddChessCallback(function(row, col)
         self._chessboard:addChess(row, col)
@@ -143,11 +154,11 @@ function BleVsScene:addCallback()
         -- isConnected = false
         -- self._connectedStatus:setString("未连接")
         Dialog.show("  连接断开啦\n是否重新连接？", "是", "否", function(btnPos)
-                if btnPos == 1 then
-                   BleManager:searchBleAndConnect()
-                elseif btnPos == 2 then
-                    self:goHome()
-                end
+            if btnPos == 1 then
+                BleManager:searchBleAndConnect()
+            elseif btnPos == 2 then
+                self:goHome()
+            end
         end)
     end)
 
@@ -227,21 +238,13 @@ end
 function BleVsScene:setPlayChessSequence(context)
     context = context == nil and "亲是先下子还是后下子" or context
 
-    local function resetChessboard()
-        self:stopAction(self._scheduleAction)
-        self._chessboard:restartGame()
-        self:resetGameTime()
-    end
-
     Dialog.show(context, "先下", "后下", function(btnPos)
         if btnPos == 1 then
             self:setFirstPlayChess(true)
             BleManager.sendMessage(FIRST_PLAY_CHESS_MSG)
-            resetChessboard()
         elseif btnPos == 2 then
             self:setFirstPlayChess(false)
             BleManager.sendMessage(SECOND_PLAY_CHESS_MSG)
-            resetChessboard()
         end
     end)
 

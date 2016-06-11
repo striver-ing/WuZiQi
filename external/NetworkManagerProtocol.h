@@ -43,4 +43,6 @@ public:
     void executeOnConnectedCallback();
     void executeOnDisconnectedCallback();
     void executeCannelConnectedCallback();
+
+    void clearReceivedMessageCallback();
 };
