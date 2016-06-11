@@ -30,7 +30,7 @@ public class BluetoothManager {
 
     private String curMacAddress;
 
-    private boolean isConnected = false;
+    private static boolean isConnected = false;
 
 
     private void initBluetooth() {
@@ -96,6 +96,7 @@ public class BluetoothManager {
                 boolean paired = simpleBluetooth.getBluetoothUtility()
                         .checkIfPaired(simpleBluetooth.getBluetoothUtility()
                                 .findDeviceByMacAddress(curMacAddress));
+                isConnected = paired;
                 String message = paired ? "is paired" : "is not paired";
                 Log.i("ActivityResult", "Device " + message);
                 if(requestCode == SCAN_REQUEST) {
@@ -145,12 +146,11 @@ public class BluetoothManager {
                         simpleBluetooth.createBluetoothServerConnection();
 
                     } else if (choose[which].equals("加入游戏") && simpleBluetooth != null) {
-                        simpleBluetooth.scan(CHOOSE_SERVER_REQUEST);
-//                        if (curMacAddress != null) {
-//                            simpleBluetooth.connectToBluetoothServer(curMacAddress);
-//                        } else {
-//                            simpleBluetooth.scan(CHOOSE_SERVER_REQUEST);
-//                        }
+                        if (curMacAddress != null) {
+                            simpleBluetooth.connectToBluetoothServer(curMacAddress);
+                        } else {
+                            simpleBluetooth.scan(CHOOSE_SERVER_REQUEST);
+                        }
                     }
 
                 }
@@ -212,6 +212,12 @@ public class BluetoothManager {
     }
 
     public boolean isConnected(){
+        if (simpleBluetooth!= null && curMacAddress != null){
+            isConnected = simpleBluetooth.getBluetoothUtility()
+                    .checkIfPaired(simpleBluetooth.getBluetoothUtility()
+                            .findDeviceByMacAddress(curMacAddress));
+
+        }
         return isConnected;
     }
 

@@ -445,7 +445,7 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
     public void sendData(String data) {
         //check to see if the socket is connected first.
         if(bluetoothSocket != null) {
-            if(bluetoothSocket.isConnected()){
+            if(true || bluetoothSocket.isConnected()){
                 if(connectedThread != null) {
                     connectedThread.write(data);
                 } else {
@@ -470,13 +470,13 @@ public class BluetoothUtility implements BluetoothProfile.ServiceListener {
                 if(connectedThread != null) {
                     connectedThread.write(data);
                 } else {
-//                    Log.d("BluetoothUtility", "Connected Thread is null");
+                    Log.d("BluetoothUtility", "Connected Thread is null");
                 }
             } else {
-//                Log.d("BluetoothUtility", "Socket is not connected.");
+                Log.d("BluetoothUtility", "Socket is not connected.");
             }
         } else {
-//            Log.d("BluetoothUtility", "Socket is null");
+            Log.d("BluetoothUtility", "Socket is null");
         }
     }
 
