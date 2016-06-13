@@ -279,14 +279,38 @@ end
 function GameBaseScene:screenShoot()
     ScreenShoot.captured("shared.png", function(succeed, outputFile)
             if succeed then
-                -- local shareBg = display.newSprite("sharebg.png")
-                -- shareBg:setPosition(display.center)
-                -- shareBg:addTo(self)
+                --创建屏蔽层
+                local  sheildLayer = require("utils.MarkLayer").new()
+                sheildLayer:addTo(self);
 
-                -- local screenShoot = display.newSprite(outputFile)
-                -- screenShoot:setScale(0.5)
-                -- screenShoot:addTo(shareBg)
-                -- screenShoot:setPosition(cc.p(shareBg:getContentSize().width / 2, shareBg:getContentSize().height / 2))
+                -- 背景
+                local shareBg = display.newSprite("sharebg.png")
+                shareBg:setAnchorPoint(cc.p(0, 1))
+                shareBg:setPosition(cc.p(0, display.top))
+                shareBg:addTo(self)
+
+                -- 游戏场景截屏
+                local screenShoot = display.newSprite(outputFile)
+                screenShoot:setScale(0.5)
+                screenShoot:addTo(shareBg)
+                screenShoot:setPosition(cc.p(shareBg:getContentSize().width / 2, shareBg:getContentSize().height * 0.53))
+
+                --share btn
+                local shareBtn = self:addButton("friend.png", display.cx, display.visibleoriginY + 35, self, function(sender, event)
+                    cc.Director:getInstance():getTextureCache():removeTextureForKey(outputFile) -- 清除纹理缓存 否则下次加载的还是上次截图
+                    sheildLayer:removeSelf()
+                    shareBg:removeSelf()
+                    sender:removeSelf()
+                end)
+
+                -- close btn
+                self:addButton("sharepage/close.png", shareBg:getContentSize().width - 65, shareBg:getContentSize().height - 90, shareBg, function(sender, eventType)
+                    cc.Director:getInstance():getTextureCache():removeTextureForKey(outputFile) -- 清除纹理缓存 否则下次加载的还是上次截图
+                    sheildLayer:removeSelf()
+                    shareBg:removeSelf()
+                    shareBtn:removeSelf()
+                end)
+
             else
                 Log.d("截屏失败")
             end
