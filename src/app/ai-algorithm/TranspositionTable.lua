@@ -23,7 +23,7 @@ hashTb[2] = {}
 -- }
 
 local hashChessboardTb32 = {}  --存储棋盘每个位置的hash值 用于生成hash key
-local hashChessboardTb64 = {}  -- 用户checkSum 的校验
+local hashChessboardTb64 = {}  -- 用于checkSum 的校验
 local hashKey32 = 0
 local hashKey64 = 0
 
