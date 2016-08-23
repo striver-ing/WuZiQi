@@ -49,6 +49,7 @@ static int register_all_packages() {
     return 0;  // flag for packages manager
 }
 
+
 bool AppDelegate::applicationDidFinishLaunching() {
     FileUtils::getInstance()->addSearchPath("../../../../external/");
 
